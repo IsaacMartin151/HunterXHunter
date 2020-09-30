@@ -1,0 +1,85 @@
+---- Minecraft Crash Report ----
+// Daisy, daisy...
+
+Time: 9/28/20, 5:47 PM
+Description: Initializing game
+
+java.lang.ExceptionInInitializerError: null
+	at net.minecraftforge.fml.ModLoader.<init>(ModLoader.java:128) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading}
+	at net.minecraftforge.fml.ModLoader.get(ModLoader.java:153) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading}
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$begin$1(ClientModLoader.java:103) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$4(ClientModLoader.java:123) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.client.ClientModLoader.begin(ClientModLoader.java:103) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.<init>(Minecraft.java:429) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:accesstransformer:B,pl:runtimedistcleaner:A}
+	at net.minecraft.client.main.Main.main(Main.java:149) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?] {}
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?] {}
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:52) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65) [modlauncher-7.0.1.jar:?] {}
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:105) [forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {}
+Caused by: java.lang.IllegalStateException: Failed to resolve consumer event type: net.minecraftforge.fml.network.simple.SimpleChannel$$Lambda$3013/0x0000000800b0ec40@7a3269f5
+	at net.minecraftforge.eventbus.EventBus.getEventClass(EventBus.java:220) ~[eventbus-3.0.3-service.jar:?] {}
+	at net.minecraftforge.eventbus.EventBus.checkNotGeneric(EventBus.java:162) ~[eventbus-3.0.3-service.jar:?] {}
+	at net.minecraftforge.eventbus.EventBus.addListener(EventBus.java:173) ~[eventbus-3.0.3-service.jar:?] {}
+	at net.minecraftforge.fml.network.NetworkInstance.addListener(NetworkInstance.java:65) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.<init>(SimpleChannel.java:57) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.network.simple.SimpleChannel.<init>(SimpleChannel.java:50) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.network.NetworkRegistry$ChannelBuilder.simpleChannel(NetworkRegistry.java:409) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.network.NetworkInitialization.getHandshakeChannel(NetworkInitialization.java:38) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.network.FMLNetworkConstants.<clinit>(FMLNetworkConstants.java:48) ~[?:?] {re:classloading}
+	... 18 more
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at net.minecraftforge.fml.ModLoader.<init>(ModLoader.java:128) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.ModLoader.get(ModLoader.java:153) ~[?:?] {re:classloading}
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$begin$1(ClientModLoader.java:103) ~[?:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.client.ClientModLoader.lambda$createRunnableWithCatch$4(ClientModLoader.java:123) ~[?:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraftforge.fml.client.ClientModLoader.begin(ClientModLoader.java:103) ~[?:?] {re:classloading,pl:runtimedistcleaner:A}
+	at net.minecraft.client.Minecraft.<init>(Minecraft.java:429) ~[?:?] {re:classloading,pl:accesstransformer:B,pl:runtimedistcleaner:A}
+-- Initialization --
+Details:
+Stacktrace:
+	at net.minecraft.client.main.Main.main(Main.java:149) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {re:classloading,pl:runtimedistcleaner:A}
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?] {}
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?] {}
+	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:52) ~[forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81) [modlauncher-7.0.1.jar:?] {}
+	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65) [modlauncher-7.0.1.jar:?] {}
+	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:105) [forge-1.16.3-34.1.0_mapped_snapshot_20200514-1.16-recomp.jar:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.16.3
+	Minecraft Version ID: 1.16.3
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 11.0.6, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 936624640 bytes (893 MB) / 1493172224 bytes (1424 MB) up to 4263510016 bytes (4066 MB)
+	CPUs: 8
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	Launched Version: MOD_DEV
+	Backend library: LWJGL version 3.2.2 build 10
+	Backend API: Intel(R) HD Graphics 630 GL version 4.5.0 - Build 22.20.16.4836, Intel
+	GL Caps: Using framebuffer using OpenGL 3.0
+	Using VBOs: Yes
+	Is Modded: Definitely; Client brand changed to 'forge'
+	Type: Client (map_client.txt)
+	CPU: 8x Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz
