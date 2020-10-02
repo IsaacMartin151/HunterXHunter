@@ -1,4 +1,4 @@
-package com.chubbychump.hunterxhunter.blocks;
+package com.chubbychump.hunterxhunter.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

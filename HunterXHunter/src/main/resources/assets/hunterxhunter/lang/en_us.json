@@ -1,5 +1,6 @@
 {
   "item.hunterxhunter.ruby": "Ruby Gem",
   "block.hunterxhunter.ruby_block": "Ruby Block",
-  "item.hunterxhunter.sapphire": "Sapphire Gem"
+  "item.hunterxhunter.sapphire": "Sapphire Gem",
+  "itemGroup.hunterxhunter": "HunterXHunter"
 }

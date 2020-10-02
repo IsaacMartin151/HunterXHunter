@@ -1,11 +1,10 @@
 package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.blocks.BlockItemBase;
-import com.chubbychump.hunterxhunter.blocks.RubyBlock;
-import com.chubbychump.hunterxhunter.items.ItemBase;
+import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
+import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
+import com.chubbychump.hunterxhunter.common.items.ItemBase;
 import net.minecraft.block.Block;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

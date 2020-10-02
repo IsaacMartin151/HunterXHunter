@@ -1,4 +1,4 @@
-package com.chubbychump.hunterxhunter.blocks;
+package com.chubbychump.hunterxhunter.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -10,6 +10,7 @@ public class RubyBlock extends Block {
         super(Block.Properties.create(Material.IRON)
                 .hardnessAndResistance(5.0f, 6.0f)
                 .sound(SoundType.METAL)
-                .harvestLevel(2).harvestTool(ToolType.PICKAXE));
+                .harvestLevel(2)
+                .harvestTool(ToolType.PICKAXE));
     }
 }
