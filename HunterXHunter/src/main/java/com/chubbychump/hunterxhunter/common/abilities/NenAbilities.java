@@ -1,6 +1,8 @@
 package com.chubbychump.hunterxhunter.common.abilities;
 
-public class NenAbilities {
+import net.minecraft.entity.player.PlayerAbilities;
+
+public abstract class NenAbilities extends PlayerAbilities {
     int nenPower = 1;
     char control = 'c';
     boolean nenActivated = false;
@@ -8,6 +10,7 @@ public class NenAbilities {
     boolean en = false;
     boolean ren = false;
     boolean zetsu = false;
+
     public void setKey(char bruh) {
         control = bruh;
     }
@@ -54,11 +57,7 @@ public class NenAbilities {
 
 
 }
-
-/* public class Enhancer extends NenAbilities {
-
-}
-
+/*
 public class Transmuter extends NenAbilities {
 
 }

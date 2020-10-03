@@ -12,7 +12,7 @@ modId="hunterxhunter" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Example Mod" #mandatory
+displayName="Hunter X Hunter" #mandatory
 # A text field displayed in the mod UI
 credits="Sugma" #optional
 # A text field displayed in the mod UI
@@ -22,7 +22,7 @@ description='''
 Ligma Sugma Deez Nuts Joe Mama
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.examplemod]] #optional
+[[dependencies.hunterxhunter]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -34,7 +34,7 @@ Ligma Sugma Deez Nuts Joe Mama
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
-[[dependencies.examplemod]]
+[[dependencies.hunterxhunter]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.16.3]"
