@@ -1,11 +1,11 @@
 package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.blocks.BlockItemBase;
-import com.chubbychump.hunterxhunter.blocks.RubyBlock;
-import com.chubbychump.hunterxhunter.items.ItemBase;
+import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
+import com.chubbychump.hunterxhunter.common.blocks.NenLight;
+import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
+import com.chubbychump.hunterxhunter.common.items.ItemBase;
 import net.minecraft.block.Block;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -28,8 +28,10 @@ public class RegistryHandler {
 
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
+    public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nen_light", NenLight::new);
 
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
+    public static final RegistryObject<Item> NEN_LIGHT_ITEM = ITEMS.register("nen_light", () -> new BlockItemBase(NEN_LIGHT.get()));
 
 }

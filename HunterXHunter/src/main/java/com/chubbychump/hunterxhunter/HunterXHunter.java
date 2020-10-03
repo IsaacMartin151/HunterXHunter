@@ -1,8 +1,11 @@
 package com.chubbychump.hunterxhunter;
 
-
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,7 +30,17 @@ public class HunterXHunter
         // Register ourselves for server and other game events we are interested in
         RegistryHandler.init();
         MinecraftForge.EVENT_BUS.register(this);
+
+        KeyBinding nenControl = new KeyBinding("Toggle Nen", 47, "Nen Abilities");
+        ClientRegistry.registerKeyBinding(nenControl);
     }
     private void setup(final FMLCommonSetupEvent event) { }
     private void doClientStuff(final FMLClientSetupEvent event) { }
+
+    public static final ItemGroup TAB = new ItemGroup("hunterxhunter") {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(RegistryHandler.RUBY.get());
+        }
+    };
 }
