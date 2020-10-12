@@ -1,10 +1,14 @@
 package com.chubbychump.hunterxhunter;
 
+import com.chubbychump.hunterxhunter.common.abilities.NenStorage;
+import com.chubbychump.hunterxhunter.common.abilities.NenUser;
+import com.chubbychump.hunterxhunter.common.abilities.types.Enhancer;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -35,7 +39,9 @@ public class HunterXHunter
         ClientRegistry.registerKeyBinding(nenControl);
     }
     private void setup(final FMLCommonSetupEvent event) { }
-    private void doClientStuff(final FMLClientSetupEvent event) { }
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
+    }
 
     public static final ItemGroup TAB = new ItemGroup("hunterxhunter") {
         @Override
