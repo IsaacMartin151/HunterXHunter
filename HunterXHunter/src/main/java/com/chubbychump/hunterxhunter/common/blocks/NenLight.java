@@ -1,17 +1,16 @@
 package com.chubbychump.hunterxhunter.common.blocks;
 
+import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
 
 public class NenLight extends Block {
     public NenLight() {
-        super(Block.Properties.create(Material.AIR)
-                .func_235838_a_((lightLevel) -> 15));
+        super(Block.Properties.create(Material.AIR).doesNotBlockMovement().notSolid().noDrops());
     }
 
     @Override
@@ -21,10 +20,19 @@ public class NenLight extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return NEN_LIGHT_TILE_ENTITY.get().create();
+        return new TileEntityNenLight();
     }
 
-    public NenLight get() {
-        return this;
+    @Override
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos blockPos) {
+        TileEntity bruh = world.getTileEntity(blockPos);
+        if(bruh instanceof TileEntityNenLight){
+            LOGGER.info("Found Tile Entity with light value " + ((TileEntityNenLight) bruh).levelOfLight);
+            return ((TileEntityNenLight) bruh).levelOfLight;
+        }
+        else {
+            LOGGER.info("Didn't find tile entity");
+            return 0;
+        }
     }
 }

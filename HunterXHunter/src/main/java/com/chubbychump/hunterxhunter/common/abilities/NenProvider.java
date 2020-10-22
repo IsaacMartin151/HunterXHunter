@@ -23,7 +23,8 @@ public class NenProvider implements ICapabilitySerializable<INBT>
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing)
     {
-        return capability == MANA_CAP ? holder.cast() : LazyOptional.empty();
+           return capability == MANA_CAP ? holder.cast() : LazyOptional.empty();
+
     }
 
     @Override

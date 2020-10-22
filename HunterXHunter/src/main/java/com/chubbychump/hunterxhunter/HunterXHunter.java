@@ -22,9 +22,11 @@ import org.apache.logging.log4j.Logger;
 public class HunterXHunter
 {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
 
+    public static KeyBinding nenControl = new KeyBinding("Toggle Nen", 67, "Nen Abilities");
+    public static KeyBinding increaseNen = new KeyBinding("Increase Nen", 86, "Nen Abilities");
 
     public HunterXHunter() {
         // Register the setup method for modloading
@@ -35,8 +37,8 @@ public class HunterXHunter
         RegistryHandler.init();
         MinecraftForge.EVENT_BUS.register(this);
 
-        KeyBinding nenControl = new KeyBinding("Toggle Nen", 47, "Nen Abilities");
         ClientRegistry.registerKeyBinding(nenControl);
+        ClientRegistry.registerKeyBinding(increaseNen);
     }
     private void setup(final FMLCommonSetupEvent event) { }
     private void doClientStuff(final FMLClientSetupEvent event) {

@@ -15,6 +15,7 @@ public class NenStorage implements Capability.IStorage<NenUser>
     {
         CompoundNBT tag = new CompoundNBT();
         tag.putFloat("currentnen", instance.getCurrentNen());
+        tag.putInt("nenpower", instance.getNenPower());
         return tag;
     }
 
@@ -23,5 +24,6 @@ public class NenStorage implements Capability.IStorage<NenUser>
     {
         CompoundNBT tag = (CompoundNBT) nbt;
         instance.setCurrentNen(tag.getByte("currentnen"));
+        instance.setCurrentNen(tag.getByte("nenpower"));
     }
 }

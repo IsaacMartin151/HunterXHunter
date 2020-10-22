@@ -1,77 +1,71 @@
 package com.chubbychump.hunterxhunter.common.tileentities;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
+import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
-import static java.lang.Math.abs;
 
-public class TileEntityNenLight extends TileEntity implements ITickable {
-        public Entity theEntity; // the entity holding the light-emitting item
-        private boolean shouldDie;
-        private static final int MAX_DEATH_TIMER = 4; // number of ticks a light source persists
-        private int deathTimer;
-        public boolean typeFlashlight;
+public class TileEntityNenLight extends TileEntity implements ITickableTileEntity {
+    //Light isn't going away - Need to set the block to air
+    public Entity theEntity;
+    private int deathTimer;
+    public int levelOfLight;
 
-        public TileEntityNenLight(TileEntityType<?> type) {
-            super(type);
-            shouldDie = false;
-            typeFlashlight = false;
-            deathTimer = MAX_DEATH_TIMER;
-        }
-
-    public TileEntityNenLight() {
-         this(NEN_LIGHT_TILE_ENTITY.get());
+    public TileEntityNenLight(TileEntityType<?> type) {
+        super(type);
+        LOGGER.info("Created new Tile entity, non-default constructor");
+        deathTimer = 20;
+        levelOfLight = 0;
     }
 
-        @Override
-        public void tick() {
-            // check if already dying
-            if (!typeFlashlight && shouldDie) {
-//             // DEBUG
-//             System.out.println("Should die = "+shouldDie+" with deathTimer = "+deathTimer);
-                if (deathTimer > 0) {
-                    deathTimer--;
-                    return;
-                }
-                else {
-                    world.setBlockState(getPos(), Blocks.AIR.getDefaultState(), 3);
-                    world.removeTileEntity(getPos());;
-                    return;
-                }
-            }
+    public TileEntityNenLight() {
+        this(NEN_LIGHT_TILE_ENTITY.get());
+        LOGGER.info("Created new TileEntity, default constructor");
+    }
 
-            if (theEntity == null || !theEntity.isAlive()) {
-//            // DEBUG
-//            System.out.println("The associated entity is null or dead");
-                shouldDie = true;
-                world.setBlockState(getPos(), Blocks.AIR.getDefaultState(), 3);
-                world.removeTileEntity(getPos());;
-                return;
-            }
+    public void setLevelOfLight(int lightlevel) {
+        levelOfLight = lightlevel;
+        LOGGER.info("Setting level of light to "+levelOfLight);
+    }
 
-            if (!this.typeFlashlight) {
-                 shouldDie = true;
-                 world.setBlockState(getPos(), Blocks.AIR.getDefaultState(), 3);
-                 world.removeTileEntity(getPos());;
-            }
+    @Override
+    public TileEntityNenLight getTileEntity() {
+        return this;
+    }
 
-                /*
-                 * check if entityLiving has moved away from the tile entity or no longer holding light emitting item set block to air
-                 */
-                double distanceSquared = abs(theEntity.lastTickPosX) + abs(theEntity.lastTickPosY) + abs(theEntity.lastTickPosZ) - abs(theEntity.getPosX()) - abs(theEntity.getPosY()) - abs(theEntity.getPosZ());
-                if (distanceSquared > 5.0D) {
-                    shouldDie = true;
-                    return;
-                }
-            }
+    @Override
+    public void tick() {
+        LOGGER.info("In the tick cycle");
+        if ((this.world.getGameTime() % 20) != 0) {
+            deathTimer--;
+            LOGGER.info("Reducing deathTimer, it is now " + deathTimer);
+        } else {
+            levelOfLight = 0;
+            LOGGER.info("Killing off the tileentity and setting block to air");
+            BlockState before = world.getBlockState(pos);
+            world.removeTileEntity(pos);
+            world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+            //world.destroyBlock(pos, false);
         }
-        /*@Override
-        public void setPos(BlockPos posIn)
-        {
-            pos = posIn.toImmutable();
-            theEntity = world.getClosestEntity(world, pos, 2.0D);
-        } */
+    }
+
+    /*
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
+        compound.putInt("Light", this.levelOfLight);
+        return compound;
+    }
+
+    @Override
+    public void read(CompoundNBT compound) {
+        super.read(compound);
+        this.setLevelOfLight(compound.getInt("Light"));
+    } */
+
+}

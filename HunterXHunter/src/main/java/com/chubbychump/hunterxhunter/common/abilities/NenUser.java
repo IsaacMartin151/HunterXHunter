@@ -7,6 +7,7 @@ public interface NenUser {
     public void resetNen();
     public void toggleNen();
     public boolean isNenActivated();
+    public int getNenPower();
     public int getCurrentNen();
     public void setCurrentNen(int currentNen);
     public void activateGyo();
