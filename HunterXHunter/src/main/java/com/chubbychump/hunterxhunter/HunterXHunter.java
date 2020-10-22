@@ -1,10 +1,14 @@
 package com.chubbychump.hunterxhunter;
 
+import com.chubbychump.hunterxhunter.common.abilities.NenStorage;
+import com.chubbychump.hunterxhunter.common.abilities.NenUser;
+import com.chubbychump.hunterxhunter.common.abilities.types.Enhancer;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,9 +22,11 @@ import org.apache.logging.log4j.Logger;
 public class HunterXHunter
 {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
 
+    public static KeyBinding nenControl = new KeyBinding("Toggle Nen", 67, "Nen Abilities");
+    public static KeyBinding increaseNen = new KeyBinding("Increase Nen", 86, "Nen Abilities");
 
     public HunterXHunter() {
         // Register the setup method for modloading
@@ -31,11 +37,13 @@ public class HunterXHunter
         RegistryHandler.init();
         MinecraftForge.EVENT_BUS.register(this);
 
-        KeyBinding nenControl = new KeyBinding("Toggle Nen", 47, "Nen Abilities");
         ClientRegistry.registerKeyBinding(nenControl);
+        ClientRegistry.registerKeyBinding(increaseNen);
     }
     private void setup(final FMLCommonSetupEvent event) { }
-    private void doClientStuff(final FMLClientSetupEvent event) { }
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
+    }
 
     public static final ItemGroup TAB = new ItemGroup("hunterxhunter") {
         @Override
