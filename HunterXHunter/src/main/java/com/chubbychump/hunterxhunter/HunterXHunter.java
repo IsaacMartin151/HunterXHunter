@@ -8,6 +8,7 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.MobEntity;
@@ -31,9 +32,7 @@ import java.util.UUID;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("hunterxhunter")
-public class HunterXHunter
-{
-    // Directly reference a log4j logger.
+public class HunterXHunter {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
@@ -60,8 +59,8 @@ public class HunterXHunter
     private void doClientStuff(final FMLClientSetupEvent event) {
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), MoreHealth::new);
-        //MinecraftForge.EVENT_BUS.register(new IngameGui());
-        //PacketManager.register();
+        MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
+        PacketManager.register();
     }
 
 

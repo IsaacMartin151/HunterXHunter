@@ -73,7 +73,7 @@ public class Config {
 
         defHealth = builder
                 .comment("The amount of health a user will have in a new game or after death.")
-                .defineInRange("Default Health", 20, 1, 200);
+                .defineInRange("Default Health", 6, 1, 200);
 
         maxHealth = builder
                 .comment("The maximum amount of health LevelHearts will allow a user to have. -1 to disable.")

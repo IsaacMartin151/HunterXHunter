@@ -264,7 +264,6 @@ public class EventsHandling {
         if (event.getPlayer().getEntityWorld().isRemote) {
             return;
         }
-
         // Fetch player and recalc player's health
         PlayerEntity player = event.getPlayer();
         HunterXHunter.recalcPlayerHealth(player, player.experienceLevel + event.getLevels());
@@ -288,16 +287,18 @@ public class EventsHandling {
 
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
-        if (nenControl.isPressed()) {
-            LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
-            yo.orElseThrow(null).toggleNen();
-            boolean erm = yo.orElseThrow(null).isNenActivated();
+        if (event.player.isAlive()) {
+            if (nenControl.isPressed()) {
+                LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
+                yo.orElseThrow(null).toggleNen();
+                boolean erm = yo.orElseThrow(null).isNenActivated();
+            }
+            if (increaseNen.isPressed()) {
+                LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
+                yo.orElseThrow(null).increaseNenPower();
+            }
+            processLightPlacementForEntities(event.player.getEntityWorld());
         }
-        if (increaseNen.isPressed()) {
-            LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
-            yo.orElseThrow(null).increaseNenPower();
-        }
-        processLightPlacementForEntities(event.player.getEntityWorld());
     }
 
     private static void processLightPlacementForEntities(World theWorld) {
