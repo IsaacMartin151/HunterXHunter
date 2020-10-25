@@ -6,5 +6,5 @@ import net.minecraftforge.registries.ObjectHolder;
 
 @ObjectHolder(HunterXHunter.MOD_ID)
 public class ModBlocks {
-    public static final NenLight PERSONLIGHT = new NenLight();
+    public static final NenLight NENLIGHT = null;
 }
