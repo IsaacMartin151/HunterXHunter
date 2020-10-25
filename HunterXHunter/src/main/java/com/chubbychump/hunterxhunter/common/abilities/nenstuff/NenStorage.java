@@ -1,5 +1,6 @@
-package com.chubbychump.hunterxhunter.common.abilities;
+package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

@@ -1,20 +1,10 @@
-package com.chubbychump.hunterxhunter.common.abilities.types;
+package com.chubbychump.hunterxhunter.common.abilities.nenstuff.types;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.NenUser;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 
-public class Enhancer implements NenUser {
-
-    private int nenPower;
-    private int currentNen;
-    private char control;
-    private boolean nenActivated;
-    private boolean gyo;
-    private boolean en;
-    private boolean ren;
-    private boolean zetsu;
-
-    public Enhancer() {
+public class Conjurer extends NenUser {
+    public Conjurer() {
         this.nenPower = 0;
         this.currentNen = 100;
         this.control = 'c';
@@ -23,14 +13,6 @@ public class Enhancer implements NenUser {
         this.en = false;
         this.ren = false;
         this.zetsu = false;
-    }
-
-    public char getKey() {
-        return control;
-    }
-
-    public void setKey(char bruh) {
-        this.control = bruh;
     }
 
     public boolean isNenActivated() {

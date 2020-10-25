@@ -1,6 +1,8 @@
 package com.chubbychump.hunterxhunter.common.blocks;
 
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
+import com.chubbychump.hunterxhunter.init.ModTileEntityTypes;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -10,7 +12,7 @@ import net.minecraft.world.IBlockReader;
 
 public class NenLight extends Block {
     public NenLight() {
-        super(Block.Properties.create(Material.AIR).doesNotBlockMovement().notSolid().noDrops());
+        super(Properties.create(Material.AIR).notSolid().doesNotBlockMovement().noDrops());
     }
 
     @Override
@@ -20,19 +22,21 @@ public class NenLight extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileEntityNenLight();
+        return ModTileEntityTypes.NENLIGHT.create();
     }
 
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos blockPos) {
         TileEntity bruh = world.getTileEntity(blockPos);
         if(bruh instanceof TileEntityNenLight){
-            LOGGER.info("Found Tile Entity with light value " + ((TileEntityNenLight) bruh).levelOfLight);
             return ((TileEntityNenLight) bruh).levelOfLight;
         }
         else {
-            LOGGER.info("Didn't find tile entity");
             return 0;
         }
+    }
+
+    public boolean isTransparent() {
+        return true;
     }
 }
