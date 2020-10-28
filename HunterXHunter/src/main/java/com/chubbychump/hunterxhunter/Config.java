@@ -73,19 +73,19 @@ public class Config {
 
         defHealth = builder
                 .comment("The amount of health a user will have in a new game or after death.")
-                .defineInRange("Default Health", 6, 1, 200);
+                .defineInRange("Default Health", 4, 1, 200);
 
         maxHealth = builder
                 .comment("The maximum amount of health LevelHearts will allow a user to have. -1 to disable.")
-                .defineInRange("Maximum Health", -1, -1, 1024);
+                .defineInRange("Maximum Health", 14, -1, 14);
 
         levelRamp = builder
                 .comment("The levels at which a user will gain a heart.")
                 .define("Level Ramp", new ArrayList<Integer>(Arrays.asList(
-                        1, 5, 10, 15, 20, 25, 30, 34, 38, 42,
-                        46, 50, 53, 56, 59, 62, 64, 66, 68, 70,
-                        75, 80, 85, 90, 95, 100, 110, 120, 130,
-                        140, 150, 160, 170, 180, 190, 200
+                        100, 150, 1000, 1500, 2000, 2500, 3000, 3400, 3800, 4200,
+                        4600, 5000, 5300, 5600, 5900, 6200, 6400, 6600, 6800, 7000,
+                        7500, 8000, 8500, 9000, 9500, 10000, 11000, 12000, 13000,
+                        14000, 15000, 16000, 17000, 18000, 19000, 20000
                 )));
 
         punishAmount = builder

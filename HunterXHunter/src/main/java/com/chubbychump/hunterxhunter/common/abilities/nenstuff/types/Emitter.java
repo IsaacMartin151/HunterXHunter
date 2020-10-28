@@ -49,24 +49,26 @@ public class Emitter extends NenUser {
             HunterXHunter.LOGGER.info("Nen toggled, nen is now " + nenActivated);
         }
     }
-    public void activateGyo() {
-        if (nenActivated == true) {
-            gyo = !gyo;
-        }
+    public void toggleGyo() {
+        gyo = !gyo;
     }
-    public void activateEn() {
-        if (nenActivated == true) {
-            en = !en;
-        }
+    public boolean getGyo() {
+        return gyo;
     }
-    public void activateRen() {
-        if (nenActivated == true) {
-            ren = !ren;
-        }
+    public void toggleEn() {
+        en = !en;
     }
-    public void activateZetsu() {
-        if (nenActivated == true) {
-            zetsu = !zetsu;
-        }
+    public boolean getEn() {
+        return en;
+    }
+    public void toggleZetsu() {
+        zetsu = !zetsu;
+    }
+    public boolean getZetsu() {
+        return zetsu;
+    }
+    public void toggleRen() { ren = !ren; }
+    public boolean getRen() {
+        return ren;
     }
 }
