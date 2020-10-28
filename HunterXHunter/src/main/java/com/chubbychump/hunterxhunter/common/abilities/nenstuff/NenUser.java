@@ -1,5 +1,7 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
+
 public class NenUser {
 
     protected int nenPower;
@@ -32,16 +34,26 @@ public class NenUser {
     public void setCurrentNen(int currentNen) {
         return;
     }
-    public void activateGyo() {
+    public void toggleGyo() { return; }
+    public boolean getGyo() {
+        return false;
+    }
+    public void toggleEn() {
         return;
     }
-    public void activateEn() {
+    public boolean getEn() {
+        return false;
+    }
+    public void toggleZetsu() {
         return;
     }
-    public void activateRen() {
+    public boolean getZetsu() {
+        return false;
+    }
+    public void toggleRen() {
         return;
     }
-    public void activateZetsu() {
-        return;
+    public boolean getRen() {
+        return false;
     }
 }

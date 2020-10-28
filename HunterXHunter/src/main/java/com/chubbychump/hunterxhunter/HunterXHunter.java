@@ -6,12 +6,14 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStora
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
+import com.chubbychump.hunterxhunter.client.rendering.RayBeamRenderer;
+import com.chubbychump.hunterxhunter.common.entities.EntityRayBeam;
+import com.chubbychump.hunterxhunter.init.ModEntityTypes;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -19,7 +21,9 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,6 +34,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.chubbychump.hunterxhunter.init.ModEntityTypes.RAYBEAM;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.RAY_BEAM_ENTITY;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("hunterxhunter")
 public class HunterXHunter {
@@ -38,6 +45,9 @@ public class HunterXHunter {
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
     public static KeyBinding nenControl = new KeyBinding("Toggle Nen", 67, "Nen Abilities");
     public static KeyBinding increaseNen = new KeyBinding("Increase Nen", 86, "Nen Abilities");
+    public static KeyBinding gyo = new KeyBinding("Toggle Gyo", 89, "Nen Abilities");
+    public static KeyBinding nenPower1 = new KeyBinding("Nen Power 1", 88, "Nen Abilities");
+    public static KeyBinding nenPower2 = new KeyBinding("Nen Power 2", 90, "Nen Abilities");
 
     public HunterXHunter() {
         // Register the setup method for modloading
@@ -50,13 +60,17 @@ public class HunterXHunter {
 
         ClientRegistry.registerKeyBinding(nenControl);
         ClientRegistry.registerKeyBinding(increaseNen);
+        ClientRegistry.registerKeyBinding(gyo);
+        ClientRegistry.registerKeyBinding(nenPower1);
+        ClientRegistry.registerKeyBinding(nenPower2);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-
+        //DeferredWorkQueue.runLater(() -> GlobalEntityTypeAttributes.put);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), MoreHealth::new);
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
