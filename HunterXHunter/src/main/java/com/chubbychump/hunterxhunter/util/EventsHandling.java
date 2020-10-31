@@ -55,6 +55,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
@@ -296,12 +297,13 @@ public class EventsHandling {
     @SubscribeEvent
     public static void renderEvent(RenderLivingEvent.Post event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
-        boolean erm = yo.orElseThrow(null).getGyo();
-        if (erm) {
-            showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
+        if (player.isAlive()) {
+            LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+            boolean erm = yo.orElseThrow(null).getGyo();
+            if (erm) {
+                showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
+            }
         }
-
     }
 
     @SubscribeEvent
@@ -318,6 +320,7 @@ public class EventsHandling {
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
         if (event.player.isAlive()) {
+
             if (nenControl.isPressed()) {
                 LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
                 yo.orElseThrow(null).toggleNen();
@@ -376,24 +379,6 @@ public class EventsHandling {
         theEntity.world.setTileEntity(blockLocation, lightSource);
     }
 
-    private static void greenLine(IVertexBuilder builder, Matrix4f positionMatrix, float dx1, float dy1, float dz1, float dx2, float dy2, float dz2) {
-        builder.pos(positionMatrix, dx1, dy1, dz1)
-                .color(0.0f, 1.0f, 0.0f, 1.0f)
-                .endVertex();
-        builder.pos(positionMatrix, dx2, dy2, dz2)
-                .color(0.0f, 1.0f, 0.0f, 1.0f)
-                .endVertex();
-    }
-
-    private static void yellowLine(IVertexBuilder builder, Matrix4f positionMatrix, float dx1, float dy1, float dz1, float dx2, float dy2, float dz2) {
-        builder.pos(positionMatrix, dx1, dy1, dz1)
-                .color(1.0f, 1.0f, 0.0f, 1.0f)
-                .endVertex();
-        builder.pos(positionMatrix, dx2, dy2, dz2)
-                .color(1.0f, 1.0f, 0.0f, 1.0f)
-                .endVertex();
-    }
-
     private static void redLine(IVertexBuilder builder, Matrix4f positionMatrix, float dx1, float dy1, float dz1, float dx2, float dy2, float dz2) {
         builder.pos(positionMatrix, dx1, dy1, dz1)
                 .color(1.0f, 0.0f, 0.0f, 1.0f)
@@ -404,32 +389,20 @@ public class EventsHandling {
     }
 
     private static void showMobs(MatrixStack matrixStack, IRenderTypeBuffer buffer, LivingEntity entity) {
-        IVertexBuilder builder = buffer.getBuffer(RenderTypeLine.OVERLAY_LINES);
+        ResourceLocation CUBE_FACE_TEXTURE = new ResourceLocation("hunterxhunter:textures/entity/raybeam.png");
+        IVertexBuilder builder = buffer.getBuffer(RenderType.getEntityTranslucent(CUBE_FACE_TEXTURE));
         Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
         AxisAlignedBB box = entity.getBoundingBox();
         if (entity instanceof IMob) {
-            redLine(builder, positionMatrix, 0f, 0f, 0f, 1, 0, 0);
-            redLine(builder, positionMatrix, 0, 1f, 0, 1, 1, 0);
-            redLine(builder, positionMatrix, 0f, 0f, 1f, 1, 0, 1);
-            redLine(builder, positionMatrix, 0, .5f, 0, 0, 6, 0);
-
-            redLine(builder, positionMatrix, 0f, 0f, 0f, 0, 0, 1);
-            redLine(builder, positionMatrix, 1f, 0f, 0, 1, 0, 1);
-            redLine(builder, positionMatrix, 0f, 0f, 1f, 1, 0, 1);
-            redLine(builder, positionMatrix, 0, .5f, 0, 0, 6, 0);
-
-            redLine(builder, positionMatrix, 0f, 0f, 0f, 1, 0, 0);
-            redLine(builder, positionMatrix, 0, 1f, 0, 1, 1, 0);
-            redLine(builder, positionMatrix, 0f, 0f, 1f, 1, 0, 1);
-            redLine(builder, positionMatrix, 0, .5f, 0, 0, 6, 0);
+            //Need different buffer, can't use same one
+            //redLine(builder2, positionMatrix, 0f, 0f, 0f, 1, 0, 0);
+            //redLine(builder2, positionMatrix, 0, 1f, 0, 1, 1, 0);
+            //redLine(builder2, positionMatrix, 0f, 0f, 1f, 1, 0, 1);
+            //redLine(builder2, positionMatrix, 0, .5f, 0, 0, 6, 0);
         } else if (entity instanceof PlayerEntity){
             ObjectDrawingFunctions.DrawSphere(builder, matrixStack, entity);
         } else {
-            //greenLine(builder, positionMatrix, 0, 0f, -1f * (float) (box.maxZ-box.minZ), 0, 0, (float) (box.maxZ-box.minZ));
-            //greenLine(builder, positionMatrix, 0, 0f, 0, 0, (float) (box.maxY-box.minY), 0);
-            //greenLine(builder, positionMatrix, -1f * (float) (box.maxX-box.minX), 0f, 0, (float) (box.maxX-box.minX), 0, 0);
             ObjectDrawingFunctions.DrawSphere(builder, matrixStack, entity);
-            //greenLine(builder, positionMatrix, 0, .5f, 0, 0, 6, 0);
         }
     }
 }

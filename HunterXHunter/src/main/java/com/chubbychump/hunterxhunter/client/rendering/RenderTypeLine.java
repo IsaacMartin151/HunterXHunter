@@ -20,14 +20,14 @@ public class RenderTypeLine extends RenderType {
     private static final RenderState.LineState THICK_LINES = new RenderState.LineState(OptionalDouble.of(3.0D));
 
     public static final RenderType OVERLAY_LINES = makeType("overlay_lines",
-            DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
+            DefaultVertexFormats.ENTITY, GL11.GL_QUADS, DefaultVertexFormats.ENTITY.getSize(), //Had ENTITY here instead of position_color, was messing things up
             RenderType.State.getBuilder().line(THICK_LINES)
                     .transparency(TRANSLUCENT_TRANSPARENCY)
                     .texture(NO_TEXTURE)
                     .depthTest(DEPTH_ALWAYS)
-                    .fog(FOG)
+                    .fog(NO_FOG)
                     .cull(CULL_DISABLED)
                     .lightmap(LIGHTMAP_DISABLED)
-                    .writeMask(COLOR_WRITE)
+                    .writeMask(WriteMaskState.COLOR_WRITE)
                     .build(true));
 }
