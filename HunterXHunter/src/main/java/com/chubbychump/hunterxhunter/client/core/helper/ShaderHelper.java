@@ -1,11 +1,13 @@
 package com.chubbychump.hunterxhunter.client.core.helper;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.core.handler.ClientTickHandler;
+
 import com.chubbychump.hunterxhunter.client.core.handler.ConfigHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import com.sun.javafx.geom.Vec3f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.shader.IShaderManager;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.client.shader.ShaderLoader;
@@ -13,6 +15,7 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.ModList;
 
 import org.lwjgl.system.MemoryUtil;
@@ -23,9 +26,13 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
+import static org.lwjgl.opengl.GL11.*;
 
 public final class ShaderHelper {
     public static final String PREFIX_SHADER = "shader/";
@@ -59,6 +66,7 @@ public final class ShaderHelper {
     @SuppressWarnings("deprecation")
     public static void initShaders() {
         // Can be null when running datagenerators due to the unfortunate time we call this
+        LOGGER.info("Initializing shaders");
         if (Minecraft.getInstance() != null
                 && Minecraft.getInstance().getResourceManager() instanceof IReloadableResourceManager) {
             ((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(
@@ -80,29 +88,38 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback) {
+    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, IntBuffer texture1, IntBuffer noise) {
         if (!useShaders()) {
             return;
         }
 
         ShaderProgram prog = PROGRAMS.get(shader);
         if (prog == null) {
-            return;
+            LOGGER.info("Shader program is null");
+            //return;
         }
 
         int program = prog.getProgram();
         ShaderLinkHelper.func_227804_a_(program);
 
+        int timer = (int) System.currentTimeMillis();
         int time = GlStateManager.getUniformLocation(program, "time");
-        GlStateManager.uniform1i(time, ClientTickHandler.ticksInGame);
+        int thetexture = GlStateManager.getUniformLocation(program, "texture");
+        int noisetexture = GlStateManager.getUniformLocation(program, "noise3");
+        //LOGGER.info("Setting Uniform variable as " + timer);
+        GlStateManager.uniform1i(time, timer);
+        GlStateManager.uniform2i(thetexture, texture1);
+        GlStateManager.uniform3i(noisetexture, noise);
+
+        //GlStateManager.
 
         if (callback != null) {
             callback.call(program);
         }
     }
 
-    public static void useShader(BotaniaShader shader) {
-        useShader(shader, null);
+    public static void useShader(BotaniaShader shader, IntBuffer texture, IntBuffer noise) {
+        useShader(shader, null, texture, noise);
     }
 
     public static void releaseShader() {
@@ -130,6 +147,7 @@ public final class ShaderHelper {
             ShaderProgram prog = new ShaderProgram(progId, vert, frag);
             ShaderLinkHelper.linkProgram(prog);
             PROGRAMS.put(shader, prog);
+
         } catch (IOException ex) {
             HunterXHunter.LOGGER.error("Failed to load program {}", shader.name(), ex);
         }

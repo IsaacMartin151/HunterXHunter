@@ -1,5 +1,6 @@
 package com.chubbychump.hunterxhunter.util;
 
+import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
@@ -12,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,11 +31,15 @@ public class RegistryHandler {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MOD_ID);
 
     public static void init() {
+        ShaderHelper.initShaders();
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
+
+    //Particles
+    //public static final RegistryObject<ParticleType<SparkleParticleData>> SPARKLES = PARTICLE_TYPES.register("sparkles", () -> new ParticleT);
 
 
     //Items
@@ -43,6 +49,7 @@ public class RegistryHandler {
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
     public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nenlight", NenLight::new);
+
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
     public static final RegistryObject<Item> NEN_LIGHT_ITEM = ITEMS.register("nen_light", () -> new BlockItemBase(NEN_LIGHT.get()));

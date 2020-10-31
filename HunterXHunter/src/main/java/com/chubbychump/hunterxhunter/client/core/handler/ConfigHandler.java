@@ -42,10 +42,10 @@ public final class ConfigHandler {
                     .define("boundBlockWireframe", true);
             renderAccessories = builder
                     .comment("Set this to false to disable rendering of accessories in the player.")
-                    .define("accessories", true);
+                    .define("accessories", false);
             enableArmorModels = builder
                     .comment("Set this to false to disable custom armor models")
-                    .define("armorModels", true);
+                    .define("armorModels", false);
             manaBarHeight = builder
                     .comment("The height of the mana display bar in above the XP bar. You can change this if you have a mod that changes where the XP bar is.")
                     .defineInRange("manaBarHeight", 29, 0, Integer.MAX_VALUE);

@@ -1,5 +1,6 @@
 package com.chubbychump.hunterxhunter;
 
+import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
@@ -66,10 +67,11 @@ public class HunterXHunter {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        //DeferredWorkQueue.runLater(() -> GlobalEntityTypeAttributes.put);
+
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
+        ShaderHelper.initShaders();
         RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), MoreHealth::new);
