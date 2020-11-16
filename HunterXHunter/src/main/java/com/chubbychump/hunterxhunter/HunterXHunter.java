@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.beginRenderCommon;
 import static com.chubbychump.hunterxhunter.init.ModEntityTypes.RAYBEAM;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.RAY_BEAM_ENTITY;
 

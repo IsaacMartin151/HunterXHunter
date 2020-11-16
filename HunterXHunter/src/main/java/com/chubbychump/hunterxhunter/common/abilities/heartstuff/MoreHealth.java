@@ -4,6 +4,7 @@ import com.chubbychump.hunterxhunter.Config;
 
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncHealthPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -12,10 +13,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.entity.player.PlayerAbilities;
 
 import java.util.Collections;
+
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.OSU;
 
 public class MoreHealth implements IMoreHealth {
 

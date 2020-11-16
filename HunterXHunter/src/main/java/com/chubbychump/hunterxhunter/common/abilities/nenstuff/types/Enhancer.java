@@ -2,8 +2,20 @@ package com.chubbychump.hunterxhunter.common.abilities.nenstuff.types;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
+
+import java.util.Collections;
+
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.OSU;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class Enhancer extends NenUser {
+    //private int amplifier
     public Enhancer() {
         this.nenPower = 0;
         this.currentNen = 100;
@@ -23,9 +35,10 @@ public class Enhancer extends NenUser {
         return currentNen;
     }
 
-    public void increaseNenPower() {
+    public void increaseNenPower(PlayerEntity theEntity) {
         nenPower = nenPower + 15;
         HunterXHunter.LOGGER.info("User nen power has increased. Total is now " + nenPower);
+        theEntity.playSound(WORLD_OF_ADVENTURES.get(), .5f, 1f);
     }
 
     public void setCurrentNen(int currentNen) {

@@ -4,16 +4,21 @@ import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.Collections;
+
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.OSU;
 
 public class Crystal_Nen extends Item {
 
@@ -28,9 +33,13 @@ public class Crystal_Nen extends Item {
         ActionResult<ItemStack> result = new ActionResult<>(ActionResultType.PASS, stack);
 
         // Ensure server-side only & the player's not in creative or spectator
+
         if (world.isRemote || player.abilities.disableDamage) {
             return result;
         }
+
+
+
 
         // If disabled don't do anything
         if (!Config.enableItems.get()) {
@@ -39,6 +48,7 @@ public class Crystal_Nen extends Item {
 
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
+        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar
         int max = Config.maxHealth.get();
@@ -49,7 +59,9 @@ public class Crystal_Nen extends Item {
             MoreHealth.updateClient((ServerPlayerEntity) player, cap);
             HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
             player.setHealth(player.getMaxHealth());
+            yo.orElseThrow(null).increaseNenPower(player);
             player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.field_240973_b_);
+
         }
 
         // Remove item and mark as success

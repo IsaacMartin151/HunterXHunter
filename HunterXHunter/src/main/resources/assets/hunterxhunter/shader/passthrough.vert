@@ -1,28 +1,26 @@
 #version 120
 
-uniform int time;
-uniform sampler2D thetexture;
+in vec2 texCoords;
 
-out float vX, vY;
+out vec2  vST;
 out vec3  vMCposition;
-out float vLightIntensity;
-out vec2 vST;
-out vec4 color;
+out vec4 bruh;
 
-vec3 LIGHTPOS   = vec3( -2., 0., 10. );
+out  vec3  vN;		// normal vector
+out  vec3  vL;		// vector from point to light
+out  vec3  vE;		// vector from point to eye
 
-void
-main( )
-{
-    vec2 texcoord = vec2(gl_TexCoord[0]);
-    vec4 color = texture2D(thetexture, texcoord);
-    //gl_TexCoord[0] = gl_MultiTexCoord0;
-	vST = texcoord.st;
+vec3 LightPosition = vec3(  0., 0., 0. );
 
-	vec3 tnorm      = normalize( gl_NormalMatrix * gl_Normal );
-	vec3 ECposition = vec3( gl_ModelViewMatrix * gl_Vertex );
-	vLightIntensity  = abs( dot( normalize(LIGHTPOS - ECposition), tnorm ) );
-    //vec4 color = gl_Color;
+void main() {
+    vec4 ECposition = gl_ModelViewMatrix * vec4( gl_Vertex.xyz, 1. );
+    vN = normalize( gl_NormalMatrix * gl_Normal );	// normal vector
+    vL = LightPosition - ECposition.xyz;		// vector from the point
+												// to the light position
+    vE = vec3( 0., 0., 0. ) - ECposition.xyz;	// vector from the point
+    												// to the eye position
+	vST = gl_MultiTexCoord0.st;
 	vMCposition  = gl_Vertex.xyz;
+	vec4 bruh = gl_FrontColor;
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

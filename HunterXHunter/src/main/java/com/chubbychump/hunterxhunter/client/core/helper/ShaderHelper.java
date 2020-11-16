@@ -5,6 +5,7 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.handler.ConfigHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.sun.javafx.geom.Vec3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -18,6 +19,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.ModList;
 
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.system.MemoryUtil;
 
 import javax.annotation.Nullable;
@@ -88,7 +92,7 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, IntBuffer texture1, IntBuffer noise) {
+    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID) {
         if (!useShaders()) {
             return;
         }
@@ -102,24 +106,25 @@ public final class ShaderHelper {
         int program = prog.getProgram();
         ShaderLinkHelper.func_227804_a_(program);
 
-        int timer = (int) System.currentTimeMillis();
-        int time = GlStateManager.getUniformLocation(program, "time");
-        int thetexture = GlStateManager.getUniformLocation(program, "texture");
-        int noisetexture = GlStateManager.getUniformLocation(program, "noise3");
-        //LOGGER.info("Setting Uniform variable as " + timer);
-        GlStateManager.uniform1i(time, timer);
-        GlStateManager.uniform2i(thetexture, texture1);
-        GlStateManager.uniform3i(noisetexture, noise);
-
-        //GlStateManager.
+        long time = System.currentTimeMillis();
+        double speed = 10.;
+        int timer = (int) (time % 10000);
+        //LOGGER.info("Timer is now " + timer);
+        int bruh = GlStateManager.getUniformLocation(program, "timer");
+        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer/FloatBuffer will not work. Use the textureID
+        FLOAT_BUF.position(0);
+        FLOAT_BUF.put(timer);
+        GlStateManager.uniform1i(noisetexture, textureID);
+        GlStateManager.uniform1i(bruh, timer);
+        //GL20.glBindAttribLocation(program, 0, "texCoords");
 
         if (callback != null) {
             callback.call(program);
         }
     }
 
-    public static void useShader(BotaniaShader shader, IntBuffer texture, IntBuffer noise) {
-        useShader(shader, null, texture, noise);
+    public static void useShader(BotaniaShader shader, int textureID) {
+        useShader(shader, null, textureID);
     }
 
     public static void releaseShader() {
@@ -178,7 +183,6 @@ public final class ShaderHelper {
 
         @Override
         public void markDirty() {
-
         }
 
         @Override
@@ -193,4 +197,3 @@ public final class ShaderHelper {
     }
 
 }
-

@@ -1,5 +1,6 @@
 package com.chubbychump.hunterxhunter.util;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
@@ -10,15 +11,20 @@ import com.chubbychump.hunterxhunter.common.items.ItemBase;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.init.ModBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.rmi.registry.Registry;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
@@ -29,6 +35,7 @@ public class RegistryHandler {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
 
     public static void init() {
         ShaderHelper.initShaders();
@@ -36,11 +43,15 @@ public class RegistryHandler {
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     //Particles
     //public static final RegistryObject<ParticleType<SparkleParticleData>> SPARKLES = PARTICLE_TYPES.register("sparkles", () -> new ParticleT);
 
+    //Sounds
+    public static final RegistryObject<SoundEvent> OSU = SOUNDS.register("osu", () -> new SoundEvent(new ResourceLocation(MOD_ID, "osu")));
+    public static final RegistryObject<SoundEvent> WORLD_OF_ADVENTURES = SOUNDS.register("worldofadventures", () -> new SoundEvent(new ResourceLocation(MOD_ID, "worldofadventures")));
 
     //Items
     public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);

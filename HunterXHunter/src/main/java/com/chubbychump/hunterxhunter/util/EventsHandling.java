@@ -14,6 +14,7 @@ import com.chubbychump.hunterxhunter.common.entities.EntityRayBeam;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.init.ModEntityTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.sun.javafx.geom.Vec3d;
@@ -24,6 +25,8 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeBuffers;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.IMob;
@@ -41,6 +44,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -59,6 +64,7 @@ import java.io.FileNotFoundException;
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
+import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.beginRenderCommon;
 import static com.chubbychump.hunterxhunter.init.ModBlocks.NENLIGHT;
 
 @Mod.EventBusSubscriber
@@ -296,12 +302,16 @@ public class EventsHandling {
 
     @SubscribeEvent
     public static void renderEvent(RenderLivingEvent.Post event) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player.isAlive()) {
-            LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
-            boolean erm = yo.orElseThrow(null).getGyo();
-            if (erm) {
-                showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
+        Minecraft bruh = Minecraft.getInstance();
+        if (!bruh.isGamePaused()) {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            if (player.isAlive()) {
+                LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+                boolean erm = yo.orElseThrow(null).getGyo();
+                if (erm) {
+                    beginRenderCommon();
+                    showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
+                }
             }
         }
     }
@@ -318,6 +328,14 @@ public class EventsHandling {
     }
 
     @SubscribeEvent
+    public static void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+            return;
+        }
+        event.addSprite(ObjectDrawingFunctions.noiseTexture2);
+    }
+
+    @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
         if (event.player.isAlive()) {
 
@@ -328,7 +346,7 @@ public class EventsHandling {
             }
             if (increaseNen.isPressed()) {
                 LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
-                yo.orElseThrow(null).increaseNenPower();
+                yo.orElseThrow(null).increaseNenPower(event.player);
             }
             if (gyo.isPressed()) {
                 LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
@@ -379,30 +397,13 @@ public class EventsHandling {
         theEntity.world.setTileEntity(blockLocation, lightSource);
     }
 
-    private static void redLine(IVertexBuilder builder, Matrix4f positionMatrix, float dx1, float dy1, float dz1, float dx2, float dy2, float dz2) {
-        builder.pos(positionMatrix, dx1, dy1, dz1)
-                .color(1.0f, 0.0f, 0.0f, 1.0f)
-                .endVertex();
-        builder.pos(positionMatrix, dx2, dy2, dz2)
-                .color(1.0f, 0.0f, 0.0f, 1.0f)
-                .endVertex();
-    }
-
     private static void showMobs(MatrixStack matrixStack, IRenderTypeBuffer buffer, LivingEntity entity) {
-        ResourceLocation CUBE_FACE_TEXTURE = new ResourceLocation("hunterxhunter:textures/entity/raybeam.png");
-        IVertexBuilder builder = buffer.getBuffer(RenderType.getEntityTranslucent(CUBE_FACE_TEXTURE));
-        Matrix4f positionMatrix = matrixStack.getLast().getMatrix();
-        AxisAlignedBB box = entity.getBoundingBox();
         if (entity instanceof IMob) {
-            //Need different buffer, can't use same one
-            //redLine(builder2, positionMatrix, 0f, 0f, 0f, 1, 0, 0);
-            //redLine(builder2, positionMatrix, 0, 1f, 0, 1, 1, 0);
-            //redLine(builder2, positionMatrix, 0f, 0f, 1f, 1, 0, 1);
-            //redLine(builder2, positionMatrix, 0, .5f, 0, 0, 6, 0);
+
         } else if (entity instanceof PlayerEntity){
-            ObjectDrawingFunctions.DrawSphere(builder, matrixStack, entity);
+            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, entity);
         } else {
-            ObjectDrawingFunctions.DrawSphere(builder, matrixStack, entity);
+            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, entity);
         }
     }
 }

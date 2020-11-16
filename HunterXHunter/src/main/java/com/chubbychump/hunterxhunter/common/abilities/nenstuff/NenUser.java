@@ -1,6 +1,8 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
 
 public class NenUser {
 
@@ -13,7 +15,7 @@ public class NenUser {
     protected boolean ren;
     protected boolean zetsu;
 
-    public void increaseNenPower() {
+    public void increaseNenPower(PlayerEntity theEntity) {
         return;
     }
     public void resetNen() {

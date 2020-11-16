@@ -1,0 +1,4 @@
+{
+  "osu": { "sounds":["hunterxhunter:osu"], "subtitle": "osu" },
+  "worldofadventures": { "sounds":[{"name": "hunterxhunter:worldofadventures", "stream": true}] }
+}
