@@ -1,45 +1,25 @@
 package com.chubbychump.hunterxhunter.client.rendering;
 
-import static com.mojang.blaze3d.systems.RenderSystem.bindTexture;
 import static net.minecraft.util.math.MathHelper.cos;
 import static net.minecraft.util.math.MathHelper.sin;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.jemalloc.JEmalloc.Functions.free;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper.BotaniaShader;
-import com.chubbychump.hunterxhunter.client.core.helper.ShaderWrapper;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultColorVertexBuilder;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.client.model.b3d.B3DModel;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.system.MemoryUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.*;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 
 public class ObjectDrawingFunctions {
@@ -81,7 +61,7 @@ public class ObjectDrawingFunctions {
         RenderSystem.disableTexture();
     }
 
-    public static void DrawSphere(MatrixStack stack, IRenderTypeBuffer buffer, LivingEntity entity) {
+    public static void DrawSphere(MatrixStack stack, IRenderTypeBuffer buffer, float[] nencolor) {
         long time = System.currentTimeMillis();
         double speed = 9;
         float angle = (time / (int)speed) % 360;
@@ -172,7 +152,7 @@ public class ObjectDrawingFunctions {
         }
 
         stack.rotate(revrotation);
-        ShaderHelper.useShader(BotaniaShader.FILM_GRAIN, j);
+        ShaderHelper.useShader(BotaniaShader.FILM_GRAIN, j, nencolor);
         tessellator.draw();
 
         stack.pop();

@@ -23,8 +23,10 @@ public class Enhancer extends NenUser {
         this.nenActivated = false;
         this.gyo = false;
         this.en = false;
+
         this.ren = false;
         this.zetsu = false;
+        this.nencolor = new float[] {1f, 1f, 1f};
     }
 
     public boolean isNenActivated() {
@@ -66,6 +68,7 @@ public class Enhancer extends NenUser {
         gyo = !gyo;
         HunterXHunter.LOGGER.info("Gyo toggled, is now "+gyo);
     }
+    public float[] getNenColor() { return nencolor; }
     public boolean getGyo() {
         return gyo;
     }

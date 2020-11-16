@@ -56,7 +56,7 @@ public final class ShaderHelper {
     }
 
     // Scratch buffer to use for uniforms
-    public static final FloatBuffer FLOAT_BUF = MemoryUtil.memAllocFloat(1);
+    public static final FloatBuffer FLOAT_BUF = MemoryUtil.memAllocFloat(3);
     private static final Map<BotaniaShader, ShaderProgram> PROGRAMS = new EnumMap<>(BotaniaShader.class);
 
     private static boolean hasIncompatibleMods = false;
@@ -92,7 +92,7 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID) {
+    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID, float[] nencolor) {
         if (!useShaders()) {
             return;
         }
@@ -111,11 +111,12 @@ public final class ShaderHelper {
         int timer = (int) (time % 10000);
         //LOGGER.info("Timer is now " + timer);
         int bruh = GlStateManager.getUniformLocation(program, "timer");
-        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer/FloatBuffer will not work. Use the textureID
-        FLOAT_BUF.position(0);
-        FLOAT_BUF.put(timer);
+        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID
+        int color = GlStateManager.getUniformLocation(program, "uColor");
+        FLOAT_BUF.put(nencolor);
         GlStateManager.uniform1i(noisetexture, textureID);
         GlStateManager.uniform1i(bruh, timer);
+        GlStateManager.uniform3f(color, FLOAT_BUF);
         //GL20.glBindAttribLocation(program, 0, "texCoords");
 
         if (callback != null) {
@@ -123,8 +124,8 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, int textureID) {
-        useShader(shader, null, textureID);
+    public static void useShader(BotaniaShader shader, int textureID, float[] nencolor) {
+        useShader(shader, null, textureID, nencolor);
     }
 
     public static void releaseShader() {

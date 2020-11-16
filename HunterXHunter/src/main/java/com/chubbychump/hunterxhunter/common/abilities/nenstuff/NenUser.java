@@ -14,6 +14,7 @@ public class NenUser {
     protected boolean en;
     protected boolean ren;
     protected boolean zetsu;
+    protected float[] nencolor;
 
     public void increaseNenPower(PlayerEntity theEntity) {
         return;
@@ -40,6 +41,7 @@ public class NenUser {
     public boolean getGyo() {
         return false;
     }
+    public float[] getNencolor() { return nencolor; }
     public void toggleEn() {
         return;
     }

@@ -310,7 +310,7 @@ public class EventsHandling {
                 boolean erm = yo.orElseThrow(null).getGyo();
                 if (erm) {
                     beginRenderCommon();
-                    showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
+                    showMobs(event.getMatrixStack(), event.getBuffers(), player);
                 }
             }
         }
@@ -401,9 +401,12 @@ public class EventsHandling {
         if (entity instanceof IMob) {
 
         } else if (entity instanceof PlayerEntity){
-            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, entity);
+            LazyOptional<NenUser> yo = entity.getCapability(NenProvider.MANA_CAP, null);
+            float[] bruh2 = yo.orElseThrow(null).getNencolor();
+            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, bruh2);
         } else {
-            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, entity);
+            float[] uh = { 1f, 1f, 0f};
+            ObjectDrawingFunctions.DrawSphere(matrixStack, buffer, uh);
         }
     }
 }
