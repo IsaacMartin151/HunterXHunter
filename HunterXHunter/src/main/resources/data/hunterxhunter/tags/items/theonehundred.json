@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:apple",
+    "minecraft:bread",
+    "minecraft:iron_ingot",
+    "minecraft:music_disc_blocks",
+    "minecraft:leather",
+    "minecraft:cookie",
+    "minecraft:melon",
+    "minecraft:lava_bucket",
+    "minecraft:diamond",
+    "minecraft:emerald",
+    "minecraft:nether_star",
+    "minecraft:experience_bottle",
+    "minecraft:dragon_breath",
+    "minecraft:netherite_block",
+    "minecraft:creeper_head",
+    "hunterxhunter:crystal_nen"
+  ]
+}

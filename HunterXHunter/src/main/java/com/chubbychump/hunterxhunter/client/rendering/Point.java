@@ -1,5 +1,9 @@
 package com.chubbychump.hunterxhunter.client.rendering;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class Point {
     public float nx = 0;
     public float ny = 0;

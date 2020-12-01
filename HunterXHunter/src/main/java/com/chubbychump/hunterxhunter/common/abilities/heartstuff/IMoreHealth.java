@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public interface IMoreHealth {
     byte getVersion();
     float getModifier();
+    float getEnhancerModifier();
     float getTrueModifier();
     short getRampPosition();
     byte getHeartContainers();

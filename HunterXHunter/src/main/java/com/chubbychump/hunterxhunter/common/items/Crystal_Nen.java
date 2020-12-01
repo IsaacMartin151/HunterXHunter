@@ -23,7 +23,7 @@ import static com.chubbychump.hunterxhunter.util.RegistryHandler.OSU;
 public class Crystal_Nen extends Item {
 
     public Crystal_Nen() {
-        super(new Properties().maxStackSize(1).group(HunterXHunter.TAB));
+        super(new Properties().maxStackSize(64).group(HunterXHunter.TAB));
     }
 
     @Override
@@ -49,18 +49,27 @@ public class Crystal_Nen extends Item {
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
         LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+        int Type = yo.orElseThrow(null).getNenType();
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar
         int max = Config.maxHealth.get();
+        if (Type == 1) {
+            max = (int) (max * 1.5);
+        }
         if (cap.getHeartContainers() + 1 > 127 || (max > 0 && player.getMaxHealth() >= max)) {
             player.setHealth(player.getMaxHealth());
         } else {
             cap.addHeartContainer();
             MoreHealth.updateClient((ServerPlayerEntity) player, cap);
-            HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
+            if (Type == 1) {
+                HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
+            }
+            else {
+                HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
+            }
             player.setHealth(player.getMaxHealth());
             yo.orElseThrow(null).increaseNenPower(player);
-            player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.field_240973_b_);
+            player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.DUMMY_UUID);
 
         }
 

@@ -17,6 +17,8 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
 import org.lwjgl.opengl.GL12;
@@ -56,7 +58,7 @@ public final class ShaderHelper {
     }
 
     // Scratch buffer to use for uniforms
-    public static final FloatBuffer FLOAT_BUF = MemoryUtil.memAllocFloat(1);
+    public static final FloatBuffer FLOAT_BUF = MemoryUtil.memAllocFloat(3);
     private static final Map<BotaniaShader, ShaderProgram> PROGRAMS = new EnumMap<>(BotaniaShader.class);
 
     private static boolean hasIncompatibleMods = false;
@@ -92,7 +94,7 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID) {
+    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID, int[] nencolor) {
         if (!useShaders()) {
             return;
         }
@@ -111,11 +113,15 @@ public final class ShaderHelper {
         int timer = (int) (time % 10000);
         //LOGGER.info("Timer is now " + timer);
         int bruh = GlStateManager.getUniformLocation(program, "timer");
-        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer/FloatBuffer will not work. Use the textureID
-        FLOAT_BUF.position(0);
-        FLOAT_BUF.put(timer);
+        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID
+        int color1 = GlStateManager.getUniformLocation(program, "uColor1");
+        int color2 = GlStateManager.getUniformLocation(program, "uColor2");
+        int color3 = GlStateManager.getUniformLocation(program, "uColor3");
         GlStateManager.uniform1i(noisetexture, textureID);
         GlStateManager.uniform1i(bruh, timer);
+        GlStateManager.uniform1i(color1, nencolor[0]);
+        GlStateManager.uniform1i(color2, nencolor[1]);
+        GlStateManager.uniform1i(color3, nencolor[2]);
         //GL20.glBindAttribLocation(program, 0, "texCoords");
 
         if (callback != null) {
@@ -123,8 +129,8 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, int textureID) {
-        useShader(shader, null, textureID);
+    public static void useShader(BotaniaShader shader, int textureID, int[] nencolor) {
+        useShader(shader, null, textureID, nencolor);
     }
 
     public static void releaseShader() {
