@@ -18,17 +18,16 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.image.BufferedImage;
 
-
+@OnlyIn(Dist.CLIENT)
 public class ObjectDrawingFunctions {
     //private static ResourceLocation flameTexture2 = new ResourceLocation(HunterXHunter.MOD_ID, "textures/entity/raybeam2.png");
     public static ResourceLocation noiseTexture2 = new ResourceLocation(HunterXHunter.MOD_ID,"textures/entity/noise3.png");
-    private static BufferedImage noiseTexture1 = null;
-
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
-    private static final int radius = 4;
     private static final float M_PI = 3.14f;
     private static final boolean Distort = true;
     private static Point bot = new Point();
@@ -52,6 +51,8 @@ public class ObjectDrawingFunctions {
     public static void beginRenderCommon() {
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //RenderSystem.colorMask(false, false, false, false); ** STOPS ALL RENDERING, USE FOR MELOREON CHAMELEON POWER?
         RenderSystem.enableTexture();
     }
 
@@ -61,7 +62,11 @@ public class ObjectDrawingFunctions {
         RenderSystem.disableTexture();
     }
 
-    public static void DrawSphere(MatrixStack stack, IRenderTypeBuffer buffer, float[] nencolor) {
+
+    // This function draws a sphere. Used for rendering alone
+
+    
+    public static void DrawSphere(MatrixStack stack, int[] nencolor, float radius) {
         long time = System.currentTimeMillis();
         double speed = 9;
         float angle = (time / (int)speed) % 360;
@@ -101,6 +106,7 @@ public class ObjectDrawingFunctions {
                 Pts[(NumLngs * lat1 + lng1)].t = (lat + M_PI / 2f) / M_PI;
             }
         }
+
         top.setTheNumbers(0f, 1f, 0f, 0f, 1f, 0f, radius, 0f);
         bot.setTheNumbers(0f, -1, 0f, 0f, 0f, 0f, -radius, 0f);
 

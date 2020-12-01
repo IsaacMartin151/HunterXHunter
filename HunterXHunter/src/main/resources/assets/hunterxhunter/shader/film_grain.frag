@@ -1,6 +1,9 @@
 #version 330 compatibility
 
 uniform sampler2D noise;
+uniform int uColor1;
+uniform int uColor2;
+uniform int uColor3;
 uniform int timer;
 
 in vec3  vMCposition;
@@ -64,20 +67,16 @@ main() {
 	vec3 Eye = normalize(vE);
 
     vec4 color = texture2D(noise, vST);
-    vec4 myColor = vec4(WHITE, 1);
+
     //if( int((vST.s + vST.t) * 10) % 3 != 2  ) {
 	//	myColor = color;
 	//}
-	myColor = color;
+	vec4 myColor = color;
 	if (d == 0 || myColor.a == 0) {
 	    discard;
 	}
-
-	if (myColor.r == 1 && myColor.g == 1 && myColor.b == 1) {
-	    myColor = vec4(CYAN, .5);
-	}
 	if (myColor.r == 0 && myColor.g == 0 && myColor.b == 0) {
-	    myColor = vec4(ORANGE, .5);
+	    myColor = vec4(float(uColor1)/1000., float(uColor2)/1000., float(uColor3)/1000., .5);
 	}
 	myColor = myColor * d;
 	gl_FragColor = vec4( myColor);

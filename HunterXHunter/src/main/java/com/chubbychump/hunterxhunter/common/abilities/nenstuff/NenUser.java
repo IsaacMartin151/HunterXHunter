@@ -4,8 +4,9 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
-public class NenUser {
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
+public class NenUser {
     protected int nenPower;
     protected int currentNen;
     protected char control;
@@ -14,50 +15,67 @@ public class NenUser {
     protected boolean en;
     protected boolean ren;
     protected boolean zetsu;
-    protected float[] nencolor;
+    protected int[] nencolor;
 
     public void increaseNenPower(PlayerEntity theEntity) {
-        return;
+        HunterXHunter.LOGGER.info("User nen power has increased. Total is now " + nenPower);
+        theEntity.playSound(WORLD_OF_ADVENTURES.get(), .5f, 1f);
+        nenPower += 1;
     }
     public void resetNen() {
-        return;
+        gyo = false;
+        en = false;
+        ren = false;
+        zetsu = false;
     }
+
     public void toggleNen() {
-        return;
+        this.nenActivated = !this.nenActivated;
+        if (nenActivated == false) {
+            resetNen();
+            HunterXHunter.LOGGER.info("Nen toggled, nen is now " + nenActivated);
+        }
     }
     public boolean isNenActivated() {
         return false;
     }
     public int getNenPower() {
-        return 0;
+        return nenPower;
     }
     public int getCurrentNen() {
-        return 0;
+        return currentNen;
     }
     public void setCurrentNen(int currentNen) {
-        return;
+        this.currentNen = currentNen;
     }
-    public void toggleGyo() { return; }
+    public void setNencolor(int[] color) {
+        this.nencolor = color;
+    }
+    public int getNenType() {
+        return 0;
+    }
+    public int[] getNencolor() { return nencolor; }
+
+    public void toggleGyo() {
+        gyo = !gyo;
+    }
     public boolean getGyo() {
-        return false;
+        return gyo;
     }
-    public float[] getNencolor() { return nencolor; }
     public void toggleEn() {
-        return;
+        en = !en;
     }
     public boolean getEn() {
-        return false;
+        return en;
     }
     public void toggleZetsu() {
-        return;
+        zetsu = !zetsu;
     }
     public boolean getZetsu() {
-        return false;
+        return zetsu;
     }
-    public void toggleRen() {
-        return;
-    }
+    public void toggleRen() { ren = !ren; }
     public boolean getRen() {
-        return false;
+        return ren;
     }
 }

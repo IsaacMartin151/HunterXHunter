@@ -17,6 +17,8 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 
 import org.lwjgl.opengl.GL12;
@@ -92,7 +94,7 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID, float[] nencolor) {
+    public static void useShader(BotaniaShader shader, @Nullable ShaderCallback callback, int textureID, int[] nencolor) {
         if (!useShaders()) {
             return;
         }
@@ -112,11 +114,14 @@ public final class ShaderHelper {
         //LOGGER.info("Timer is now " + timer);
         int bruh = GlStateManager.getUniformLocation(program, "timer");
         int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID
-        int color = GlStateManager.getUniformLocation(program, "uColor");
-        FLOAT_BUF.put(nencolor);
+        int color1 = GlStateManager.getUniformLocation(program, "uColor1");
+        int color2 = GlStateManager.getUniformLocation(program, "uColor2");
+        int color3 = GlStateManager.getUniformLocation(program, "uColor3");
         GlStateManager.uniform1i(noisetexture, textureID);
         GlStateManager.uniform1i(bruh, timer);
-        GlStateManager.uniform3f(color, FLOAT_BUF);
+        GlStateManager.uniform1i(color1, nencolor[0]);
+        GlStateManager.uniform1i(color2, nencolor[1]);
+        GlStateManager.uniform1i(color3, nencolor[2]);
         //GL20.glBindAttribLocation(program, 0, "texCoords");
 
         if (callback != null) {
@@ -124,7 +129,7 @@ public final class ShaderHelper {
         }
     }
 
-    public static void useShader(BotaniaShader shader, int textureID, float[] nencolor) {
+    public static void useShader(BotaniaShader shader, int textureID, int[] nencolor) {
         useShader(shader, null, textureID, nencolor);
     }
 

@@ -77,11 +77,11 @@ public class IngameGui extends AbstractGui {
             for (int i = 0; i < 10; i++) {
                 int threshold = i * 2 + 1;
                 if (threshold < armor) {
-                    this.func_238474_b_(matrixStack, left + i * 8, top, 34, 9, 9, 9);
+                    this.blit(matrixStack, left + i * 8, top, 34, 9, 9, 9);
                 } else if (threshold == armor) {
-                    this.func_238474_b_(matrixStack, left + i * 8, top, 25, 9, 9, 9);
+                    this.blit(matrixStack, left + i * 8, top, 25, 9, 9, 9);
                 } else {
-                    this.func_238474_b_(matrixStack, left + i * 8, top, 16, 9, 9, 9);
+                    this.blit(matrixStack, left + i * 8, top, 16, 9, 9, 9);
                 }
             }
         }
@@ -105,9 +105,9 @@ public class IngameGui extends AbstractGui {
         int changed = MathHelper.ceil(air * 10.0D / maxAir) - current;
         for (int i = 0; i < current + changed; i++) {
             if (i < current) {
-                this.func_238474_b_(matrixStack, left - i * 8 - 9, top, 16, 18, 9, 9);
+                this.blit(matrixStack, left - i * 8 - 9, top, 16, 18, 9, 9);
             } else {
-                this.func_238474_b_(matrixStack, left - i * 8 - 9, top, 25, 18, 9, 9);
+                this.blit(matrixStack, left - i * 8 - 9, top, 25, 18, 9, 9);
             }
         }
     }
@@ -193,29 +193,29 @@ public class IngameGui extends AbstractGui {
             }
 
             // Draw Empty Hearts
-            this.func_238474_b_(matrixStack, x, y, 16 + (flash ? 9 : 0), 0, 9, 9);
+            this.blit(matrixStack, x, y, 16 + (flash ? 9 : 0), 0, 9, 9);
 
             // Draw Flag Hearts?
             if (flash) {
                 if (i * 2 + 1 < this.lastPlayerHealth) {
-                    this.func_238474_b_(matrixStack, x, y, textureX + 54, 0, 9, 9);
+                    this.blit(matrixStack, x, y, textureX + 54, 0, 9, 9);
                 }
                 if (i * 2 + 1 == this.lastPlayerHealth) {
-                    this.func_238474_b_(matrixStack, x, y, textureX + 63, 0, 9, 9);
+                    this.blit(matrixStack, x, y, textureX + 63, 0, 9, 9);
                 }
             }
 
             // Draw Filled In Hearts
             if (i * 2 + 1 < health) {
-                this.func_238474_b_(matrixStack, x, y, textureX + 36, 0, 9, 9);
+                this.blit(matrixStack, x, y, textureX + 36, 0, 9, 9);
             } else if (i * 2 + 1 == health) {
-                this.func_238474_b_(matrixStack, x, y, textureX + 45, 0, 9, 9);
+                this.blit(matrixStack, x, y, textureX + 45, 0, 9, 9);
             } else if (i * 2 + 1 > health && absHealthTemp > 0) {
                 if (absHealthTemp == absHealth && absHealth % 2 == 1) {
-                    this.func_238474_b_(matrixStack, x, y, textureX + 153, 0, 9, 9);
+                    this.blit(matrixStack, x, y, textureX + 153, 0, 9, 9);
                     absHealthTemp--;
                 } else {
-                    this.func_238474_b_(matrixStack, x, y, textureX + 144, 0, 9, 9);
+                    this.blit(matrixStack, x, y, textureX + 144, 0, 9, 9);
                     absHealthTemp -= 2;
                 }
             }
@@ -245,7 +245,7 @@ public class IngameGui extends AbstractGui {
         // The Number
         //this.mc.fontRenderer.drawString(matrixStack, text, left - 7, top + 1, 0xF00000);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(AbstractGui.field_230665_h_);
+        this.mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
     }
 
     private PlayerEntity getPlayerEntity() {

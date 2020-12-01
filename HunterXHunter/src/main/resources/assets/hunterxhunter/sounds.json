@@ -1,4 +1,6 @@
 {
   "osu": { "sounds":["hunterxhunter:osu"], "subtitle": "osu" },
-  "worldofadventures": { "sounds":[{"name": "hunterxhunter:worldofadventures", "stream": true}] }
+  "cookiechan": { "sounds":["hunterxhunter:cookiechan"], "subtitle": "cookiechan" },
+  "worldofadventures": { "sounds":[{"name": "hunterxhunter:worldofadventures", "stream": true}] },
+  "departure": { "sounds":[{"name": "hunterxhunter:departure", "stream": true}] }
 }
