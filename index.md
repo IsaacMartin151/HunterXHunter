@@ -26,11 +26,15 @@ Please report any issues you find in this mod in [the mod's issue tracker](https
 
 ### Mods/Resources used in this Mod:
 
-[LevelHearts](https://gitlab.com/FireController1847/levelhearts) by FireController1847
+[LevelHearts](https://gitlab.com/FireController1847/levelhearts) by FireController1847 
+
 [FFMpeg Video/Audio managing](https://ffmpeg.org/)
 
 I drew heavily from [Vazkii Botania](https://github.com/Vazkii/Botania) in my mod-learning process, and the capabilities/shaders are nearly identical to Vazkii's
+
 [Forge Modding Support](https://forums.minecraftforge.net/forum/70-modder-support/) for supplying answers to the questions I should be asking rather than the ones I asked
+
 [TheGreyGhost](https://github.com/TheGreyGhost/MinecraftByExample), super helpful repository for learning modding concepts
+
 [TurtyWurty's youtube channel](https://www.youtube.com/channel/UCicAXLV4w2X6bn2EuM4To4w) and [TechnoVision's youtube channel](https://www.youtube.com/channel/UC3n-lKS-MYlunVtErgzSFZg)
 
