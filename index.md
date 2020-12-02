@@ -26,11 +26,11 @@ Syntax highlighted code block
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-[Link](https://www.youtube.com/watch?v=Ts0Dql7jt0U&feature=youtu.be&ab_channel=IsaacChristopherMartin) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/bruh.png)
+Find the official mod spotlight [here](https://www.youtube.com/watch?v=Ts0Dql7jt0U&feature=youtu.be&ab_channel=IsaacChristopherMartin) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/title.png)
 
-### Jekyll Themes
+### Issue Tracking
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/IsaacMartin151/HunterXHunter/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Please report any issues you find in this mod in [the mod's issue tracker](https://github.com/IsaacMartin151/HunterXHunter/issues), I will try to resolve them as quickly as I can.
 
 ### Support or Contact
 
