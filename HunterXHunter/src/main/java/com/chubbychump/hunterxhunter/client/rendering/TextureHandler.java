@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import org.bytedeco.opencv.opencv_core.IplImage;
 import sun.awt.image.PixelConverter;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
@@ -30,23 +31,16 @@ public class TextureHandler {
     }
 
     public void updateTextureData(BufferedImage newImage) {
-        for (int i = 0; i < newImage.getWidth(); i++) {
-            for (int j = 0; j < newImage.getHeight(); j++) {
-                int x = newImage.getRGB(i, j);
-                int y =
-                        ((x & 0x000000FF) >> 24) |  //______AA
-                        ((x & 0x0000FF00) >>  8) | //____RR__
-                        ((x & 0x00FF0000) <<  8) | //__GG____
-                        ((x & 0xFF000000) << 24); //BB______
-                y = PixelConverter.Rgba.Argb.instance.rgbToPixel(x, ColorModel.getRGBdefault());
-
-                this.textureData.setPixelRGBA(i, j, y);
+        for (int i = 0; i < this.textureData.getWidth(); i++) {
+            for (int j = 0; j < this.textureData.getHeight(); j++) {
+                Color uh = new Color(newImage.getRGB(i, j));
+                int color = uh.getRed() | (uh.getGreen() << 8) | (uh.getBlue() << 16) | (uh.getAlpha() << 24);
+                this.textureData.setPixelRGBA(i, j, color);
             }
         }
         //HunterXHunter.LOGGER.info("pixel 0 0 has value "+newImage.getRGB(0, 0));
         this.texture.updateDynamicTexture();
     }
-
     public ResourceLocation getTextureLocation() {
         return loc;
     }
