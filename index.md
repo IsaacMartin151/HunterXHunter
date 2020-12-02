@@ -9,7 +9,7 @@ The mod's setting is "Greed Island". There are 100 items to collect in order to 
 
 ### Nen Crystals
 
-Upon spawning, players start with 2 hearts. Found underground, Nen Crystals can be used to increase a player's hearts as well as Nen Power. Nen Abilities differ based on what category of Nen User the player chooses. Nen can be used for a wide range of things and provide the player with unique advantages and disadvantages. 
+Upon spawning, players start with 2 hearts. Nen Crystals are found underground and can be used to increase a player's hearts as well as Nen Power. Nen Abilities differ based on what category of Nen User the player chooses. Nen can be used for a wide range of things and provide the player with unique advantages and disadvantages. 
 
 ### Abilities
 
