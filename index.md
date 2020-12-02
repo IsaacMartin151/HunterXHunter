@@ -4,34 +4,33 @@ You can use the [editor on GitHub](https://github.com/IsaacMartin151/HunterXHunt
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+### Abilities
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+There are 5 Nen types to choose from which are selected upon consumption of the first crystal
 
 ```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
+1. Enhancer - Additional health, additional damage
+2. Emitter - Fire explosive beams
+3. Manipulator - View player positions, modify damage direction
+4. Conjurer - Create temporary walls and entities
+5. Transmuter - Repairs item durability, collapses blocks, increased speed
 
 **Bold** and _Italic_ and `Code` text
-
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-Find the official mod spotlight [here](https://www.youtube.com/watch?v=Ts0Dql7jt0U&feature=youtu.be&ab_channel=IsaacChristopherMartin) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/title.png)
+Find the official mod spotlight [here](youtube link) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/title.png)
 
 ### Issue Tracking
 
 Please report any issues you find in this mod in [the mod's issue tracker](https://github.com/IsaacMartin151/HunterXHunter/issues), I will try to resolve them as quickly as I can.
 
-### Support or Contact
+### Mods/Resources used in this Mod:
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+[LevelHearts](https://gitlab.com/FireController1847/levelhearts) by FireController1847
+[FFMpeg Video/Audio managing](https://ffmpeg.org/)
+
+I drew heavily from [Vazkii Botania](https://github.com/Vazkii/Botania) in my mod-learning process, and the capabilities/shaders are nearly identical to Vazkii's
+[Forge Modding Support](https://forums.minecraftforge.net/forum/70-modder-support/) for supplying answers to the questions I should be asking rather than the ones I asked
+[TheGreyGhost](https://github.com/TheGreyGhost/MinecraftByExample), super helpful repository for learning modding concepts
+[TurtyWurty's youtube channel](https://www.youtube.com/channel/UCicAXLV4w2X6bn2EuM4To4w) and [TechnoVision's youtube channel](https://www.youtube.com/channel/UC3n-lKS-MYlunVtErgzSFZg)
+
