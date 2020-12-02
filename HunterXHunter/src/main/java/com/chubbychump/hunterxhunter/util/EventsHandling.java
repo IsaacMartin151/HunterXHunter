@@ -2,6 +2,7 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
@@ -24,6 +25,7 @@ import net.minecraft.client.audio.ISoundEventAccessor;
 import net.minecraft.client.audio.SoundList;
 import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -291,6 +294,7 @@ public class EventsHandling {
             player = (PlayerEntity) event.getEntity();
         }
         // Check for Keep Experience on Death
+
         if (Config.loseInvOnDeath.get()) {
             // Essentially, call PlayerEntity#dropInventory, but ignoring the KEEP_INVENTORY gamerule
             try {
@@ -376,9 +380,12 @@ public class EventsHandling {
 
 
     @SubscribeEvent
-    public static void setMainMenu(GuiScreenEvent.InitGuiEvent event) {
+    public static void setGUI(GuiScreenEvent.InitGuiEvent event) {
         if (event.getGui().getClass() == (MainMenuScreen.class)) {
-            Minecraft.getInstance().displayGuiScreen(new HunterXHunterMainMenu(true));
+            Minecraft.getInstance().displayGuiScreen(new HunterXHunterMainMenu());
+        }
+        if (event.getGui().getClass() == (DeathScreen.class)) {
+            Minecraft.getInstance().displayGuiScreen(new HunterXHunterDeathScreen(ITextComponent.getTextComponentOrEmpty("Boi u ded"), false));
         }
     }
 

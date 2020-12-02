@@ -1,9 +1,8 @@
 package com.chubbychump.hunterxhunter;
 
 import com.chubbychump.hunterxhunter.client.core.handler.ClientProxy;
-import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.ContainerScreenGreedIsland;
-import com.chubbychump.hunterxhunter.client.gui.MediaPlayer;
+import com.chubbychump.hunterxhunter.client.rendering.RayBeamRenderer;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
@@ -11,21 +10,16 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
-import com.chubbychump.hunterxhunter.client.rendering.RayBeamRenderer;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
-import com.chubbychump.hunterxhunter.common.entities.EntityRayBeam;
-import com.chubbychump.hunterxhunter.init.ModEntityTypes;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -34,8 +28,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -46,20 +38,23 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameGrabber;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
-import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.beginRenderCommon;
 import static com.chubbychump.hunterxhunter.init.ModEntityTypes.RAYBEAM;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_CONTAINER;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.MASADORIAN_POI;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("hunterxhunter")
 public class HunterXHunter {
+    private static File file = new File(Minecraft.getInstance().getFileResourcePacks().getAbsolutePath()+"/departure.avi");
+    public static FFmpegFrameGrabber eff = new FFmpegFrameGrabber(file);
+    private static File file2 = new File(Minecraft.getInstance().getFileResourcePacks().getAbsolutePath()+"/hisoka.avi");
+    public static FFmpegFrameGrabber fff = new FFmpegFrameGrabber(file2);
     public static IProxy proxy = new IProxy() {};
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
