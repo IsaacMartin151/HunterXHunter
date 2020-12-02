@@ -1,8 +1,15 @@
-## Welcome to GitHub Pages
+## The Hunter X Hunter page
 
-You can use the [editor on GitHub](https://github.com/IsaacMartin151/HunterXHunter/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Welcome to the official page for the HunterXHunter Minecraft mod by ChubbyChump. Any resources related to the mod can be found on this page
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Greed Island
+
+The mod's setting is "Greed Island". There are 100 items to collect in order to beat the game, and the difficulty of obtaining items increases as the numbers increase. Every player has access to their "Book!", which displays and stores only items which are of the 100. The book keybind can be set via the controls menu. 
+
+
+### Nen Crystals
+
+Upon spawning, players start with 2 hearts. Found underground, Nen Crystals can be used to increase a player's hearts as well as Nen Power. Nen Abilities differ based on what category of Nen User the player chooses. Nen can be used for a wide range of things and provide the player with unique advantages and disadvantages. 
 
 ### Abilities
 
@@ -12,10 +19,10 @@ There are 5 Nen types to choose from which are selected upon consumption of the 
 1. Enhancer - Additional health, additional damage
 2. Emitter - Fire explosive beams
 3. Manipulator - View player positions, modify damage direction
-4. Conjurer - Create temporary walls and entities
-5. Transmuter - Repairs item durability, collapses blocks, increased speed
+4. Conjurer - Create temporary walls/floors and entities
+5. Transmuter - Repairs item durability, increased speed and haste
 
-**Bold** and _Italic_ and `Code` text
+There are also several abilities common to all Nen Users such as Gyo, En, and basic Nen activation
 ```
 
 Find the official mod spotlight [here](youtube link) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/title.png)
