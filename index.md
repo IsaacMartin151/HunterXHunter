@@ -38,3 +38,7 @@ I drew heavily from [Vazkii Botania](https://github.com/Vazkii/Botania) in my mo
 
 [TurtyWurty's youtube channel](https://www.youtube.com/channel/UCicAXLV4w2X6bn2EuM4To4w) and [TechnoVision's youtube channel](https://www.youtube.com/channel/UC3n-lKS-MYlunVtErgzSFZg)
 
+[Jabelar's Modding Tutorials](http://jabelarminecraft.blogspot.com/p/minecraft-forge-172-quick-tips-gl11-and.html)
+
+And probably a lot more resources. I'll keep adding to this list as I go along
+
