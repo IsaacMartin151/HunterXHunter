@@ -23,10 +23,10 @@ Syntax highlighted code block
 
 **Bold** and _Italic_ and `Code` text
 
-[Link](https://www.youtube.com/watch?v=Ts0Dql7jt0U&feature=youtu.be&ab_channel=IsaacChristopherMartin) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/bruh.png)
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+[Link](https://www.youtube.com/watch?v=Ts0Dql7jt0U&feature=youtu.be&ab_channel=IsaacChristopherMartin) and ![Image](https://raw.githubusercontent.com/IsaacMartin151/HunterXHunter/master/HunterXHunter/src/main/resources/assets/hunterxhunter/textures/bruh.png)
 
 ### Jekyll Themes
 
