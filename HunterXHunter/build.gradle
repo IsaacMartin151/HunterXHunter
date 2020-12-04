@@ -96,10 +96,12 @@ dependencies {
     //compile "org.lwjgl.lwjgl:lwjgl_util:2.9.3"
     compile 'org.jcodec:jcodec:0.2.3'
     compile 'org.bytedeco:javacv-platform:1.5.4'
+    compile 'de.javagl:obj:0.3.0'
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
+    //compile 'info.journeymap:journeymap-api:1.11.2-1.4'
+    //compile "mezz.jei:jei_1.11.2:4.5.0.294:api"
 
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env

@@ -3,6 +3,7 @@ modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
 loaderVersion="[32,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+issueTrackerURL="https://github.com/IsaacMartin151/HunterXHunter/issues"
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
 license="All rights reserved"
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -10,17 +11,21 @@ license="All rights reserved"
 # The modid of the mod
 modId="hunterxhunter" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
+version="1.0.0" #mandatory
  # A display name for the mod
 displayName="Hunter X Hunter" #mandatory
+ # Mod's logo
+logoFile="title.png"
+
 # A text field displayed in the mod UI
-credits="Sugma" #optional
+credits="Ging Freecss" #optional
 # A text field displayed in the mod UI
 authors="Chubbychump" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Ligma Sugma Deez Nuts Joe Mama
+Minecraft Mod inspired by the anime Hunter X Hunter. The game's setting is "Greed Island"
 '''
+
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.hunterxhunter]] #optional
     # the modid of the dependency

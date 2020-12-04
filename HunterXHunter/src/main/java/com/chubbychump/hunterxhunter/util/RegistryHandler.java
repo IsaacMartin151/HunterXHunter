@@ -1,63 +1,50 @@
 package com.chubbychump.hunterxhunter.util;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
 import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.common.blocks.PortalBlock;
 import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
 import com.chubbychump.hunterxhunter.common.entities.EntityRayBeam;
-import com.chubbychump.hunterxhunter.common.items.Crystal_Nen;
-import com.chubbychump.hunterxhunter.common.items.ItemBase;
-import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
+import com.chubbychump.hunterxhunter.common.items.*;
+import com.chubbychump.hunterxhunter.common.items.thehundred.food.PotatoSoup;
+import com.chubbychump.hunterxhunter.common.items.thehundred.food.RoastedPorkDish;
+import com.chubbychump.hunterxhunter.common.items.thehundred.food.SpiderEagleEgg;
+import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Crystal_Nen;
+import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Duplicator;
+import com.chubbychump.hunterxhunter.common.items.thehundred.food.TastyFood;
+import com.chubbychump.hunterxhunter.common.items.thehundred.placeable.SaturationStand;
+import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEntity;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
-import com.chubbychump.hunterxhunter.init.ModBlocks;
 import com.google.common.collect.ImmutableSet;
-import javafx.stage.Stage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.village.PointOfInterest;
 import net.minecraft.village.PointOfInterestType;
-import net.minecraft.world.Dimension;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.swing.tree.AbstractLayoutCache;
 import java.lang.reflect.Method;
 import java.util.Set;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
 public class RegistryHandler {
-    //public static Stage bruh = new Stage(); Doesn't work here, need to move somewhere else
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
@@ -104,24 +91,33 @@ public class RegistryHandler {
     public static final RegistryObject<SoundEvent> COOKIECHAN = SOUNDS.register("cookiechan", () -> new SoundEvent(new ResourceLocation(MOD_ID, "cookiechan")));
     public static final RegistryObject<SoundEvent> WORLD_OF_ADVENTURES = SOUNDS.register("worldofadventures", () -> new SoundEvent(new ResourceLocation(MOD_ID, "worldofadventures")));
     public static final RegistryObject<SoundEvent> DEPARTURE = SOUNDS.register("departure", () -> new SoundEvent(new ResourceLocation(MOD_ID, "departure")));
+    public static final RegistryObject<SoundEvent> HISOKA = SOUNDS.register("hisoka", () -> new SoundEvent(new ResourceLocation(MOD_ID, "hisoka")));
 
     //Items
     public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
     public static final RegistryObject<Item> CRYSTALLIZEDNEN = ITEMS.register( "crystal_nen", Crystal_Nen::new);
+    public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tastyfood", TastyFood::new);
     public static final RegistryObject<Item> GREED_ISLAND_BOOK = ITEMS.register( "greed_island_book", ItemFlowerBag::new);
+    public static final RegistryObject<Item> DUPLICATOR = ITEMS.register( "duplicator", Duplicator::new);
+    public static final RegistryObject<Item> ROASTED_PORK_DISH = ITEMS.register( "roasted_pork_dish", RoastedPorkDish::new);
+    public static final RegistryObject<Item> POTATO_SOUP = ITEMS.register( "potato_soup", PotatoSoup::new);
+    public static final RegistryObject<Item> SPIDER_EAGLE_EGG = ITEMS.register( "spider_eagle_egg", SpiderEagleEgg::new);
 
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
     public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nenlight", NenLight::new);
     public static final RegistryObject<Block> GREED_ISLAND_PORTAL = BLOCKS.register("twilight_portal", PortalBlock::new);
+    public static final RegistryObject<Block> SATURATION_STAND = BLOCKS.register("saturation_stand", SaturationStand::new);
 
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
     public static final RegistryObject<Item> NEN_LIGHT_ITEM = ITEMS.register("nen_light", () -> new BlockItemBase(NEN_LIGHT.get()));
     public static final RegistryObject<Item> TWILIGHT_PORTAL_ITEM = ITEMS.register("twilight_portal", () -> new BlockItemBase(GREED_ISLAND_PORTAL.get()));
+    public static final RegistryObject<Item> SATURATION_STAND_ITEM = ITEMS.register("saturation_stand", () -> new BlockItemBase(SATURATION_STAND.get()));
 
     //Tile Entities
-    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nenlight", () -> TileEntityType.Builder.create(TileEntityNenLight::new, ModBlocks.NENLIGHT).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nenlight", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
+    public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.create(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
 
     //Containers
     public static final RegistryObject<ContainerType<GreedIslandContainer>> GREED_ISLAND_CONTAINER = CONTAINER.register("greedislandbook", () -> IForgeContainerType.create(GreedIslandContainer::createContainerClientSide));

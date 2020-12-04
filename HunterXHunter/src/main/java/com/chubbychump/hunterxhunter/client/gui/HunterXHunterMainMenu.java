@@ -7,20 +7,29 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.*;
+import net.minecraft.client.gui.toasts.SystemToast;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
+import net.minecraft.world.storage.SaveFormat;
+import net.minecraft.world.storage.WorldSummary;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameUtils;
+
+import java.io.IOException;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.eff;
 import static net.minecraft.client.gui.widget.Widget.WIDGETS_LOCATION;
@@ -39,6 +48,7 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
     private TextureHandler handler;
     private static final ResourceLocation MINECRAFT_TITLE_TEXTURES = new ResourceLocation(HunterXHunter.MOD_ID, "textures/gui/title/title.png");
     private long firstRenderTime;
+    private net.minecraftforge.client.gui.NotificationModUpdateScreen modUpdateNotification;
 
     public HunterXHunterMainMenu() {
         super(false);
@@ -55,9 +65,14 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
     }
 
     protected void init() {
-        int j = 24;
-        this.addSingleplayerMultiplayerButtons(j, 0);
-        this.addButton(new ImageButton(0, j * 4, 20, 20, 0, 106, 20, WIDGETS_LOCATION, 256, 256, (p_213090_1_) -> {
+
+        int j = 20;
+        Button modButton = null;
+        this.addSingleplayerMultiplayerButtons(j, 20);
+        modButton = this.addButton(new Button(0, j * 4, 100, 20, new TranslationTextComponent("fml.menu.mods"), button -> {
+            this.minecraft.displayGuiScreen(new net.minecraftforge.fml.client.gui.screen.ModListScreen(this));
+        }));
+        this.addButton(new ImageButton(0, j * 5, 20, 20, 0, 106, 20, WIDGETS_LOCATION, 256, 256, (p_213090_1_) -> {
             this.minecraft.displayGuiScreen(new LanguageScreen(this, this.minecraft.gameSettings, this.minecraft.getLanguageManager()));
         }, new TranslationTextComponent("narrator.button.language")));
         this.addButton(new Button(0, j * 2, 100, 20, new TranslationTextComponent("menu.options"), (p_213096_1_) -> {
@@ -72,7 +87,9 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
             }
             this.minecraft.shutdown();
         }));
+        modUpdateNotification = net.minecraftforge.client.gui.NotificationModUpdateScreen.init(this, modButton);
     }
+
 
     /**
      * Adds Singleplayer and Multiplayer buttons on Main Menu for players who have bought the game.
@@ -81,16 +98,10 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
         this.addButton(new Button(0, rowHeightIn*0, 100, 20, new TranslationTextComponent("menu.singleplayer"), (p_213089_1_) -> {
             this.minecraft.displayGuiScreen(new WorldSelectionScreen(this));
         }));
-        boolean flag = this.minecraft.isMultiplayerEnabled();
-        Button.ITooltip button$itooltip = flag ? Button.field_238486_s_ : (p_238659_1_, p_238659_2_, p_238659_3_, p_238659_4_) -> {
-            if (!p_238659_1_.active) {
-                this.renderTooltip(p_238659_2_, this.minecraft.fontRenderer.trimStringToWidth(new TranslationTextComponent("title.multiplayer.disabled"), Math.max(this.width / 2 - 43, 170)), p_238659_3_, p_238659_4_);
-            }
-        };
-        (this.addButton(new Button(0, yIn + rowHeightIn * 1, 100, 20, new TranslationTextComponent("menu.multiplayer"), (p_213095_1_) -> {
+        this.addButton(new Button(0, 0 + rowHeightIn * 1, 100, 20, new TranslationTextComponent("menu.multiplayer"), (p_213095_1_) -> {
             Screen screen = (Screen)(this.minecraft.gameSettings.skipMultiplayerWarning ? new MultiplayerScreen(this) : new MultiplayerWarningScreen(this));
             this.minecraft.displayGuiScreen(screen);
-        }, button$itooltip))).active = flag;
+        }));
     }
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -128,7 +139,7 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
             }
             try {
                 yeet = eff.grabImage();
-                if (eff.getFrameNumber() > eff.getLengthInFrames() - 5) {
+                if (eff.getFrameNumber() > eff.getLengthInFrames() - 3) {
                     needstorestart = true;
                 }
             } catch (FrameGrabber.Exception e) {
@@ -158,7 +169,7 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
         startbutton.setAlpha(.8F);
 
         if (start == true) {
-            for (int i = 0; i < this.buttons.size(); ++i) {
+            for (int i = 0; i < this.buttons.size(); i++) {
                 if (buttons.get(i) != startbutton) {
                     buttons.get(i).render(matrixStack, mouseX, mouseY, partialTicks);
                 }

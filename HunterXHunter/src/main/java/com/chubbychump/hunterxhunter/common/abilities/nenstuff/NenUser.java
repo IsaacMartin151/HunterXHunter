@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class NenUser {
+    //protected PlayerEntity player;
     protected int nenPower;
     protected int currentNen;
     protected char control;
@@ -78,4 +79,5 @@ public class NenUser {
     public boolean getRen() {
         return ren;
     }
+    public void nenpower1(PlayerEntity player) { return; }
 }

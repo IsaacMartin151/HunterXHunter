@@ -1,14 +1,14 @@
 package com.chubbychump.hunterxhunter.common.blocks;
 
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
-import com.chubbychump.hunterxhunter.init.ModTileEntityTypes;
-import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
 
 public class NenLight extends Block {
     public NenLight() {
@@ -22,7 +22,7 @@ public class NenLight extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return ModTileEntityTypes.NENLIGHT.create();
+        return new TileEntityNenLight();
     }
 
     @Override
@@ -34,9 +34,5 @@ public class NenLight extends Block {
         else {
             return 0;
         }
-    }
-
-    public boolean isTransparent() {
-        return true;
     }
 }

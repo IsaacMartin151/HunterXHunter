@@ -1,6 +1,7 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
 import com.chubbychump.hunterxhunter.client.rendering.TextureHandler;
+import com.chubbychump.hunterxhunter.client.sounds.DeathMusic;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -32,7 +33,7 @@ public class HunterXHunterDeathScreen extends Screen {
     /** The integer value containing the number of ticks that have passed since the player's death */
     private float lastpartialticks = 0;
     private long firstRenderTime = 0L;
-    private MenuMusic bruhh = new MenuMusic();
+    private DeathMusic bruhh = new DeathMusic();
     private float framerate = 30f;
     private boolean needstorestart = false;
     private int enableButtonsTimer;
@@ -79,12 +80,14 @@ public class HunterXHunterDeathScreen extends Screen {
         return false;
     }
 
+    //Whether or not player chooses to respawn?
     private void confirmCallback(boolean p_213022_1_) {
         if (p_213022_1_) {
             this.func_228177_a_();
         } else {
             this.minecraft.player.respawnPlayer();
             this.minecraft.displayGuiScreen((Screen)null);
+            Minecraft.getInstance().getSoundHandler().stop(bruhh);
         }
 
     }
@@ -96,6 +99,7 @@ public class HunterXHunterDeathScreen extends Screen {
 
         this.minecraft.unloadWorld(new DirtMessageScreen(new TranslationTextComponent("menu.savingLevel")));
         this.minecraft.displayGuiScreen(new MainMenuScreen());
+        Minecraft.getInstance().getSoundHandler().stop(bruhh);
     }
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -117,7 +121,6 @@ public class HunterXHunterDeathScreen extends Screen {
             //fff.setPixelFormat();
         }
         if (needstorestart) {
-            Minecraft.getInstance().getSoundHandler().play(bruhh);
             try {
                 fff.restart();
             } catch (FrameGrabber.Exception e) {
