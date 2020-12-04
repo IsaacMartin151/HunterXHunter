@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -18,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class Crystal_Nen extends Item {
 
     public Crystal_Nen() {
-        super(new Properties().maxStackSize(64).group(HunterXHunter.TAB));
+        super(new Properties().maxStackSize(64).rarity(Rarity.RARE).group(HunterXHunter.TAB));
     }
 
     @Override
@@ -28,13 +29,9 @@ public class Crystal_Nen extends Item {
         ActionResult<ItemStack> result = new ActionResult<>(ActionResultType.PASS, stack);
 
         // Ensure server-side only & the player's not in creative or spectator
-
         if (world.isRemote || player.abilities.disableDamage) {
             return result;
         }
-
-
-
 
         // If disabled don't do anything
         if (!Config.enableItems.get()) {
