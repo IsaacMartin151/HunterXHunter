@@ -13,7 +13,6 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
-import com.chubbychump.hunterxhunter.init.ModEntityTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javafx.stage.Stage;
 import net.minecraft.block.Block;
@@ -25,6 +24,7 @@ import net.minecraft.client.audio.ISoundEventAccessor;
 import net.minecraft.client.audio.SoundList;
 import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.MapItemRenderer;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -65,6 +65,7 @@ import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -78,7 +79,6 @@ import java.util.Collections;
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.beginRenderCommon;
-import static com.chubbychump.hunterxhunter.init.ModBlocks.NENLIGHT;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
 @Mod.EventBusSubscriber
@@ -399,13 +399,30 @@ public class EventsHandling {
             if (player.isAlive()) {
                 LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
                 boolean erm = yo.orElseThrow(null).getGyo();
+                int eee = yo.orElseThrow(null).getNenType();
                 if (erm) {
-                    beginRenderCommon();
                     showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
                 }
+
             }
         }
     }
+
+    /*@SubscribeEvent
+    public static void manipulatorOverlay(TickEvent.RenderTickEvent event) {
+        if (event.side == LogicalSide.CLIENT) {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            MapItemRenderer yee;
+
+            if (player.isAlive()) {
+                LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+                int eee = yo.orElseThrow(null).getNenType();
+                if (eee == 3) {
+
+                }
+            }
+        }
+    } */
 
     @SubscribeEvent
     public static void onExperienceDrop(LivingExperienceDropEvent event) {
@@ -420,31 +437,32 @@ public class EventsHandling {
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
         if (event.player.isAlive()) {
+            LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
             if (nenControl.isPressed()) {
-                LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
                 yo.orElseThrow(null).toggleNen();
                 boolean erm = yo.orElseThrow(null).isNenActivated();
             }
             if (increaseNen.isPressed()) {
-                LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
                 yo.orElseThrow(null).increaseNenPower(event.player);
             }
             if (gyo.isPressed()) {
-                LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
                 yo.orElseThrow(null).toggleGyo();
             }
             if (nenPower1.isPressed()) {
-                    World world = event.player.world;
-                    PlayerEntity player = event.player;
-                    BlockPos pos = event.player.getPosition();
-                    //if (!world.isRemote && player != null /*&& ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)*/) {
-                        LOGGER.info("Laser beam! BlockPos is " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-                        Entity entity = ModEntityTypes.RAYBEAM.create(world);
-                        //entity.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-                        //world.addEntity(entity);
-                        //player.getCooldownTracker().setCooldown(this, IManaProficiencyArmor.hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
-                        //ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
-                    //}
+                yo.orElseThrow(null).nenpower1(event.player);
+                World world = event.player.world;
+                PlayerEntity player = event.player;
+                BlockPos pos = event.player.getPosition();
+                //if (!world.isRemote && player != null /*&& ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)*/) {
+                LOGGER.info("Laser beam! BlockPos is " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+                //Entity entity = ModEntityTypes.RAYBEAM.create(world);
+                //entity.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+                //world.addEntity(entity);
+                //player.getCooldownTracker().setCooldown(this, IManaProficiencyArmor.hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
+                //ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
+                //}
+                //If manipulator, set screen to extended map gui
+                //MapItemRenderer
             }
             processLightPlacementForEntities(event.player.getEntityWorld());
         }
@@ -455,7 +473,7 @@ public class EventsHandling {
             if (theEntity.getCapability(NenProvider.MANA_CAP).orElseThrow(null).isNenActivated()) {
                 BlockPos blockLocation = new BlockPos(MathHelper.floor(theEntity.getPosX()), MathHelper.floor(theEntity.getPosY() - 0.1D - theEntity.getYOffset()), MathHelper.floor(theEntity.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
-                NenLight lightBlockToPlace = NENLIGHT;
+                NenLight lightBlockToPlace = new NenLight();
                 if (blockAtLocation == Blocks.AIR) {
                     placeLightSourceBlock(theEntity, blockLocation, lightBlockToPlace);
                 }

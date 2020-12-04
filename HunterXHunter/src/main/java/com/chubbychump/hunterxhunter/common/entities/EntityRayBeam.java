@@ -1,6 +1,5 @@
 package com.chubbychump.hunterxhunter.common.entities;
 
-import com.chubbychump.hunterxhunter.init.ModEntityTypes;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -24,9 +23,9 @@ public class EntityRayBeam extends ThrowableEntity {
         super(type, world);
     }
 
-    public EntityRayBeam(LivingEntity owner) {
-        super(ModEntityTypes.RAYBEAM, owner, owner.world);
-    }
+    //public EntityRayBeam(LivingEntity owner) {
+    //    super(ModEntityTypes.RAYBEAM, owner, owner.world);
+    //}
 
     /**
      * Checks if the entity is in range to render.

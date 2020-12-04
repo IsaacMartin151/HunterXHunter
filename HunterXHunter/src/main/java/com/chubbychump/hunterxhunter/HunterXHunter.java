@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
-import static com.chubbychump.hunterxhunter.init.ModEntityTypes.RAYBEAM;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_CONTAINER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.MASADORIAN_POI;
 
@@ -61,9 +60,18 @@ public class HunterXHunter {
 
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
     //FIX FILE PATH FFMPEG FILE DEPARTURE.MP4
+    //Add effect bloodlust? Must kill an entity
+    //Keep a running list of blockitems vs Items vs foods vs tools in the 100
+    // - 5 food
+    // - 20 usable items
+    // - 30 crafting ingredients
+    // - 10 placeable
+    // - 15 tools
+
+    // - 30 vanilla items
 
     //Transmuter = fully repair durability - increased speed?
-    //Enhancer = increased health - And speed?
+    //Enhancer = increased health, damage, regen?
     //Emitter = create explosions at range, explosion based on power
     //Conjurer = create winged ally entities?
     //Manipulator = view other people's perspectives, freeze people/control movement few seconds after hitting them with projectile - custom enchantment for that?
@@ -82,25 +90,18 @@ public class HunterXHunter {
         DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
         proxy.registerHandlers();        // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        // Register ourselves for server and other game events we are interested in
         RegistryHandler.init();
         MinecraftForge.EVENT_BUS.register(this);
-        HunterXHunter.LOGGER.info("Client seeeeeet up");
-
-
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
-        HunterXHunter.LOGGER.info("Common seeeeeeeet up");
-        //eff.start();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
+        //RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), Enhancer::new);
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), MoreHealth::new);
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
