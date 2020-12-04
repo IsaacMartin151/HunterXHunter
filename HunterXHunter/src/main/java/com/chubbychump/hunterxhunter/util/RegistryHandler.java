@@ -54,8 +54,6 @@ public class RegistryHandler {
     public static final DeferredRegister<PointOfInterestType> POINT_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, MOD_ID);
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, MOD_ID);
 
-
-
     public static void init() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -72,12 +70,6 @@ public class RegistryHandler {
             e.printStackTrace();
         }
     }
-
-    public static Set<BlockState> getAllStates(Block block) {
-        return ImmutableSet.copyOf(block.getStateContainer().getValidStates());
-    }
-
-
 
     //Particles
     //public static final RegistryObject<ParticleType<SparkleParticleData>> SPARKLES = PARTICLE_TYPES.register("sparkles", () -> new ParticleT);
@@ -96,7 +88,7 @@ public class RegistryHandler {
     //Items
     public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
     public static final RegistryObject<Item> CRYSTALLIZEDNEN = ITEMS.register( "crystal_nen", Crystal_Nen::new);
-    public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tastyfood", TastyFood::new);
+    public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tasty_food", TastyFood::new);
     public static final RegistryObject<Item> GREED_ISLAND_BOOK = ITEMS.register( "greed_island_book", ItemFlowerBag::new);
     public static final RegistryObject<Item> DUPLICATOR = ITEMS.register( "duplicator", Duplicator::new);
     public static final RegistryObject<Item> ROASTED_PORK_DISH = ITEMS.register( "roasted_pork_dish", RoastedPorkDish::new);
@@ -131,7 +123,7 @@ public class RegistryHandler {
             .build(""));
 
     //Point Of Interests
-    public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorianpoi", () -> new PointOfInterestType("masadorianpoi", getAllStates(RUBY_BLOCK.get()), 1, 1));
+    public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorianpoi", () -> new PointOfInterestType("masadorianpoi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
 
     //Professions
     public static final RegistryObject<VillagerProfession> MASADORIAN = PROFESSIONS.register("masadorian", () -> new VillagerProfession("masadorian", MASADORIAN_POI.get(), VillagerProfession.CARTOGRAPHER.getSpecificItems(),  VillagerProfession.CARTOGRAPHER.getRelatedWorldBlocks(), COOKIECHAN.get()));

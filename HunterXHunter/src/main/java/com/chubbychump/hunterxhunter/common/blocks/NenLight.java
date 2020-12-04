@@ -8,8 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
-
 public class NenLight extends Block {
     public NenLight() {
         super(Properties.create(Material.AIR).notSolid().doesNotBlockMovement().noDrops());
