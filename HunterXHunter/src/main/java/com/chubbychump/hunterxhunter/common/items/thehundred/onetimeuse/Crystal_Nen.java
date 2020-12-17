@@ -4,7 +4,6 @@ import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.item.Item;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +14,9 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
+
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
+
 
 public class Crystal_Nen extends Item {
 
@@ -40,7 +42,7 @@ public class Crystal_Nen extends Item {
 
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
         int Type = yo.orElseThrow(null).getNenType();
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar

@@ -4,11 +4,13 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
 import com.chubbychump.hunterxhunter.client.gui.ItemStackHandlerFlowerBag;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -36,12 +38,14 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemFlowerBag extends Item {
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 
-    private static final int MAXIMUM_NUMBER_OF_FLOWER_BAGS = 1;
+
+public class ItemFlowerBag extends Item {
+    private static ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = null;
 
     public ItemFlowerBag() {
-        super(new Item.Properties().maxStackSize(MAXIMUM_NUMBER_OF_FLOWER_BAGS).group(HunterXHunter.TAB) // the item will appear on the Miscellaneous tab in creative
+        super(new Item.Properties().maxStackSize(1).group(HunterXHunter.TAB) // the item will appear on the Miscellaneous tab in creative
         );
     }
 
@@ -56,76 +60,18 @@ public class ItemFlowerBag extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
+        HunterXHunter.LOGGER.info("Right clicked the item");
         if (!world.isRemote) {  // server only!
-            INamedContainerProvider containerProviderFlowerBag = new ContainerProviderFlowerBag(this, stack);
-            final int NUMBER_OF_FLOWER_SLOTS = 100;
+            HunterXHunter.LOGGER.info("On server");
+            INamedContainerProvider containerProviderFlowerBag = new ContainerProviderFlowerBag(stack);
             NetworkHooks.openGui((ServerPlayerEntity) player,
                     containerProviderFlowerBag,
-                    (packetBuffer)->{packetBuffer.writeInt(NUMBER_OF_FLOWER_SLOTS);});
+                    (packetBuffer)->{packetBuffer.writeInt(100);});
             // We use the packetBuffer to send the bag size; not necessary since it's always 16, but just for illustration purposes
+            HunterXHunter.LOGGER.info("Closing gui?");
         }
+        itemStackHandlerFlowerBag = getItemStackHandlerFlowerBag(player);
         return ActionResult.resultSuccess(stack);
-    }
-
-    /**
-     *  If we use the item on a block with an ITEM_HANDLER_CAPABILITY, automatically transfer the entire contents of the flower bag
-     *     into that block
-     *  onItemUseFirst is a forge extension that is called before the block is activated
-     *  If you use onItemUse, this will never get called for a container because the container will capture the click first
-     * @param ctx
-     * @return
-     */
-    @Nonnull
-    @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext ctx) {
-        World world = ctx.getWorld();
-        if (world.isRemote()) return ActionResultType.PASS;
-
-        BlockPos pos = ctx.getPos();
-        Direction side = ctx.getFace();
-        ItemStack itemStack = ctx.getItem();
-        if (!(itemStack.getItem() instanceof ItemFlowerBag)) throw new AssertionError("Unexpected ItemFlowerBag type");
-        ItemFlowerBag itemFlowerBag = (ItemFlowerBag)itemStack.getItem();
-
-        TileEntity tileEntity = world.getTileEntity(pos);
-
-        if (tileEntity == null) return ActionResultType.PASS;
-        if (world.isRemote()) return ActionResultType.SUCCESS; // always succeed on client side
-
-        // check if this object has an inventory- either Forge capability, or vanilla IInventory
-        IItemHandler tileInventory;
-        LazyOptional<IItemHandler> capability = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
-        if (capability.isPresent()) {
-            tileInventory = capability.orElseThrow(AssertionError::new);
-        } else if (tileEntity instanceof IInventory) {
-            tileInventory = new InvWrapper((IInventory)tileEntity);
-        } else {
-            return ActionResultType.FAIL;
-        }
-
-        // go through each flower ItemStack in our flower bag and try to insert as many as possible into the tile's inventory.
-        ItemStackHandlerFlowerBag itemStackHandlerFlowerBag =  itemFlowerBag.getItemStackHandlerFlowerBag(itemStack);
-        for (int i = 0; i < itemStackHandlerFlowerBag.getSlots(); i++) {
-            ItemStack flower = itemStackHandlerFlowerBag.getStackInSlot(i);
-            ItemStack flowersWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, flower, false);
-            itemStackHandlerFlowerBag.setStackInSlot(i, flowersWhichDidNotFit);
-        }
-        tileEntity.markDirty();           // make sure that the tileEntity knows we have changed its contents
-
-        // we need to mark the flowerbag ItemStack as dirty so that the server will send it to the player.
-        // This normally happens in ServerPlayerEntity.tick(), which calls this.openContainer.detectAndSendChanges();
-        // Unfortunately, this code only detects changes to item type, number, or nbt.  It doesn't check the capability instance.
-        // We could copy the detectAndSendChanges code out and call it manually, but it's easier to mark the itemstack as
-        //  dirty by modifying its nbt...
-        //  Of course, if your ItemStack's capability doesn't affect the rendering of the ItemStack, i.e. the Capability is not needed
-        //  on the client at all, then you don't need to bother to mark it dirty.
-
-        CompoundNBT nbt = itemStack.getOrCreateTag();
-        int dirtyCounter = nbt.getInt("dirtyCounter");
-        nbt.putInt("dirtyCounter", dirtyCounter + 1);
-        itemStack.setTag(nbt);
-
-        return ActionResultType.SUCCESS;
     }
 
     // ------  Code used to generate a suitable Container for the contents of the FlowerBag
@@ -137,10 +83,10 @@ public class ItemFlowerBag extends Item {
      * You could use SimpleNamedContainerProvider with a lambda instead, but I find this method easier to understand
      * I've used a static inner class instead of a non-static inner class for the same reason
      */
-    private static class ContainerProviderFlowerBag implements INamedContainerProvider {
-        public ContainerProviderFlowerBag(ItemFlowerBag itemFlowerBag, ItemStack itemStackFlowerBag) {
+    public static class ContainerProviderFlowerBag implements INamedContainerProvider {
+        public ContainerProviderFlowerBag(ItemStack itemStackFlowerBag) {
             this.itemStackFlowerBag = itemStackFlowerBag;
-            this.itemFlowerBag = itemFlowerBag;
+            this.itemFlowerBag = new ItemFlowerBag();
         }
 
         @Override
@@ -155,7 +101,7 @@ public class ItemFlowerBag extends Item {
         public GreedIslandContainer createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
             GreedIslandContainer newContainerServerSide =
                     GreedIslandContainer.createContainerServerSide(windowID, playerInventory,
-                            itemFlowerBag.getItemStackHandlerFlowerBag(itemStackFlowerBag),
+                            itemFlowerBag.getItemStackHandlerFlowerBag(playerEntity),
                             itemStackFlowerBag);
             return newContainerServerSide;
         }
@@ -171,22 +117,23 @@ public class ItemFlowerBag extends Item {
     @Nonnull
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
-
         return new GreedIslandProvider();
     }
 
     /**
      * Retrieves the ItemStackHandlerFlowerBag for this itemStack (retrieved from the Capability)
-     * @param itemStack
+     * param itemStack sike, its a playerentity
      * @return
      */
-    private static ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(ItemStack itemStack) {
-        IItemHandler flowerBag = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-        if (flowerBag == null || !(flowerBag instanceof ItemStackHandlerFlowerBag)) {
-            LOGGER.error("ItemFlowerBag did not have the expected ITEM_HANDLER_CAPABILITY");
-            return new ItemStackHandlerFlowerBag(1);
-        }
-        return (ItemStackHandlerFlowerBag)flowerBag;
+    private static ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(PlayerEntity player) {
+        //IItemHandler flowerBag = player.getHeldItemMainhand().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
+        IItemHandler flowerBag = yo.orElseThrow(null).getBook().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(null);
+        //IItemHandler flowerBag = yo.orElseThrow(null).getBook().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
+
+        //itemStackHandlerFlowerBag = yo.orElseThrow(null).getCachedInventory();
+
+        return (ItemStackHandlerFlowerBag) flowerBag;
     }
 
     private final String BASE_NBT_TAG = "base";
@@ -211,7 +158,6 @@ public class ItemFlowerBag extends Item {
     @Override
     public CompoundNBT getShareTag(ItemStack stack) {
         CompoundNBT baseTag = stack.getTag();
-        ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = getItemStackHandlerFlowerBag(stack);
         CompoundNBT capabilityTag = itemStackHandlerFlowerBag.serializeNBT();
         CompoundNBT combinedTag = new CompoundNBT();
         if (baseTag != null) {
@@ -237,25 +183,6 @@ public class ItemFlowerBag extends Item {
         CompoundNBT baseTag = nbt.getCompound(BASE_NBT_TAG);              // empty if not found
         CompoundNBT capabilityTag = nbt.getCompound(CAPABILITY_NBT_TAG); // empty if not found
         stack.setTag(baseTag);
-        ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = getItemStackHandlerFlowerBag(stack);
         itemStackHandlerFlowerBag.deserializeNBT(capabilityTag);
     }
-
-    // ------------ code used for changing the appearance of the bag based on the number of flowers in it
-
-    /**
-     * gets the fullness property override, used in mbe32_flower_bag_registry_name.json to select which model should
-     *   be rendered
-     * @param itemStack
-     * @param world
-     * @param livingEntity
-     * @return 0.0 (empty) -> 1.0 (full) based on the number of slots in the bag which are in use
-     */
-    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-        ItemStackHandlerFlowerBag flowerBag = getItemStackHandlerFlowerBag(itemStack);
-        float fractionEmpty = flowerBag.getNumberOfEmptySlots() / (float)flowerBag.getSlots();
-        return 1.0F - fractionEmpty;
-    }
-
-    private static final Logger LOGGER = LogManager.getLogger();
 }

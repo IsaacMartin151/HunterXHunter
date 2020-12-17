@@ -44,9 +44,12 @@ public final class ShaderHelper {
     public static final String PREFIX_SHADER = "shader/";
     public static final String SHADER_FILM_GRAIN_FRAG = PREFIX_SHADER + "film_grain.frag";
     public static final String SHADER_PASSTHROUGH_VERT = PREFIX_SHADER + "passthrough.vert";
+    public static final String SHADER_PATTERN_FRAG = PREFIX_SHADER + "pattern.frag";
+    public static final String SHADER_PATTERN_VERT = PREFIX_SHADER + "pattern.vert";
 
     public enum BotaniaShader {
-        FILM_GRAIN(SHADER_PASSTHROUGH_VERT, SHADER_FILM_GRAIN_FRAG);
+        FILM_GRAIN(SHADER_PASSTHROUGH_VERT, SHADER_FILM_GRAIN_FRAG),
+        DRAGON(SHADER_PATTERN_VERT, SHADER_PATTERN_FRAG);
 
         public final String vertexShaderPath;
         public final String fragmentShaderPath;
@@ -110,7 +113,7 @@ public final class ShaderHelper {
 
         long time = System.currentTimeMillis();
         double speed = 10.;
-        int timer = (int) (time % 10000);
+        int timer = (int) (time % 1000);
         //LOGGER.info("Timer is now " + timer);
         int bruh = GlStateManager.getUniformLocation(program, "timer");
         int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID

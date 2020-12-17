@@ -2,6 +2,7 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.core.KeyBindings;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
@@ -12,6 +13,7 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvi
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
+import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javafx.stage.Stage;
@@ -30,9 +32,12 @@ import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
@@ -54,6 +59,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -71,16 +77,19 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.thread.SidedThreadGroup;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.bytedeco.javacv.FrameGrabber;
 
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
-import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
-import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.beginRenderCommon;
+import static com.chubbychump.hunterxhunter.client.core.KeyBindings.*;
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
+import static net.minecraftforge.common.ForgeHooks.onItemRightClick;
 
+//@SuppressWarnings("ALL")
 @Mod.EventBusSubscriber
 public class EventsHandling {
 
@@ -95,7 +104,8 @@ public class EventsHandling {
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
 
-        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
+
         int Type = yo.orElseThrow(null).getNenType();
         // Apply Health Modifier
         if (Type == 1) {
@@ -135,10 +145,9 @@ public class EventsHandling {
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "morehealth"), new MoreHealthProvider());
-        }
-        if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "nenuser"), new NenProvider());
+            event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "morehealth"), new MoreHealthProvider());
+
             LOGGER.info("Attached capability to player with ID# "+event.getObject().getUniqueID());
         }
     }
@@ -152,7 +161,7 @@ public class EventsHandling {
         IMoreHealth capNew = MoreHealth.getFromPlayer(playerNew);
         capNew.copy(capOld);
 
-        LazyOptional<NenUser> yo = playerNew.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = playerNew.getCapability(NENUSER, null);
         int Type = yo.orElseThrow(null).getNenType();
         // Copy Health on Dimension Change
         if (!event.isWasDeath()) {
@@ -239,7 +248,7 @@ public class EventsHandling {
 
         // Re-add health modifier and fill health
         HunterXHunter.recalcPlayerHealth(player, player.experienceLevel);
-        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
         int Type = yo.orElseThrow(null).getNenType();
         if (Type == 1) {
             HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
@@ -340,7 +349,7 @@ public class EventsHandling {
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
 
-        LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
         int Type = yo.orElseThrow(null).getNenType();
         // Re-add health modifier
         if (Type == 1) {
@@ -369,6 +378,7 @@ public class EventsHandling {
         event.getOrb().xpValue *= Config.xpMultiplier.get();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void playSoundEvent(PlaySoundEvent event) {
         if (Minecraft.getInstance().currentScreen instanceof MainMenuScreen) {
@@ -378,7 +388,7 @@ public class EventsHandling {
         }
     }
 
-
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void setGUI(GuiScreenEvent.InitGuiEvent event) {
         if (event.getGui().getClass() == (MainMenuScreen.class)) {
@@ -393,17 +403,17 @@ public class EventsHandling {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderEvent(RenderLivingEvent.Post event) { //RenderWorldLastEvent for drawing stuff
+
         Minecraft bruh = Minecraft.getInstance();
         if (!bruh.isGamePaused()) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (player.isAlive()) {
-                LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+                LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
                 boolean erm = yo.orElseThrow(null).getGyo();
                 int eee = yo.orElseThrow(null).getNenType();
                 if (erm) {
                     showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
                 }
-
             }
         }
     }
@@ -415,7 +425,7 @@ public class EventsHandling {
             MapItemRenderer yee;
 
             if (player.isAlive()) {
-                LazyOptional<NenUser> yo = player.getCapability(NenProvider.MANA_CAP, null);
+                LazyOptional<NenUser> yo = player.getCapability(NenProvider.NENUSER, null);
                 int eee = yo.orElseThrow(null).getNenType();
                 if (eee == 3) {
 
@@ -434,13 +444,30 @@ public class EventsHandling {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
-        if (event.player.isAlive()) {
-            LazyOptional<NenUser> yo = event.player.getCapability(NenProvider.MANA_CAP, null);
+        if (event.player.isAlive() && event.phase == TickEvent.Phase.START) {
+            LazyOptional<NenUser> yo = event.player.getCapability(NENUSER, null);
+            //Think this is right, just need to sync client/server packets. Same problem as the increasing nen power render thread vs server thread
+            if (book.isPressed()) {
+                LOGGER.info("pressed book button");
+                PlayerEntity player = event.player;
+                ItemStack stack = yo.orElseThrow(null).getBook();
+                HunterXHunter.LOGGER.info("Right clicked the item");
+                if (!player.world.isRemote) {  // server only!
+                    HunterXHunter.LOGGER.info("On server");
+                    INamedContainerProvider containerProviderFlowerBag = new ItemFlowerBag.ContainerProviderFlowerBag(stack);
+                    NetworkHooks.openGui((ServerPlayerEntity) player,
+                            containerProviderFlowerBag,
+                            (packetBuffer)->{packetBuffer.writeInt(100);});
+                    // We use the packetBuffer to send the bag size; not necessary since it's always 16, but just for illustration purposes
+                    HunterXHunter.LOGGER.info("Closing gui?");
+                }
+
+            }
             if (nenControl.isPressed()) {
                 yo.orElseThrow(null).toggleNen();
-                boolean erm = yo.orElseThrow(null).isNenActivated();
             }
             if (increaseNen.isPressed()) {
                 yo.orElseThrow(null).increaseNenPower(event.player);
@@ -470,7 +497,7 @@ public class EventsHandling {
 
     private static void processLightPlacementForEntities(World theWorld) {
         for (Entity theEntity : Collections.unmodifiableList(theWorld.getPlayers())) {
-            if (theEntity.getCapability(NenProvider.MANA_CAP).orElseThrow(null).isNenActivated()) {
+            if (theEntity.getCapability(NENUSER).orElseThrow(null).isNenActivated()) {
                 BlockPos blockLocation = new BlockPos(MathHelper.floor(theEntity.getPosX()), MathHelper.floor(theEntity.getPosY() - 0.1D - theEntity.getYOffset()), MathHelper.floor(theEntity.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
                 NenLight lightBlockToPlace = new NenLight();
@@ -484,7 +511,7 @@ public class EventsHandling {
     private static void placeLightSourceBlock(Entity theEntity, BlockPos blockLocation, NenLight theLightBlock) {
         theEntity.world.setBlockState(blockLocation, theLightBlock.getDefaultState(), 3);
         TileEntityNenLight lightSource = new TileEntityNenLight();
-        LazyOptional<NenUser> yo = theEntity.getCapability(NenProvider.MANA_CAP, null);
+        LazyOptional<NenUser> yo = theEntity.getCapability(NENUSER, null);
         int bro = yo.orElse(null).getNenPower();
         if(bro > 15) {
             bro = 15;
@@ -498,11 +525,13 @@ public class EventsHandling {
         if (entity instanceof IMob) {
             int[] yuh = {500, 200, 0};
             ObjectDrawingFunctions.DrawSphere(matrixStack, yuh, 2);
-        } else if (entity instanceof PlayerEntity){
-            LazyOptional<NenUser> yo = entity.getCapability(NenProvider.MANA_CAP, null);
-            int[] bruh2 = yo.orElseThrow(null).getNencolor();
-            float oof = (float) (yo.orElseThrow(null).getNenPower()/2.);
-            ObjectDrawingFunctions.DrawSphere(matrixStack, bruh2, oof);
+        } else if (entity instanceof VillagerEntity){
+            //LazyOptional<NenUser> yo = entity.getCapability(NenProvider.NENUSER, null);
+            //int[] bruh2 = yo.orElseThrow(null).getNencolor();
+            //float oof = (float) (yo.orElseThrow(null).getNenPower()/2.);
+            int[] yuh = {500, 200, 0};
+            ObjectDrawingFunctions.DrawDragon(matrixStack, yuh);
+            //ObjectDrawingFunctions.DrawSphere(matrixStack, bruh2, oof);
         } else {
             int[] uh = {1000, 500, 0};
             ObjectDrawingFunctions.DrawSphere(matrixStack, uh, 2);
