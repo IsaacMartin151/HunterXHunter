@@ -1,9 +1,13 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.gui.ItemStackHandlerFlowerBag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_BOOK;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class NenUser {
@@ -17,6 +21,11 @@ public class NenUser {
     protected boolean ren;
     protected boolean zetsu;
     protected int[] nencolor;
+    private ItemStack book = GREED_ISLAND_BOOK.get().getDefaultInstance();  // initially null until our first call to getCachedInventory
+
+    public ItemStack getBook() {
+        return book;
+    }
 
     public void increaseNenPower(PlayerEntity theEntity) {
         HunterXHunter.LOGGER.info("User nen power has increased. Total is now " + nenPower);
@@ -37,6 +46,7 @@ public class NenUser {
             HunterXHunter.LOGGER.info("Nen toggled, nen is now " + nenActivated);
         }
     }
+
     public boolean isNenActivated() {
         return false;
     }

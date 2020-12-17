@@ -19,9 +19,6 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
 
     public ItemStackHandlerFlowerBag(int numberOfSlots) {
         super(MathHelper.clamp(numberOfSlots, MIN_FLOWER_SLOTS, MAX_FLOWER_SLOTS));
-        if (numberOfSlots < MIN_FLOWER_SLOTS || numberOfSlots > MAX_FLOWER_SLOTS) {
-            throw new IllegalArgumentException("Invalid number of flower slots:"+numberOfSlots);
-        }
     }
 
     @Override
@@ -33,21 +30,6 @@ public class ItemStackHandlerFlowerBag extends ItemStackHandler {
         Item item = stack.getItem();
         if (item.isIn(ItemTags.getCollection().get(THEONEHUNDRED))) return true; //Changed it to accept only the 100
         return false;
-    }
-
-    /**Count how many empty slots are in the bag
-     * @return the number of empty slots
-     */
-    public int getNumberOfEmptySlots() {
-        final int NUMBER_OF_SLOTS = getSlots();
-
-        int emptySlotCount = 0;
-        for (int i = 0; i < NUMBER_OF_SLOTS; ++i) {
-            if (getStackInSlot(i) == ItemStack.EMPTY) {
-                ++emptySlotCount;
-            }
-        }
-        return emptySlotCount;
     }
 
     @Override

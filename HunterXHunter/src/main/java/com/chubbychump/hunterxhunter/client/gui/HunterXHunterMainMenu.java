@@ -25,20 +25,25 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
 import net.minecraft.world.storage.SaveFormat;
 import net.minecraft.world.storage.WorldSummary;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameUtils;
 
+import java.io.File;
 import java.io.IOException;
 
-import static com.chubbychump.hunterxhunter.HunterXHunter.eff;
 import static net.minecraft.client.gui.widget.Widget.WIDGETS_LOCATION;
 
-
+@OnlyIn(Dist.CLIENT)
 public class HunterXHunterMainMenu extends MainMenuScreen {
+    private static File file = new File(Minecraft.getInstance().getFileResourcePacks().getAbsolutePath()+"/departure.avi");
+    public static FFmpegFrameGrabber eff = new FFmpegFrameGrabber(file);
     private boolean needstorestart = false;
     private boolean start = false;
-    private Button startbutton = new Button(0 + 80, 0 + 20, 80, 20, ITextComponent.getTextComponentOrEmpty("go fk urself"), (p_213094_1_) -> {
+    private Button startbutton = new Button(0 + 80, 0 + 20, 80, 20, ITextComponent.getTextComponentOrEmpty("Start"), (p_213094_1_) -> {
         this.start = true;
     });
 

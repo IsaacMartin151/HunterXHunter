@@ -1,5 +1,6 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -7,12 +8,16 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.SlotItemHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_CONTAINER;
 
 /**
@@ -94,7 +99,7 @@ public class GreedIslandContainer extends Container {
                                 ItemStack itemStackBeingHeld) {
         super(GREED_ISLAND_CONTAINER.get(), windowId);
         this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
-        this.itemStackBeingHeld = itemStackBeingHeld;
+        this.itemStackBeingHeld = playerInv.player.getCapability(NENUSER, null).orElseThrow(null).getBook();
 
         int SLOT_X_SPACING = 18;
         int SLOT_Y_SPACING = 18;
@@ -143,10 +148,7 @@ public class GreedIslandContainer extends Container {
     // Called on the server side only.
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
-        ItemStack main = player.getHeldItemMainhand();
-        ItemStack off = player.getHeldItemOffhand();
-        return (!main.isEmpty() && main == itemStackBeingHeld) ||
-                (!off.isEmpty() && off == itemStackBeingHeld);
+        return true;
     }
 
     // This is where you specify what happens when a player shift clicks a slot in the gui

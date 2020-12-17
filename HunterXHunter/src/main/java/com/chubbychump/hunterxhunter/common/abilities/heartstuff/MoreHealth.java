@@ -15,6 +15,9 @@ import net.minecraft.world.server.ServerWorld;
 
 import java.util.Collections;
 
+import static com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider.CAPABILITY;
+
+
 public class MoreHealth implements IMoreHealth {
 
     private byte version;
@@ -113,11 +116,11 @@ public class MoreHealth implements IMoreHealth {
 
 
     public static IMoreHealth getFromPlayer(PlayerEntity player) {
-        return player.getCapability(MoreHealthProvider.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        return player.getCapability(CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
     }
 
     public static void updateClient(ServerPlayerEntity player, IMoreHealth cap) {
-        PacketManager.sendTo(player, new SyncHealthPacket(player.getEntityId(), (CompoundNBT) MoreHealthProvider.CAPABILITY.writeNBT(cap, null)));
+        PacketManager.sendTo(player, new SyncHealthPacket(player.getEntityId(), (CompoundNBT) CAPABILITY.writeNBT(cap, null)));
     }
 
     @Override
