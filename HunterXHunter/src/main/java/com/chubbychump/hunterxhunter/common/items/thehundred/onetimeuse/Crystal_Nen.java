@@ -16,10 +16,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class Crystal_Nen extends Item {
-
     public Crystal_Nen() {
         super(new Properties().maxStackSize(64).rarity(Rarity.RARE).group(HunterXHunter.TAB));
     }
@@ -29,21 +28,17 @@ public class Crystal_Nen extends Item {
         // Setup return results
         ItemStack stack = player.getHeldItem(hand);
         ActionResult<ItemStack> result = new ActionResult<>(ActionResultType.PASS, stack);
-
+        HunterXHunter.LOGGER.info("Right clicked crystal nen");
         // Ensure server-side only & the player's not in creative or spectator
-        if (world.isRemote || player.abilities.disableDamage) {
-            return result;
-        }
-
-        // If disabled don't do anything
-        if (!Config.enableItems.get()) {
+        if (world.isRemote) {
+            player.playSound(WORLD_OF_ADVENTURES.get(), .5f, 1f);
             return result;
         }
 
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
-        int Type = yo.orElseThrow(null).getNenType();
+        NenUser yo = NenUser.getFromPlayer(player);
+        int Type = yo.getNenType();
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar
         int max = Config.maxHealth.get();
@@ -62,10 +57,11 @@ public class Crystal_Nen extends Item {
                 HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
             }
             player.setHealth(player.getMaxHealth());
-            yo.orElseThrow(null).increaseNenPower(player);
-            player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.DUMMY_UUID);
-
+            //player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.DUMMY_UUID);
         }
+
+        yo.increaseNenPower(player);
+        NenUser.updateClient((ServerPlayerEntity) player, yo);
 
         // Remove item and mark as success
         stack.setCount(stack.getCount() - 1);

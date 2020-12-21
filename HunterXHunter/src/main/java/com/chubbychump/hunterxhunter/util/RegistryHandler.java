@@ -19,6 +19,7 @@ import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -63,12 +64,12 @@ public class RegistryHandler {
         CONTAINER.register(FMLJavaModLoadingContext.get().getModEventBus());
         POINT_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
         PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        try {
-            Method func_221052_a = ObfuscationReflectionHelper.findMethod(PointOfInterestType.class, "func_221052_a", PointOfInterestType.class);
-            func_221052_a.invoke(null, MASADORIAN_POI);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    Method func_221052_a = ObfuscationReflectionHelper.findMethod(PointOfInterestType.class, "func_221052_a", PointOfInterestType.class);
+        //    func_221052_a.invoke(null, MASADORIAN_POI);
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+       // }
     }
 
     //Particles
@@ -108,7 +109,7 @@ public class RegistryHandler {
     public static final RegistryObject<Item> SATURATION_STAND_ITEM = ITEMS.register("saturation_stand", () -> new BlockItemBase(SATURATION_STAND.get()));
 
     //Tile Entities
-    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nenlight", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
     public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.create(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
 
     //Containers
@@ -127,5 +128,4 @@ public class RegistryHandler {
 
     //Professions
     public static final RegistryObject<VillagerProfession> MASADORIAN = PROFESSIONS.register("masadorian", () -> new VillagerProfession("masadorian", MASADORIAN_POI.get(), VillagerProfession.CARTOGRAPHER.getSpecificItems(),  VillagerProfession.CARTOGRAPHER.getRelatedWorldBlocks(), COOKIECHAN.get()));
-    //PointOfInterestType::func_221052_a
 }

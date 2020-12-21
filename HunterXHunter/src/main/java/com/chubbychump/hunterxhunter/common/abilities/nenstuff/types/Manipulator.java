@@ -5,9 +5,8 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 
 public class Manipulator extends NenUser {
     public Manipulator() {
-        this.nenPower = 0;
+        this.nenPower = 1;
         this.currentNen = 100;
-        this.control = 'c';
         this.nenActivated = false;
         this.gyo = false;
         this.en = false;

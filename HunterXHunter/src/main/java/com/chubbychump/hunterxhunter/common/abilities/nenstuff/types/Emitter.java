@@ -7,7 +7,6 @@ public class Emitter extends NenUser {
     public Emitter() {
         this.nenPower = 0;
         this.currentNen = 100;
-        this.control = 'c';
         this.nenActivated = false;
         this.gyo = false;
         this.en = false;

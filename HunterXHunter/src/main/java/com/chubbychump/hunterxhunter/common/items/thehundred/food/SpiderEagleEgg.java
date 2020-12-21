@@ -11,6 +11,6 @@ import static net.minecraft.item.Rarity.UNCOMMON;
 public class SpiderEagleEgg extends Item{
     public SpiderEagleEgg() {
         super(new Item.Properties().maxStackSize(64).group(HunterXHunter.TAB).rarity(UNCOMMON).food(new Food.Builder()
-                .saturation(1.6F).hunger(16).effect(new EffectInstance(Effects.SLOW_FALLING, 500, 1), 1F).build()));
+                .saturation(1.6F).hunger(16).effect(new EffectInstance(Effects.SLOW_FALLING, 500, 1), 1F).setAlwaysEdible().build()));
     }
 }

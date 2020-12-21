@@ -111,7 +111,6 @@ public class ItemFlowerBag extends Item {
     }
 
     // ---------------- Code related to Capabilities
-    //
 
     // The CapabilityProvider returned from this method is used to specify which capabilities the ItemFlowerBag possesses
     @Nonnull
@@ -126,13 +125,8 @@ public class ItemFlowerBag extends Item {
      * @return
      */
     private static ItemStackHandlerFlowerBag getItemStackHandlerFlowerBag(PlayerEntity player) {
-        //IItemHandler flowerBag = player.getHeldItemMainhand().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
         LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
         IItemHandler flowerBag = yo.orElseThrow(null).getBook().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(null);
-        //IItemHandler flowerBag = yo.orElseThrow(null).getBook().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-
-        //itemStackHandlerFlowerBag = yo.orElseThrow(null).getCachedInventory();
-
         return (ItemStackHandlerFlowerBag) flowerBag;
     }
 
