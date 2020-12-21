@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "hunterxhunter:block/nenlight" }
+    "": {
+      "model": "minecraft:block/air"
+    }
   }
 }

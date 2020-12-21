@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 
 @OnlyIn(Dist.CLIENT)
-public class HunterXHunterDeathScreen extends DeathScreen {
+public class HunterXHunterDeathScreen extends Screen {
     private static File file2 = new File(Minecraft.getInstance().getFileResourcePacks().getAbsolutePath()+"/hisoka.avi");
     public static FFmpegFrameGrabber fff = new FFmpegFrameGrabber(file2);
     /** The integer value containing the number of ticks that have passed since the player's death */
@@ -43,7 +43,7 @@ public class HunterXHunterDeathScreen extends DeathScreen {
     private ITextComponent field_243285_p;
 
     public HunterXHunterDeathScreen(@Nullable ITextComponent textComponent, boolean isHardcoreMode) {
-        super(ITextComponent.getTextComponentOrEmpty("Boi u ded"), isHardcoreMode);
+        super(ITextComponent.getTextComponentOrEmpty("Boi u ded"));
         this.causeOfDeath = textComponent;
         this.isHardcoreMode = isHardcoreMode;
         this.handler = new TextureHandler(Minecraft.getInstance().getTextureManager(), new DynamicTexture(638, 360, true));

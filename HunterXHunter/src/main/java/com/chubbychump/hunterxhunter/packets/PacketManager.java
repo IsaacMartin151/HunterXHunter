@@ -15,6 +15,7 @@ public class PacketManager {
     public static void register() {
         int id = 0;
         INSTANCE.registerMessage(id++, SyncHealthPacket.class, SyncHealthPacket::encode, SyncHealthPacket::decode, SyncHealthPacket::handle);
+        INSTANCE.registerMessage(id++, SyncNenPacket.class, SyncNenPacket::encode, SyncNenPacket::decode, SyncNenPacket::handle);
     }
 
     /**

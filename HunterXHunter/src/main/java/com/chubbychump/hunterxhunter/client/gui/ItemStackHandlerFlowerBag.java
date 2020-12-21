@@ -14,6 +14,7 @@ import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
 public class ItemStackHandlerFlowerBag extends ItemStackHandler {
     ResourceLocation THEONEHUNDRED = new ResourceLocation(MOD_ID, "theonehundred");
+
     public static final int MIN_FLOWER_SLOTS = 1;
     public static final int MAX_FLOWER_SLOTS = 100;
 

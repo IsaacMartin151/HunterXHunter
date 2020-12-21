@@ -2,7 +2,6 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.core.KeyBindings;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
@@ -16,6 +15,7 @@ import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javafx.stage.Stage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,10 +36,12 @@ import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -65,7 +67,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -80,12 +81,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.bytedeco.javacv.FrameGrabber;
+import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
-import static com.chubbychump.hunterxhunter.client.core.KeyBindings.*;
+import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
+import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
+import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.renderManaBar;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.init.ModBlocks.NENLIGHT;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static net.minecraftforge.common.ForgeHooks.onItemRightClick;
 
@@ -103,10 +109,9 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
+        NenUser yo = NenUser.getFromPlayer(player);
 
-        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
-
-        int Type = yo.orElseThrow(null).getNenType();
+        int Type = yo.getNenType();
         // Apply Health Modifier
         if (Type == 1) {
             HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
@@ -159,10 +164,13 @@ public class EventsHandling {
         PlayerEntity playerNew = event.getPlayer();
         IMoreHealth capOld = MoreHealth.getFromPlayer(playerOld);
         IMoreHealth capNew = MoreHealth.getFromPlayer(playerNew);
+        NenUser nenOld = NenUser.getFromPlayer(playerOld);
+        NenUser nenNew = NenUser.getFromPlayer(playerNew);
+
+        nenNew.copy(nenOld);
         capNew.copy(capOld);
 
-        LazyOptional<NenUser> yo = playerNew.getCapability(NENUSER, null);
-        int Type = yo.orElseThrow(null).getNenType();
+        int Type = nenNew.getNenType();
         // Copy Health on Dimension Change
         if (!event.isWasDeath()) {
             if (Type == 1) {
@@ -185,10 +193,12 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
+        NenUser nenCap = NenUser.getFromPlayer(player);
 
         // Handle "The End"
         if (event.isEndConquered()) {
             MoreHealth.updateClient((ServerPlayerEntity) player, cap);
+            NenUser.updateClient((ServerPlayerEntity) player, nenCap);
             return;
         }
 
@@ -203,6 +213,7 @@ public class EventsHandling {
             cap.setRampPosition((short) 0);
             cap.setHeartContainers((byte) 0);
             MoreHealth.updateClient((ServerPlayerEntity) player, cap);
+            NenUser.updateClient((ServerPlayerEntity) player, nenCap);
 
             // Handle Punishing the Player
         } else if (Config.punishAmount.get() > 0) {
@@ -248,8 +259,9 @@ public class EventsHandling {
 
         // Re-add health modifier and fill health
         HunterXHunter.recalcPlayerHealth(player, player.experienceLevel);
-        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
-        int Type = yo.orElseThrow(null).getNenType();
+        //TODO: maybe recalc nen? HunterXHunter.recalcPlayerNen(player, player.experienceLevel);
+        NenUser yo = NenUser.getFromPlayer(player);
+        int Type = yo.getNenType();
         if (Type == 1) {
             HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
         }
@@ -257,6 +269,8 @@ public class EventsHandling {
             HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
         }
         player.setHealth(player.getMaxHealth());
+        yo.setCurrentNen(yo.getMaxCurrentNen());
+        NenUser.updateClient((ServerPlayerEntity) player, nenCap);
     }
 
     @SubscribeEvent
@@ -286,6 +300,7 @@ public class EventsHandling {
         if (event.getType() == MASADORIAN.get()) {
             event.getTrades().get(1).add(new RandomTradeBuilder(64, 10, 0.05F).setEmeraldPrice(1).setForSale(Items.NETHER_STAR, 1, 3).build());
             event.getTrades().get(1).add(new RandomTradeBuilder(64, 10, 0.05F).setEmeraldPrice(1).setForSale(Items.ACACIA_FENCE, 1, 3).build());
+            //TODO: add all the spell cards
         }
     }
 
@@ -348,9 +363,8 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-
-        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
-        int Type = yo.orElseThrow(null).getNenType();
+        NenUser yo = NenUser.getFromPlayer(player);
+        int Type = yo.getNenType();
         // Re-add health modifier
         if (Type == 1) {
             HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
@@ -360,22 +374,7 @@ public class EventsHandling {
         }
         // Synchronize
         cap.synchronise(player);
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLevelUp(PlayerXpEvent.LevelChange event) {
-        // Ensure server-side only
-        if (event.getPlayer().getEntityWorld().isRemote) {
-            return;
-        }
-        // Fetch player and recalc player's health
-        PlayerEntity player = event.getPlayer();
-        HunterXHunter.recalcPlayerHealth(player, player.experienceLevel + event.getLevels());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerPickupXp(PlayerXpEvent.PickupXp event) {
-        event.getOrb().xpValue *= Config.xpMultiplier.get();
+        //nenCap.synchronise(player);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -408,75 +407,57 @@ public class EventsHandling {
         if (!bruh.isGamePaused()) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (player.isAlive()) {
-                LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
-                boolean erm = yo.orElseThrow(null).getGyo();
-                int eee = yo.orElseThrow(null).getNenType();
-                if (erm) {
+                NenUser yo = NenUser.getFromPlayer(player);
+                boolean erm = yo.getGyo();
+                int eee = yo.getNenType();
+                if (erm && yo.getCurrentNen() > 0) {
                     showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
                 }
             }
         }
     }
 
-    /*@SubscribeEvent
-    public static void manipulatorOverlay(TickEvent.RenderTickEvent event) {
-        if (event.side == LogicalSide.CLIENT) {
-            ClientPlayerEntity player = Minecraft.getInstance().player;
-            MapItemRenderer yee;
-
-            if (player.isAlive()) {
-                LazyOptional<NenUser> yo = player.getCapability(NenProvider.NENUSER, null);
-                int eee = yo.orElseThrow(null).getNenType();
-                if (eee == 3) {
-
-                }
-            }
-        }
-    } */
-
-    @SubscribeEvent
-    public static void onExperienceDrop(LivingExperienceDropEvent event) {
-        if (Config.loseXpOnDeath.get() && (event.getEntity() instanceof PlayerEntity)) {
-            PlayerEntity player = (PlayerEntity) event.getEntity();
-            // See PlayerEntity experience drop code
-            int i = player.experienceLevel * 7;
-            event.setDroppedExperience(Math.min(i, 100));
-        }
-    }
-
+    //CAN NOT make this client only
+    // Well, maybe I can if I check for client side only instead of server side only
+    // Nah, doesn't look like that works. Client side capability changes don't seem to update the server side capability
+    // Sending packet to server to update capability, gonna see if it works
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
-        if (event.player.isAlive() && event.phase == TickEvent.Phase.START) {
-            LazyOptional<NenUser> yo = event.player.getCapability(NENUSER, null);
-            //Think this is right, just need to sync client/server packets. Same problem as the increasing nen power render thread vs server thread
+        if (event.player.isAlive() && event.phase == TickEvent.Phase.START && event.player.getEntityWorld().isRemote()) {
+            NenUser yo = NenUser.getFromPlayer(event.player);
+            boolean updatePlayer = false;
             if (book.isPressed()) {
+                updatePlayer = true;
                 LOGGER.info("pressed book button");
                 PlayerEntity player = event.player;
-                ItemStack stack = yo.orElseThrow(null).getBook();
-                HunterXHunter.LOGGER.info("Right clicked the item");
                 if (!player.world.isRemote) {  // server only!
+                    ItemStack stack = yo.getBook();
                     HunterXHunter.LOGGER.info("On server");
                     INamedContainerProvider containerProviderFlowerBag = new ItemFlowerBag.ContainerProviderFlowerBag(stack);
                     NetworkHooks.openGui((ServerPlayerEntity) player,
                             containerProviderFlowerBag,
-                            (packetBuffer)->{packetBuffer.writeInt(100);});
+                            (packetBuffer) -> {
+                        packetBuffer.writeInt(100);
+                    });
                     // We use the packetBuffer to send the bag size; not necessary since it's always 16, but just for illustration purposes
-                    HunterXHunter.LOGGER.info("Closing gui?");
                 }
-
             }
             if (nenControl.isPressed()) {
-                yo.orElseThrow(null).toggleNen();
+                yo.toggleNen();
+                updatePlayer = true;
             }
             if (increaseNen.isPressed()) {
-                yo.orElseThrow(null).increaseNenPower(event.player);
+                yo.increaseNenPower(event.player);
+                updatePlayer = true;
             }
             if (gyo.isPressed()) {
-                yo.orElseThrow(null).toggleGyo();
+                yo.toggleGyo();
+                updatePlayer = true;
             }
             if (nenPower1.isPressed()) {
-                yo.orElseThrow(null).nenpower1(event.player);
+                yo.nenpower1(event.player);
+                updatePlayer = true;
                 World world = event.player.world;
                 PlayerEntity player = event.player;
                 BlockPos pos = event.player.getPosition();
@@ -491,33 +472,101 @@ public class EventsHandling {
                 //If manipulator, set screen to extended map gui
                 //MapItemRenderer
             }
+            if (updatePlayer == true) {
+                NenUser.updateServer(event.player, yo);
+            }
+        }
+    }
+
+    //@OnlyIn(Dist.DEDICATED_SERVER)
+    @SubscribeEvent
+    public static void calculateNenEffects(TickEvent.PlayerTickEvent event) {
+        if (event.player.isAlive() && !event.player.getEntityWorld().isRemote && event.phase == TickEvent.Phase.START) {
+            NenUser yo = NenUser.getFromPlayer(event.player);
+            int cost = 0;
+            if (yo.isNenActivated()) {
+                cost += 1;
+            }
+            if (yo.getGyo()) {
+                cost += 1;
+            }
+            if (yo.getEn()) {
+                cost += 1;
+            }
+            yo.setCurrentNen(yo.getCurrentNen() - cost);
+            if (yo.getCurrentNen() - cost < 0) {
+                yo.setCurrentNen(0);
+                yo.resetNen();
+            }
+            if (cost == 0) {
+                yo.setCurrentNen(yo.getCurrentNen() + 2);
+            }
+            if (yo.getCurrentNen() > yo.getMaxCurrentNen()) {
+                yo.setCurrentNen(yo.getMaxCurrentNen());
+            }
+            NenUser.updateClient((ServerPlayerEntity) event.player, yo);
+        }
+        if (event.player.isAlive() && event.player.ticksExisted % 10 == 0) {
             processLightPlacementForEntities(event.player.getEntityWorld());
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onDrawScreenPost(RenderGameOverlayEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        IProfiler profiler = mc.getProfiler();
+        MatrixStack ms = event.getMatrixStack();
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            profiler.startSection("nen-hud");
+            /*if (Botania.proxy.isClientPlayerWearingMonocle()) {
+                profiler.startSection("monocle");
+                ItemMonocle.renderHUD(ms, mc.player);
+                profiler.endSection();
+            }*/
+            profiler.startSection("manaBar");
+            PlayerEntity player = mc.player;
+            if (!player.isSpectator() && player.isAlive()) {
+                NenUser yo = NenUser.getFromPlayer(player);
+                boolean anyRequest = (yo.getNenPower() > 0);
+                int totalMana = yo.getCurrentNen();
+                int totalMaxMana = yo.getMaxCurrentNen();
+                //Successfully synced capabilities up, this is the render thread
+                if (anyRequest) {
+                    drawSimpleManaHUD(ms, 0x4444FF, totalMana, totalMaxMana, "Nen");
+                }
+            }
+            profiler.endStartSection("itemsRemaining");
+            //ItemsRemainingRenderHandler.render(ms, event.getPartialTicks());
+            profiler.endSection();
+            profiler.endSection();
+            RenderSystem.color4f(1F, 1F, 1F, 1F);
+        }
+    }
+
     private static void processLightPlacementForEntities(World theWorld) {
-        for (Entity theEntity : Collections.unmodifiableList(theWorld.getPlayers())) {
-            if (theEntity.getCapability(NENUSER).orElseThrow(null).isNenActivated()) {
-                BlockPos blockLocation = new BlockPos(MathHelper.floor(theEntity.getPosX()), MathHelper.floor(theEntity.getPosY() - 0.1D - theEntity.getYOffset()), MathHelper.floor(theEntity.getPosZ())).up();
+        for (Entity player : Collections.unmodifiableList(theWorld.getPlayers())) {
+            NenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
+            if (yo.isNenActivated() && yo.getCurrentNen() > 0) {
+                BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX()), MathHelper.floor(player.getPosY() - 0.1D - player.getYOffset()), MathHelper.floor(player.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
-                NenLight lightBlockToPlace = new NenLight();
+                NenLight lightBlockToPlace = NENLIGHT;
                 if (blockAtLocation == Blocks.AIR) {
-                    placeLightSourceBlock(theEntity, blockLocation, lightBlockToPlace);
+                    placeLightSourceBlock(player, blockLocation, lightBlockToPlace);
                 }
             }
         }
     }
 
-    private static void placeLightSourceBlock(Entity theEntity, BlockPos blockLocation, NenLight theLightBlock) {
-        theEntity.world.setBlockState(blockLocation, theLightBlock.getDefaultState(), 3);
-        TileEntityNenLight lightSource = new TileEntityNenLight();
-        LazyOptional<NenUser> yo = theEntity.getCapability(NENUSER, null);
-        int bro = yo.orElse(null).getNenPower();
+    private static void placeLightSourceBlock(Entity player, BlockPos blockLocation, NenLight theLightBlock) {
+        player.world.setBlockState(blockLocation, theLightBlock.getDefaultState(), 3);
+        TileEntityNenLight lightSource = (TileEntityNenLight) player.world.getTileEntity(blockLocation);
+        NenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
+        int bro = yo.getNenPower();
         if(bro > 15) {
             bro = 15;
         }
         lightSource.setLevelOfLight(bro);
-        theEntity.world.setTileEntity(blockLocation, lightSource);
     }
 
     @OnlyIn(Dist.CLIENT)

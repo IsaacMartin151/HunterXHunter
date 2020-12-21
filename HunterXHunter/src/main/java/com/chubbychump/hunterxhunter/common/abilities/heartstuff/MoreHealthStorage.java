@@ -7,7 +7,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 
 public class MoreHealthStorage implements IStorage<IMoreHealth> {
-
     @Override
     public INBT writeNBT(Capability<IMoreHealth> capability, IMoreHealth instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();
@@ -26,6 +25,5 @@ public class MoreHealthStorage implements IStorage<IMoreHealth> {
         instance.setRampPosition(tag.getShort("position"));
         instance.setHeartContainers(tag.getByte("containers"));
     }
-
 }
 

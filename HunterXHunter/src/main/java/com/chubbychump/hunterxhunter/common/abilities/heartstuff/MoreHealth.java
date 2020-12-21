@@ -17,9 +17,7 @@ import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider.CAPABILITY;
 
-
 public class MoreHealth implements IMoreHealth {
-
     private byte version;
     private float modifier;
     private short rampPosition;
@@ -108,12 +106,9 @@ public class MoreHealth implements IMoreHealth {
         }
     }
 
-
     public static float getDefaultModifier() {
         return Config.defHealth.get() - (float) Attributes.MAX_HEALTH.getDefaultValue();
     }
-
-
 
     public static IMoreHealth getFromPlayer(PlayerEntity player) {
         return player.getCapability(CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
@@ -127,6 +122,4 @@ public class MoreHealth implements IMoreHealth {
     public String toString() {
         return String.format("MoreHealth{version=%s,modifier=%s,rampPosition=%s, containers=%s}", version, modifier, rampPosition, containers);
     }
-
 }
-
