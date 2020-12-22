@@ -1,4 +1,5 @@
 {
+  "effect.hunterxhunter.bloodlust_effect": "BloodLust",
   "item.hunterxhunter.ruby": "Ruby Gem",
   "item.hunterxhunter.greed_island_book": "Book!",
   "item.hunterxhunter.crystal_nen": "Crystal Nen",
@@ -11,5 +12,6 @@
   "block.hunterxhunter.ruby_block": "Ruby Block",
   "block.hunterxhunter.twilight_portal": "Twilight Portal",
   "item.hunterxhunter.sapphire": "Sapphire Gem",
-  "itemGroup.hunterxhunter": "HunterXHunter"
+  "itemGroup.hunterxhunter": "HunterXHunter",
+
 }

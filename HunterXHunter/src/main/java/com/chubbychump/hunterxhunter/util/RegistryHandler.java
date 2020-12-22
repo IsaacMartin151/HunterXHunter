@@ -14,6 +14,8 @@ import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Crystal_
 import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Duplicator;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.TastyFood;
 import com.chubbychump.hunterxhunter.common.items.thehundred.placeable.SaturationStand;
+import com.chubbychump.hunterxhunter.common.potions.BloodLust;
+import com.chubbychump.hunterxhunter.common.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEntity;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.google.common.collect.ImmutableSet;
@@ -25,6 +27,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.potion.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -54,6 +57,8 @@ public class RegistryHandler {
     public static final DeferredRegister<ContainerType<?>> CONTAINER = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
     public static final DeferredRegister<PointOfInterestType> POINT_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, MOD_ID);
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, MOD_ID);
+    public static final DeferredRegister<Potion> POTION_TYPES = DeferredRegister.create(ForgeRegistries.POTION_TYPES, MOD_ID);
+    public static final DeferredRegister<Effect> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, MOD_ID);
 
     public static void init() {
         CONTAINER.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -62,6 +67,8 @@ public class RegistryHandler {
         TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        POTION_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        POTIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
         POINT_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
         PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
         //try {
@@ -78,6 +85,12 @@ public class RegistryHandler {
     //Dimensions
     public static final RegistryKey<DimensionType> GREED_ISLAND_DIMENSION = RegistryKey.getOrCreateKey(Registry.DIMENSION_TYPE_KEY, new ResourceLocation(MOD_ID, "greedisland"));
     public static final RegistryKey<World> GREED_ISLAND_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(MOD_ID, "greedisland"));
+
+    //Effects
+    public static final RegistryObject<Effect> BLOODLUST_EFFECT = POTIONS.register("bloodlust_effect", () -> new BloodLustEffect(EffectType.HARMFUL, 0xcc0a0a));
+
+    //Potions
+    public static final RegistryObject<Potion> BLOODLUST_POTION = POTION_TYPES.register("bloodlust_potion", () -> new BloodLust(new EffectInstance(BLOODLUST_EFFECT.get())));
 
     //Sounds
     public static final RegistryObject<SoundEvent> OSU = SOUNDS.register("osu", () -> new SoundEvent(new ResourceLocation(MOD_ID, "osu")));
