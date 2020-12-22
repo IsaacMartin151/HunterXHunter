@@ -56,12 +56,12 @@ public class RegistryHandler {
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, MOD_ID);
 
     public static void init() {
+        CONTAINER.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        CONTAINER.register(FMLJavaModLoadingContext.get().getModEventBus());
         POINT_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
         PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
         //try {
@@ -90,7 +90,6 @@ public class RegistryHandler {
     public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
     public static final RegistryObject<Item> CRYSTALLIZEDNEN = ITEMS.register( "crystal_nen", Crystal_Nen::new);
     public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tasty_food", TastyFood::new);
-    public static final RegistryObject<Item> GREED_ISLAND_BOOK = ITEMS.register( "greed_island_book", ItemFlowerBag::new);
     public static final RegistryObject<Item> DUPLICATOR = ITEMS.register( "duplicator", Duplicator::new);
     public static final RegistryObject<Item> ROASTED_PORK_DISH = ITEMS.register( "roasted_pork_dish", RoastedPorkDish::new);
     public static final RegistryObject<Item> POTATO_SOUP = ITEMS.register( "potato_soup", PotatoSoup::new);

@@ -28,6 +28,4 @@ public class NenProvider implements ICapabilitySerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
         NENUSER.getStorage().readNBT(NENUSER, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null, nbt);
     }
-
 }
-
