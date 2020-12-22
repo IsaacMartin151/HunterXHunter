@@ -1,7 +1,5 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -14,11 +12,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_BOOK;
-
 @OnlyIn(Dist.CLIENT)
 public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandContainer> {
-
     // This is the resource location for the background image
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/gui/bookinv.png");
 
@@ -45,9 +40,9 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
         final float PLAYER_LABEL_DISTANCE_FROM_BOTTOM = (92);
 
         final float BAG_LABEL_YPOS = 8;
-        TranslationTextComponent bagLabel = new TranslationTextComponent(GREED_ISLAND_BOOK.get().getTranslationKey());
+        TranslationTextComponent bagLabel = new TranslationTextComponent("Book!");
         float BAG_LABEL_XPOS = 10;//(xSize / 2.0F) - this.field_230712_o_.getStringWidth(bagLabel.getString()) / 2.0F;                  // centre the label             //this.font.
-        this.font.drawString(matrixStack, GREED_ISLAND_BOOK.toString(), BAG_LABEL_XPOS, BAG_LABEL_YPOS, Color.darkGray.getRGB());            //this.font.drawString;
+        this.font.drawString(matrixStack, "Book!", BAG_LABEL_XPOS, BAG_LABEL_YPOS, Color.darkGray.getRGB());            //this.font.drawString;
 
         float PLAYER_LABEL_YPOS = ySize - PLAYER_LABEL_DISTANCE_FROM_BOTTOM;
         this.font.drawString(matrixStack, this.playerInventory.toString(),                              //this.font.drawString;

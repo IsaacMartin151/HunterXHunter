@@ -2,31 +2,29 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
-import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
+import com.chubbychump.hunterxhunter.packets.PacketManager;
+import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
+import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import javafx.stage.Stage;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ISoundEventAccessor;
-import net.minecraft.client.audio.SoundList;
-import net.minecraft.client.audio.SoundSource;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.MapItemRenderer;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -36,9 +34,8 @@ import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.profiler.IProfiler;
@@ -50,55 +47,39 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 //import net.minecraft.world.gen.placement.CountRangeConfig;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.template.RuleTest;
-import net.minecraft.world.gen.placement.ConfiguredPlacement;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.thread.SidedThreadGroup;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.bytedeco.javacv.FrameGrabber;
-import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
-import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.renderManaBar;
+import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.init.ModBlocks.NENLIGHT;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
-import static net.minecraftforge.common.ForgeHooks.onItemRightClick;
 
 //@SuppressWarnings("ALL")
 @Mod.EventBusSubscriber
 public class EventsHandling {
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         // Ensure server-side only
@@ -110,6 +91,7 @@ public class EventsHandling {
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
         NenUser yo = NenUser.getFromPlayer(player);
+        ItemStackHandler itemHandler = player.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
 
         int Type = yo.getNenType();
         // Apply Health Modifier
@@ -152,7 +134,7 @@ public class EventsHandling {
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "nenuser"), new NenProvider());
             event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "morehealth"), new MoreHealthProvider());
-
+            event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "greedisland"), new GreedIslandProvider());
             LOGGER.info("Attached capability to player with ID# "+event.getObject().getUniqueID());
         }
     }
@@ -429,19 +411,12 @@ public class EventsHandling {
             boolean updatePlayer = false;
             if (book.isPressed()) {
                 updatePlayer = true;
+                //INamedContainerProvider uh = new GreedIslandContainer();
                 LOGGER.info("pressed book button");
-                PlayerEntity player = event.player;
-                if (!player.world.isRemote) {  // server only!
-                    ItemStack stack = yo.getBook();
-                    HunterXHunter.LOGGER.info("On server");
-                    INamedContainerProvider containerProviderFlowerBag = new ItemFlowerBag.ContainerProviderFlowerBag(stack);
-                    NetworkHooks.openGui((ServerPlayerEntity) player,
-                            containerProviderFlowerBag,
-                            (packetBuffer) -> {
-                        packetBuffer.writeInt(100);
-                    });
-                    // We use the packetBuffer to send the bag size; not necessary since it's always 16, but just for illustration purposes
-                }
+                ItemStackHandler oof = event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
+                PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
+
+                //NenUser cap = NenUser.getFromPlayer(serverPlayer);
             }
             if (nenControl.isPressed()) {
                 yo.toggleNen();

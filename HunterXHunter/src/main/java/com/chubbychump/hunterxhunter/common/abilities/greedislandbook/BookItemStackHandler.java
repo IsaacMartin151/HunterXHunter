@@ -1,4 +1,4 @@
-package com.chubbychump.hunterxhunter.client.gui;
+package com.chubbychump.hunterxhunter.common.abilities.greedislandbook;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,13 +12,13 @@ import javax.annotation.Nonnull;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
-public class ItemStackHandlerFlowerBag extends ItemStackHandler {
+public class BookItemStackHandler extends ItemStackHandler {
     ResourceLocation THEONEHUNDRED = new ResourceLocation(MOD_ID, "theonehundred");
 
     public static final int MIN_FLOWER_SLOTS = 1;
     public static final int MAX_FLOWER_SLOTS = 100;
 
-    public ItemStackHandlerFlowerBag(int numberOfSlots) {
+    public BookItemStackHandler(int numberOfSlots) {
         super(MathHelper.clamp(numberOfSlots, MIN_FLOWER_SLOTS, MAX_FLOWER_SLOTS));
     }
 

@@ -1,25 +1,13 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.ItemStackHandlerFlowerBag;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.items.ItemFlowerBag;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
-import com.chubbychump.hunterxhunter.packets.SyncHealthPacket;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
-import static com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider.CAPABILITY;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_BOOK;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class NenUser {
     protected int nenPower = 1;
@@ -30,12 +18,8 @@ public class NenUser {
     public boolean ren;
     public boolean zetsu;
     protected int nencolor = 0;
-    private ItemStack book;
-    private ItemStackHandler bookItemHandler;
 
     public NenUser() {
-        book = new ItemFlowerBag().getDefaultInstance();
-        bookItemHandler = new ItemStackHandlerFlowerBag(100);
         currentNen = 0;
     }
 
@@ -46,12 +30,6 @@ public class NenUser {
     public static void updateServer(PlayerEntity player, NenUser cap) {
         PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
     }
-
-    public ItemStack getBook() {
-        return book;
-    }
-
-    public ItemStackHandler getBookItemHandler() { return bookItemHandler;}
 
     public void setNenPower(int power) {
         this.nenPower = power;

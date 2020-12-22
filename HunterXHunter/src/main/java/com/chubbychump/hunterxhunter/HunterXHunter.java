@@ -3,6 +3,8 @@ package com.chubbychump.hunterxhunter;
 import com.chubbychump.hunterxhunter.client.core.handler.ClientProxy;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.ContainerScreenGreedIsland;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookStorage;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
@@ -22,11 +24,20 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.NBTTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -34,6 +45,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,12 +63,8 @@ import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 public class HunterXHunter {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
-
     public static IProxy proxy = new IProxy() {};
-
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
-
-
 
     //Phantom Troupe final boss battle for last item - use theme music
 
@@ -84,6 +94,10 @@ public class HunterXHunter {
     - "Cards" need to be able to be converted to and from item form, so each card needs corresponding item (Not all need to be new items)
     - If card of certain rarity, play sound - store in giant public static int array?
     -
+    - Cool Animation for adding card to the book feat. transforming into card texture vs regular texture
+    - Need to fix book Capability storage - use Item.writeNBT or something
+    - Attach Book capability to player as separate thing, have the item reference the capability
+    -
     - Custom cutscene for when someone beats the game, gets something cool and permanent card
      */
 
@@ -96,24 +110,24 @@ public class HunterXHunter {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         RegistryHandler.init();
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
-        VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Enhancer());
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
+        CapabilityManager.INSTANCE.register(ItemStackHandler.class, new BookStorage(), () -> new BookItemStackHandler(100));
+        VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
+
+        //CapabilityManager.INSTANCE.register();
+
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         //RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
-
-
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
         ScreenManager.registerFactory(GREED_ISLAND_CONTAINER.get(), ContainerScreenGreedIsland::new);
-
     }
 
     public static final ItemGroup TAB = new ItemGroup("hunterxhunter") {

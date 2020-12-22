@@ -1,37 +1,34 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_CONTAINER;
 
 /**
- * The ContainerFlowerBag is used to manipulate the contents of the FlowerBag (ItemStackHandlerFlowerBag).
+ * The ContainerFlowerBag is used to manipulate the contents of the FlowerBag (BookItemStackHandler).
  * The master copy is on the server side, with a "dummy" copy stored on the client side
  * The GUI (ContainerScreen) on the client side interacts with the dummy copy.
  * Vanilla ensures that the server and client copies remain synchronised.
  */
 
 public class GreedIslandContainer extends Container {
-
-    private final ItemStackHandlerFlowerBag itemStackHandlerFlowerBag;
-    private final ItemStack itemStackBeingHeld;
+    private final ItemStackHandler itemStackHandlerFlowerBag;
 
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -58,11 +55,10 @@ public class GreedIslandContainer extends Container {
      * @param windowID
      * @param playerInventory
      * @param bagContents
-     * @param flowerBag the ItemStack for the flower bag; this is used for checking whether the player is still holding the bag in their hand
      * @return
      */
-    public static GreedIslandContainer createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandlerFlowerBag bagContents, ItemStack flowerBag) {
-        return new GreedIslandContainer(windowID, playerInventory, bagContents, flowerBag);
+    public static GreedIslandContainer createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandler bagContents) {
+        return new GreedIslandContainer(windowID, playerInventory, bagContents);
     }
 
     /**
@@ -73,14 +69,11 @@ public class GreedIslandContainer extends Container {
      * @return
      */
     public static GreedIslandContainer createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
-        // for this example we use extraData for the server to tell the client how many slots for flower itemstacks the flower bag contains.
-        int numberOfFlowerSlots = extraData.readInt();
 
         try {
-            ItemStackHandlerFlowerBag itemStackHandlerFlowerBag = new ItemStackHandlerFlowerBag(numberOfFlowerSlots);
-
+            ItemStackHandler itemStackHandlerFlowerBag = new ItemStackHandler(100);
             // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
-            return new GreedIslandContainer(windowID, playerInventory, itemStackHandlerFlowerBag, ItemStack.EMPTY);
+            return new GreedIslandContainer(windowID, playerInventory, itemStackHandlerFlowerBag);
         } catch (IllegalArgumentException iae) {
             LOGGER.warn(iae);
         }
@@ -95,12 +88,9 @@ public class GreedIslandContainer extends Container {
      * @param playerInv the inventory of the player
      * @param itemStackHandlerFlowerBag the inventory stored in the bag
      */
-    public GreedIslandContainer(int windowId, PlayerInventory playerInv,
-                                ItemStackHandlerFlowerBag itemStackHandlerFlowerBag,
-                                ItemStack itemStackBeingHeld) {
+    public GreedIslandContainer(int windowId, PlayerInventory playerInv, ItemStackHandler itemStackHandlerFlowerBag) {
         super(GREED_ISLAND_CONTAINER.get(), windowId);
         this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
-        this.itemStackBeingHeld = playerInv.player.getCapability(NENUSER, null).orElseThrow(null).getBook();
 
         int SLOT_X_SPACING = 18;
         int SLOT_Y_SPACING = 18;
@@ -127,7 +117,7 @@ public class GreedIslandContainer extends Container {
         SLOT_Y_SPACING = 14;
         int bagSlotCount = itemStackHandlerFlowerBag.getSlots();
         if (bagSlotCount < 1 || bagSlotCount > MAX_EXPECTED_BAG_SLOT_COUNT) {
-            LOGGER.warn("Unexpected invalid slot count in ItemStackHandlerFlowerBag(" + bagSlotCount + ")");
+            LOGGER.warn("Unexpected invalid slot count in BookItemStackHandler(" + bagSlotCount + ")");
             bagSlotCount = MathHelper.clamp(bagSlotCount, 1, MAX_EXPECTED_BAG_SLOT_COUNT);
         }
 
@@ -144,8 +134,6 @@ public class GreedIslandContainer extends Container {
         }
     }
 
-    // Check if the player is still able to access the container
-    // In this case - if the player stops holding the bag, return false
     // Called on the server side only.
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
@@ -159,6 +147,7 @@ public class GreedIslandContainer extends Container {
     // At the very least you must override this and return ItemStack.EMPTY or the game will crash when the player shift clicks a slot
     // returns ItemStack.EMPTY if the source slot is empty, or if none of the the source slot item could be moved
     //   otherwise, returns a copy of the source stack
+
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex) {
@@ -197,7 +186,7 @@ public class GreedIslandContainer extends Container {
 
     /**
      * Because capability nbt is not actually stored in the ItemStack nbt (it is created fresh each time we need to transmit or save an nbt), detectAndSendChanges
-     *   does not work for our ItemFlowerBag ItemStack.  i.e. when the contents of ItemStackHandlerFlowerBag are changed, the nbt of ItemFlowerBag ItemStack don't change,
+     *   does not work for our ItemFlowerBag ItemStack.  i.e. when the contents of BookItemStackHandler are changed, the nbt of ItemFlowerBag ItemStack don't change,
      *   so it is not sent to the client.
      * For this reason, we need to manually detect when it has changed and mark it dirty.
      * The easiest way is just to set a counter in the nbt tag and let the vanilla code notice that the itemstack has changed.
@@ -209,15 +198,9 @@ public class GreedIslandContainer extends Container {
      */
     @Override
     public void detectAndSendChanges() {
-        if (itemStackHandlerFlowerBag.isDirty()) {
-            CompoundNBT nbt = itemStackBeingHeld.getOrCreateTag();
-            int dirtyCounter = nbt.getInt("dirtyCounter");
-            nbt.putInt("dirtyCounter", dirtyCounter + 1);
-            itemStackBeingHeld.setTag(nbt);
-        }
         super.detectAndSendChanges();
     }
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = HunterXHunter.LOGGER;
 
 }
