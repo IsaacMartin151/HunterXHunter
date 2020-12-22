@@ -7,6 +7,7 @@ import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
@@ -38,6 +39,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -57,6 +59,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -288,10 +291,21 @@ public class EventsHandling {
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
+        //Clear bloodlust from the attacking entity (If there is one)
+        if (event.getSource() instanceof EntityDamageSource ) {
+            EntityDamageSource uh = (EntityDamageSource) event.getSource();
+            Entity yuh = uh.getTrueSource();
+            if (yuh instanceof PlayerEntity) {
+                ((PlayerEntity) yuh).removeActivePotionEffect(BLOODLUST_EFFECT.get());
+                Minecraft.getInstance().player.removeActivePotionEffect(BLOODLUST_EFFECT.get());
+            }
+        }
+
         // Ensure server-side only
         if (event.getEntity().getEntityWorld().isRemote) {
             return;
         }
+
         // Ensure player only
         PlayerEntity player;
         if (!(event.getEntity() instanceof PlayerEntity)) {
@@ -413,7 +427,7 @@ public class EventsHandling {
                 updatePlayer = true;
                 //INamedContainerProvider uh = new GreedIslandContainer();
                 LOGGER.info("pressed book button");
-                ItemStackHandler oof = event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
+                BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
                 PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
 
                 //NenUser cap = NenUser.getFromPlayer(serverPlayer);
@@ -450,6 +464,23 @@ public class EventsHandling {
             if (updatePlayer == true) {
                 NenUser.updateServer(event.player, yo);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void potions(PotionEvent.PotionExpiryEvent event) {
+        LOGGER.info("Potion expiring");
+        if (event.getPotionEffect().getPotion() == BLOODLUST_EFFECT.get() ) {
+            LOGGER.info("Expiring potion is bloodlust, killing player");
+            event.getEntity().attackEntityFrom(DamageSource.STARVE, 100);
+        }
+    }
+
+    @SubscribeEvent
+    public static void potions(PotionEvent.PotionRemoveEvent event) {
+        LOGGER.info("Trying to remove potion");
+        if (event.getPotionEffect().getPotion() == BLOODLUST_EFFECT.get()) {
+            LOGGER.info("It's an instance of bloodlust, cancelling removal");
         }
     }
 

@@ -28,7 +28,7 @@ import static com.chubbychump.hunterxhunter.util.RegistryHandler.GREED_ISLAND_CO
  */
 
 public class GreedIslandContainer extends Container {
-    private final ItemStackHandler itemStackHandlerFlowerBag;
+    private final BookItemStackHandler itemStackHandlerFlowerBag;
 
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -57,7 +57,7 @@ public class GreedIslandContainer extends Container {
      * @param bagContents
      * @return
      */
-    public static GreedIslandContainer createContainerServerSide(int windowID, PlayerInventory playerInventory, ItemStackHandler bagContents) {
+    public static GreedIslandContainer createContainerServerSide(int windowID, PlayerInventory playerInventory, BookItemStackHandler bagContents) {
         return new GreedIslandContainer(windowID, playerInventory, bagContents);
     }
 
@@ -71,7 +71,7 @@ public class GreedIslandContainer extends Container {
     public static GreedIslandContainer createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
 
         try {
-            ItemStackHandler itemStackHandlerFlowerBag = new ItemStackHandler(100);
+            BookItemStackHandler itemStackHandlerFlowerBag = new BookItemStackHandler(100);
             // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
             return new GreedIslandContainer(windowID, playerInventory, itemStackHandlerFlowerBag);
         } catch (IllegalArgumentException iae) {
@@ -88,7 +88,7 @@ public class GreedIslandContainer extends Container {
      * @param playerInv the inventory of the player
      * @param itemStackHandlerFlowerBag the inventory stored in the bag
      */
-    public GreedIslandContainer(int windowId, PlayerInventory playerInv, ItemStackHandler itemStackHandlerFlowerBag) {
+    public GreedIslandContainer(int windowId, PlayerInventory playerInv, BookItemStackHandler itemStackHandlerFlowerBag) {
         super(GREED_ISLAND_CONTAINER.get(), windowId);
         this.itemStackHandlerFlowerBag = itemStackHandlerFlowerBag;
 
