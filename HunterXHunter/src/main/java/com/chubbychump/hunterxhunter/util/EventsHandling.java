@@ -7,6 +7,7 @@ import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
@@ -413,7 +414,7 @@ public class EventsHandling {
                 updatePlayer = true;
                 //INamedContainerProvider uh = new GreedIslandContainer();
                 LOGGER.info("pressed book button");
-                ItemStackHandler oof = event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
+                BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
                 PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
 
                 //NenUser cap = NenUser.getFromPlayer(serverPlayer);

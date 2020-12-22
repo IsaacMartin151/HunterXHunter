@@ -2,6 +2,7 @@ package com.chubbychump.hunterxhunter.packets;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
+import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
@@ -56,7 +57,7 @@ public class SyncBookPacket {
             }
             else {
                 HunterXHunter.LOGGER.info("Opening GUI");
-                ItemStackHandler cap = serverPlayer.getCapability(BOOK_CAPABILITY).orElseThrow(null);
+                BookItemStackHandler cap = (BookItemStackHandler) serverPlayer.getCapability(BOOK_CAPABILITY).orElseThrow(null);
                 INamedContainerProvider container = new SimpleNamedContainerProvider((w, p, pl) -> new GreedIslandContainer(w, p, cap), new TranslationTextComponent("Book!"));
                 NetworkHooks.openGui(serverPlayer, container);
             }
