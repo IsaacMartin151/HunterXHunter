@@ -2,9 +2,7 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
-import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
-import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
+import com.chubbychump.hunterxhunter.client.gui.*;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
@@ -15,6 +13,7 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvi
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
+import com.chubbychump.hunterxhunter.common.containers.NenEffectSelect;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
@@ -24,26 +23,39 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResource;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -70,6 +82,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Collections;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
@@ -413,6 +428,209 @@ public class EventsHandling {
         }
     }
 
+    /*
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void nenSelect(RenderGameOverlayEvent.Post) {
+        if (!modeMenu.isInvalid() && modeMenu.isKeyDown())
+        {
+            ChiselsAndBitsMenu.instance.actionUsed = false;
+            ChiselsAndBitsMenu.instance.raiseVisibility();
+            ChiselsAndBitsMenu.instance.getMinecraft().mouseHelper.ungrabMouse();
+        }
+        else
+        {
+            if (!ChiselsAndBitsMenu.instance.actionUsed)
+            {
+                if (ChiselsAndBitsMenu.instance.switchTo != null)
+                {
+                    ClientSide.instance.playRadialMenu();
+                    ChiselModeManager.changeChiselMode(tool, ChiselModeManager.getChiselMode(getPlayer(), tool, Hand.MAIN_HAND), ChiselsAndBitsMenu.instance.switchTo);
+                }
+
+                if (ChiselsAndBitsMenu.instance.doAction != null)
+                {
+                    ClientSide.instance.playRadialMenu();
+                    switch (ChiselsAndBitsMenu.instance.doAction)
+                    {
+                        case ROLL_X:
+                            PacketRotateVoxelBlob pri = new PacketRotateVoxelBlob(Axis.X, Rotation.CLOCKWISE_90);
+                            ChiselsAndBits.getNetworkChannel().sendToServer(pri);
+                            break;
+
+                        case ROLL_Z:
+                            PacketRotateVoxelBlob pri2 = new PacketRotateVoxelBlob(Axis.Z, Rotation.CLOCKWISE_90);
+                            ChiselsAndBits.getNetworkChannel().sendToServer(pri2);
+                            break;
+
+                        case REPLACE_TOGGLE:
+                            ReplacementStateHandler.getInstance().setReplacing(!ReplacementStateHandler.getInstance().isReplacing());
+                            ReflectionWrapper.instance.clearHighlightedStack();
+                            break;
+
+                        case UNDO:
+                            UndoTracker.getInstance().undo();
+                            break;
+
+                        case REDO:
+                            UndoTracker.getInstance().redo();
+                            break;
+
+                        case BLACK:
+                        case BLUE:
+                        case BROWN:
+                        case CYAN:
+                        case GRAY:
+                        case GREEN:
+                        case LIGHT_BLUE:
+                        case LIME:
+                        case MAGENTA:
+                        case ORANGE:
+                        case PINK:
+                        case PURPLE:
+                        case RED:
+                        case LIGHT_GRAY:
+                        case WHITE:
+                        case YELLOW:
+
+                            final PacketSetColor setColor = new PacketSetColor(DyeColor.valueOf(ChiselsAndBitsMenu.instance.doAction.name()),
+                                    getHeldToolType(Hand.MAIN_HAND),
+                                    ChiselsAndBits.getConfig().getClient().chatModeNotification.get());
+                            ChiselsAndBits.getNetworkChannel().sendToServer(setColor);
+                            ReflectionWrapper.instance.clearHighlightedStack();
+
+                            break;
+                    }
+                }
+            }
+
+            ChiselsAndBitsMenu.instance.actionUsed = true;
+            ChiselsAndBitsMenu.instance.decreaseVisibility();
+        }
+
+        if (ChiselsAndBitsMenu.instance.isVisible())
+        {
+            final MainWindow window = event.getWindow();
+            ChiselsAndBitsMenu.instance.init(Minecraft.getInstance(), window.getScaledWidth(), window.getScaledHeight());
+            ChiselsAndBitsMenu.instance.configure(window.getScaledWidth(), window.getScaledHeight());
+
+            if (!wasVisible)
+            {
+                ChiselsAndBitsMenu.instance.getMinecraft().currentScreen = ChiselsAndBitsMenu.instance;
+                ChiselsAndBitsMenu.instance.getMinecraft().mouseHelper.ungrabMouse();
+            }
+
+            if (ChiselsAndBitsMenu.instance.getMinecraft().mouseHelper.isMouseGrabbed())
+            {
+                KeyBinding.unPressAllKeys();
+            }
+
+                //final int k1 = (int) (Minecraft.getInstance().mouseHelper.getMouseX() * window.getScaledWidth() / window.getWidth());
+                //final int l1 = (int) (window.getScaledHeight() - Minecraft.getInstance().mouseHelper.getMouseY() * window.getScaledHeight() / window.getHeight() - 1);
+                //net.minecraftforge.client.ForgeHooksClient.drawScreen(ChiselsAndBitsMenu.instance, event.getMatrixStack(), k1, l1, event.getPartialTicks());
+        }
+        else
+        {
+            if (wasVisible)
+            {
+                ChiselsAndBitsMenu.instance.getMinecraft().mouseHelper.grabMouse();
+            }
+        }
+    }
+
+        if (!undo.isInvalid() && undo.isPressed())
+    {
+        UndoTracker.getInstance().undo();
+    }
+
+        if (!redo.isInvalid() && redo.isPressed())
+    {
+        UndoTracker.getInstance().redo();
+    }
+
+        if (!addToClipboard.isInvalid() && addToClipboard.isPressed())
+    {
+        final Minecraft mc = Minecraft.getInstance();
+        if (mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK && mc.objectMouseOver instanceof BlockRayTraceResult)
+        {
+            final BlockRayTraceResult rayTraceResult = (BlockRayTraceResult) mc.objectMouseOver;
+
+            try
+            {
+                final IBitAccess access = ChiselsAndBits.getApi().getBitAccess(mc.world, rayTraceResult.getPos());
+                final ItemStack is = access.getBitsAsItem(null, ItemType.CHISLED_BLOCK, false);
+
+                CreativeClipboardTab.addItem(is);
+            }
+            catch (final CannotBeChiseled e)
+            {
+                // nope.
+            }
+        }
+    }
+
+        if (!pickBit.isInvalid() && pickBit.isPressed())
+    {
+        final Minecraft mc = Minecraft.getInstance();
+        if (mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK && mc.objectMouseOver instanceof BlockRayTraceResult)
+        {
+            BlockRayTraceResult rayTraceResult = (BlockRayTraceResult) mc.objectMouseOver;
+
+            try
+            {
+                final BitLocation bl = new BitLocation(rayTraceResult, true, BitOperation.CHISEL);
+                final IBitAccess access = ChiselsAndBits.getApi().getBitAccess(mc.world, bl.getBlockPos());
+                final IBitBrush brush = access.getBitAt(bl.getBitX(), bl.getBitY(), bl.getBitZ());
+                final ItemStack is = brush.getItemStack(1);
+                doPick(is);
+            }
+            catch (final CannotBeChiseled e)
+            {
+                // nope.
+            }
+        }
+    }
+
+        if (type == ElementType.HOTBAR && ChiselsAndBits.getConfig().getClient().enableToolbarIcons.get())
+    {
+        final Minecraft mc = Minecraft.getInstance();
+        final MainWindow window = event.getWindow();
+
+        if (!mc.player.isSpectator())
+        {
+            final IngameGui sc = mc.ingameGUI;
+
+            for (int slot = 0; slot < 9; ++slot)
+            {
+                final ItemStack stack = mc.player.inventory.mainInventory.get(slot);
+                if (stack.getItem() instanceof ItemChisel)
+                {
+                    final ChiselToolType toolType = getToolTypeForItem(stack);
+                    IToolMode mode = toolType.getMode(stack);
+
+                    if (!ChiselsAndBits.getConfig().getClient().perChiselMode.get() && tool == ChiselToolType.CHISEL)
+                    {
+                        mode = ChiselModeManager.getChiselMode(mc.player, ChiselToolType.CHISEL, lastHand);
+                    }
+
+                    final int x = window.getScaledWidth() / 2 - 90 + slot * 20 + 2;
+                    final int y = window.getScaledHeight() - 16 - 3;
+
+                    RenderSystem.color4f(1, 1, 1, 1.0f);
+                    Minecraft.getInstance().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+                    final TextureAtlasSprite sprite = chiselModeIcons.get(mode) == null ? getMissingIcon() : chiselModeIcons.get(mode).sprite;
+
+                    RenderSystem.enableBlend();
+                    sc.blit(event.getMatrixStack(), x + 1, y + 1, 0, 8, 8, sprite);
+                    RenderSystem.disableBlend();
+                }
+            }
+        }
+    }
+}
+    }
+    */
+
     //CAN NOT make this client only
     // Well, maybe I can if I check for client side only instead of server side only
     // Nah, doesn't look like that works. Client side capability changes don't seem to update the server side capability
@@ -445,21 +663,38 @@ public class EventsHandling {
                 updatePlayer = true;
             }
             if (nenPower1.isPressed()) {
-                yo.nenpower1(event.player);
-                updatePlayer = true;
-                World world = event.player.world;
-                PlayerEntity player = event.player;
-                BlockPos pos = event.player.getPosition();
-                //if (!world.isRemote && player != null /*&& ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, false)*/) {
-                LOGGER.info("Laser beam! BlockPos is " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-                //Entity entity = ModEntityTypes.RAYBEAM.create(world);
-                //entity.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-                //world.addEntity(entity);
-                //player.getCooldownTracker().setCooldown(this, IManaProficiencyArmor.hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
-                //ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
-                //}
-                //If manipulator, set screen to extended map gui
-                //MapItemRenderer
+                Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+                /*
+                switch (yo.getNenType()) {
+                    case 0: break;
+                    case 1:
+                        event.player.setForcedPose(Pose.FALL_FLYING);
+                        event.player.setNoGravity(true);
+                    case 2:
+                        Pose uh;
+                        yo.nenpower1(event.player);
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                        updatePlayer = true;
+                        World world = event.player.world;
+                        PlayerEntity player = event.player;
+                        BlockPos pos = event.player.getPosition();
+                        //if (!world.isRemote && player != null COST, false) {
+                        LOGGER.info("Laser beam! BlockPos is " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+                        //Entity entity = ModEntityTypes.RAYBEAM.create(world);
+                        //entity.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+                        //world.addEntity(entity);
+                        //player.getCooldownTracker().setCooldown(this, IManaProficiencyArmor.hasProficiency(player, stack) ? COOLDOWN / 2 : COOLDOWN);
+                        //ManaItemHandler.instance().requestManaExactForTool(stack, player, COST, true);
+                        //}
+                        //If manipulator, set screen to extended map gui
+                        //MapItemRenderer
+
+
+                }
+                 */
             }
             if (updatePlayer == true) {
                 NenUser.updateServer(event.player, yo);
@@ -592,4 +827,5 @@ public class EventsHandling {
             ObjectDrawingFunctions.DrawSphere(matrixStack, uh, 2);
         }
     }
+
 }
