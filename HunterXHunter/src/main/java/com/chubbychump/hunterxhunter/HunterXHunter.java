@@ -69,7 +69,9 @@ public class HunterXHunter {
     //Phantom Troupe final boss battle for last item - use theme music
 
     //FIX FILE PATH FFMPEG FILE DEPARTURE.MP4
-    //Add effect bloodlust? Must kill an entity
+
+    //Add Neferpitou animation overlay for BloodLust
+
     //Must solve a gui puzzle in order to increase nen power, otherwise increment fail counter (3 fail counters = increase anyways)
     //Create animation for adding card to book
     //Keep a running list of blockitems vs Items vs foods vs tools in the 100
@@ -82,21 +84,32 @@ public class HunterXHunter {
     // - 30 vanilla items
 
     //Transmuter = fully repair durability - increased speed?
+    // - Button 1: Dash Move
     //Enhancer = increased health, damage, regen?
+    // - Button 1: Select
+    // - Button 1: Aerial Attack
     //Emitter = create explosions at range, explosion based on power
-    //Conjurer = create winged ally entities?
-    //Manipulator = view other people's perspectives, freeze people/control movement few seconds after hitting them with projectile - custom enchantment for that?
+    // - Button 1: Select Projectile Type
+    // - Button 2:
+    //Conjurer = create winged ally entities? Create temporary walls/floors/steps/protective pyramid
+    // - Button 1: Select Structure Type/Create Structure
+    // - Button 2:
+    //Manipulator = view other people's perspectives, freeze/control movement few seconds after hitting them with projectile
+    // - Button 1: Select person/Toggle overlay
+    // - Button 2: Select Post-Damage effect
     //Specialist = Really high damage + health cap?
 
     /*
-    Base it off the game, win the game by collecting all the cards. Have the Cardbook storage be a capability?
-    - Custom dimension for after all vanilla items are collected ~70 or so?
+    - Custom dimension for after all items are collected
+    // Boss battle - 4 islands, 1 starting island and 3 opponent islands
+    // ShiaPouf creates bat/phantom entities, 2 per player, in order to satisfy bloodlust
+    // Youpi detonates random locations
+    // Neferpitou does severe knockback
+
     - "Cards" need to be able to be converted to and from item form, so each card needs corresponding item (Not all need to be new items)
-    - If card of certain rarity, play sound - store in giant public static int array?
+    - If card of certain rarity, play sound
     -
     - Cool Animation for adding card to the book feat. transforming into card texture vs regular texture
-    - Need to fix book Capability storage - use Item.writeNBT or something
-    - Attach Book capability to player as separate thing, have the item reference the capability
     -
     - Custom cutscene for when someone beats the game, gets something cool and permanent card
      */

@@ -17,10 +17,17 @@ public class NenUser {
     public boolean en;
     public boolean ren;
     public boolean zetsu;
+    public boolean passivePower;
     protected int nencolor = 0;
 
     public NenUser() {
         currentNen = 0;
+        nenActivated = false;
+        gyo = false;
+        en = false;
+        ren = false;
+        zetsu = false;
+        passivePower = false;
     }
 
     public static void updateClient(ServerPlayerEntity player, NenUser cap) {
@@ -29,6 +36,14 @@ public class NenUser {
 
     public static void updateServer(PlayerEntity player, NenUser cap) {
         PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
+    }
+
+    public boolean getPassivePower() {
+        return passivePower;
+    }
+
+    public void togglePassivePower() {
+        this.passivePower = !passivePower;
     }
 
     public void setNenPower(int power) {
