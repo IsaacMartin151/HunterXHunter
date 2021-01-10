@@ -127,6 +127,10 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
             }
             //eff.setPixelFormat();
         }
+        if (lastpartialticks < 0) {
+            lastpartialticks += partialTicks;
+            return;
+        }
         if (needstorestart) {
             Minecraft.getInstance().getSoundHandler().play(bruhh);
             try {

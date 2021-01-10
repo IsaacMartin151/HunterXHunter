@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
@@ -33,7 +34,7 @@ public class HunterXHunterDeathScreen extends Screen {
     /** The integer value containing the number of ticks that have passed since the player's death */
     private float lastpartialticks = 0;
     private long firstRenderTime = 0L;
-    private DeathMusic bruhh = new DeathMusic();
+    public static DeathMusic bruhh = new DeathMusic();
     private float framerate = 30f;
     private boolean needstorestart = false;
     private int enableButtonsTimer;
@@ -200,9 +201,16 @@ public class HunterXHunterDeathScreen extends Screen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
+    public void onClose() {
+        super.onClose();
+        Minecraft.getInstance().getSoundHandler().stop(bruhh);
+    }
+
     public boolean isPauseScreen() {
         return false;
     }
+
 
     public void tick() {
         super.tick();

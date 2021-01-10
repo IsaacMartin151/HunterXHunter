@@ -1,35 +1,32 @@
-package com.chubbychump.hunterxhunter.common.containers;
+package com.chubbychump.hunterxhunter.client.gui;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.ButtonAction;
-import com.chubbychump.hunterxhunter.client.gui.IToolMode;
-import com.chubbychump.hunterxhunter.client.gui.NenPassiveSelection;
-import com.google.common.base.Stopwatch;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+
+@OnlyIn(Dist.CLIENT)
 public class NenEffectSelect extends Screen {
     public static NenEffectSelect instance = new NenEffectSelect();
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private float visibility = 0.0f;
     private boolean canRaise = true;
-    public IToolMode switchTo = null;
-    public ButtonAction doAction = null;
+    public int switchTo = 0;
+    public int selectedPower = 0;
     public boolean actionUsed = false;
     public ResourceLocation[] icons = new ResourceLocation[4];
 
@@ -47,38 +44,6 @@ public class NenEffectSelect extends Screen {
     {
         return Minecraft.getInstance();
     }
-
-    private static class MenuButton {
-
-        public double x1, x2;
-        public double y1, y2;
-        public boolean highlighted;
-
-        public final ButtonAction action;
-        public TextureAtlasSprite icon;
-        public int color;
-        public String name;
-        public Direction textSide;
-
-        public MenuButton(
-                final String name,
-                final ButtonAction action,
-                final double x,
-                final double y,
-                final TextureAtlasSprite ico,
-                final Direction textSide )
-        {
-            this.name = name;
-            this.action = action;
-            x1 = x;
-            x2 = x + 18;
-            y1 = y;
-            y2 = y + 18;
-            icon = ico;
-            color = 0xffffff;
-            this.textSide = textSide;
-        }
-    };
 
     static class MenuRegion {
         public IToolMode mode;
@@ -101,8 +66,6 @@ public class NenEffectSelect extends Screen {
     @Override
     public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
         matrixStack.push();
-        //matrixStack.translate( 0.0F, 0.0F, 200.0F );
-
         final int start = (int) ( visibility * 98 ) << 24;
         final int end = (int) ( visibility * 128 ) << 24;
 
@@ -130,30 +93,19 @@ public class NenEffectSelect extends Screen {
         if ( radians < -quarterCircle ) {
             radians = radians + Math.PI * 2;
         }
-        HunterXHunter.LOGGER.info("In render loop. Radians is "+radians);
 
         final double middle_x = width / 2;
         final double middle_y = height / 2;
 
         final ArrayList<MenuRegion> modes = new ArrayList<MenuRegion>();
-        final ArrayList<MenuButton> btns = new ArrayList<MenuButton>();
-
-        final ArrayList<NenPassiveSelection> nenPassiveSelections = new ArrayList<NenPassiveSelection>();
-
         final NenPassiveSelection[] orderedModes = { NenPassiveSelection.POWER_ONE, NenPassiveSelection.POWER_TWO, NenPassiveSelection.POWER_THREE, NenPassiveSelection.POWER_FOUR };
 
         for (final NenPassiveSelection mode : orderedModes) {
             modes.add( new MenuRegion( mode ) );
-            HunterXHunter.LOGGER.info("Adding new MenuRegion");
         }
 
-        HunterXHunter.LOGGER.info("Finished adding menuregions");
-
-        switchTo = null;
-        doAction = null;
-
-        if ( !modes.isEmpty() ) {
-            final int totalModes = Math.max( 3, modes.size() );
+        if (!modes.isEmpty()) {
+            final int totalModes = Math.max(3, modes.size());
             int currentMode = 0;
             final double fragment = Math.PI * 0.005;
             final double fragment2 = Math.PI * 0.0025;
@@ -191,10 +143,10 @@ public class NenEffectSelect extends Screen {
                         x2m2, y2m2,
                         vecX, vecY );
 
-                if ( begin_rad <= radians && radians <= end_rad && quad ) {
+                if ( begin_rad <= radians && radians <= end_rad && quad || mnuRgn.mode.ordinal() == selectedPower) {
                     f = 1;
                     mnuRgn.highlighted = true;
-                    switchTo = mnuRgn.mode;
+                    selectedPower = mnuRgn.mode.ordinal();
                 }
 
                 buffer.pos( middle_x + x1m1, middle_y + y1m1, 0 ).color( f, f, f, a ).endVertex();
@@ -204,22 +156,6 @@ public class NenEffectSelect extends Screen {
 
                 currentMode++;
             }
-        }
-
-        for (final MenuButton btn : btns) {
-            final float a = 0.5f;
-            float f = 0f;
-
-            if (btn.x1 <= vecX && btn.x2 >= vecX && btn.y1 <= vecY && btn.y2 >= vecY) {
-                f = 1;
-                btn.highlighted = true;
-                doAction = btn.action;
-            }
-
-            buffer.pos( middle_x + btn.x1, middle_y + btn.y1, 0 ).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + btn.x1, middle_y + btn.y2, 0 ).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + btn.x2, middle_y + btn.y2, 0 ).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + btn.x2, middle_y + btn.y1, 0 ).color( f, f, f, a ).endVertex();
         }
 
         tessellator.draw();
@@ -264,32 +200,6 @@ public class NenEffectSelect extends Screen {
             buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( u2, v1).color( f, f, f, a ).endVertex();
         }
 
-        for ( final MenuButton btn : btns ) {
-            final float f = switchTo == null ? 1.0f : 0.5f;
-            final float a = 1.0f;
-
-            final double u1 = 0;
-            final double u2 = 16;
-            final double v1 = 0;
-            final double v2 = 16;
-
-            final TextureAtlasSprite sprite = btn.icon;
-
-            final double btnx1 = btn.x1 + 1;
-            final double btnx2 = btn.x2 - 1;
-            final double btny1 = btn.y1 + 1;
-            final double btny2 = btn.y2 - 1;
-
-            final float red = f * ( ( btn.color >> 16 & 0xff ) / 255.0f );
-            final float green = f * ( ( btn.color >> 8 & 0xff ) / 255.0f );
-            final float blue = f * ( ( btn.color & 0xff ) / 255.0f );
-
-            buffer.pos( middle_x + btnx1, middle_y + btny1, 0 ).tex( sprite.getInterpolatedU( u1 ), sprite.getInterpolatedV( v1 ) ).color( red, green, blue, a ).endVertex();
-            buffer.pos( middle_x + btnx1, middle_y + btny2, 0 ).tex( sprite.getInterpolatedU( u1 ), sprite.getInterpolatedV( v2 ) ).color( red, green, blue, a ).endVertex();
-            buffer.pos( middle_x + btnx2, middle_y + btny2, 0 ).tex( sprite.getInterpolatedU( u2 ), sprite.getInterpolatedV( v2 ) ).color( red, green, blue, a ).endVertex();
-            buffer.pos( middle_x + btnx2, middle_y + btny1, 0 ).tex( sprite.getInterpolatedU( u2 ), sprite.getInterpolatedV( v1 ) ).color( red, green, blue, a ).endVertex();
-        }
-
         tessellator.draw();
 
         for ( final MenuRegion mnuRgn : modes ) {
@@ -330,10 +240,15 @@ public class NenEffectSelect extends Screen {
         return sign( ab ) == sign( bc ) && sign( bc ) == sign( ca );
     }
 
-    private int sign(
-            final double n )
-    {
+    private int sign(final double n ) {
         return n > 0 ? 1 : -1;
+    }
+
+    @Override
+    public void onClose() {
+        NenUser yo = NenUser.getFromPlayer(minecraft.player);
+        yo.setPassivePower(selectedPower);
+        updateServer(minecraft.player, yo);
     }
 
     @Override

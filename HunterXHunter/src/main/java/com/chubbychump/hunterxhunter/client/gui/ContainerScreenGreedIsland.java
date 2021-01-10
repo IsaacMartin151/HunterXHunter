@@ -1,10 +1,13 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,10 +15,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+
 @OnlyIn(Dist.CLIENT)
 public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandContainer> {
     // This is the resource location for the background image
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/gui/bookinv.png");
+    private long timeExistedMilliseconds;
 
     public ContainerScreenGreedIsland(GreedIslandContainer container, PlayerInventory playerInv, ITextComponent title) {
         super(container, playerInv, title);
@@ -23,18 +30,20 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
         this.ySize = 244;
         this.guiLeft = 0;
         this.guiTop = 0;
+        this.timeExistedMilliseconds = Util.milliTime();
     }
 
-    // deobfuscated name is render
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);                          //     this.renderBackground();
-        super.render(matrixStack, mouseX, mouseY, partialTicks);     //super.render
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);  //this.renderHoveredToolTip(mouseX, mouseY);
+        //TODO: Render after a couple seconds
+        if (Util.milliTime() - 1000 > timeExistedMilliseconds) {
+            this.renderBackground(matrixStack);                          //     this.renderBackground();
+            super.render(matrixStack, mouseX, mouseY, partialTicks);     //super.render
+            this.renderHoveredTooltip(matrixStack, mouseX, mouseY);  //this.renderHoveredToolTip(mouseX, mouseY);
+        }
     }
 
     @Override
-    // drawGuiContainerForegroundLayer
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         final float PLAYER_LABEL_XPOS = 27;
         final float PLAYER_LABEL_DISTANCE_FROM_BOTTOM = (92);
@@ -50,7 +59,6 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
     }
 
     @Override
-    // drawGuiContainerBackgroundLayer is the deobfuscated name
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(TEXTURE);                //this.minecraft
@@ -61,5 +69,13 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
         int edgeSpacingX = (this.width - this.xSize) / 2;   //.width
         int edgeSpacingY = (this.height - this.ySize) / 2;  //.height
         this.blit(matrixStack, edgeSpacingX, edgeSpacingY, 0, 0, this.xSize, this.ySize);    //.blit
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        NenUser yo = Minecraft.getInstance().player.getCapability(NENUSER).orElseThrow(null);
+        yo.setOpenedBook(false);
+        updateServer(minecraft.player, yo);
     }
 }

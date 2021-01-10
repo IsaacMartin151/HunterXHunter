@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Quaternion;
@@ -335,9 +336,6 @@ public class ObjectDrawingFunctions {
         //stack.rotate(revrotation);
 
         ShaderHelper.useShader(BotaniaShader.DRAGON, b, nencolor);
-
-
-
         stack.pop();
 
         //tessellator.draw();
@@ -357,5 +355,84 @@ public class ObjectDrawingFunctions {
 
         stack.pop();
         endRenderCommon();
+    }
+
+    public static void BookRender(MatrixStack stack, long difference, PlayerEntity player) {
+        RenderSystem.disableBlend();
+        RenderSystem.disableCull();
+        RenderSystem.enableDepthTest();
+        float fadein = (difference/1000f);
+        if (fadein > 1f || fadein < 0f) {
+            fadein = 1f;
+        }
+
+        stack.push();
+        //stack.scale(.5f, .5f, .5f);
+        float rotate = -player.rotationYaw;
+        Quaternion rotation = Vector3f.YP.rotationDegrees(rotate);
+        Quaternion revrotation = Vector3f.YP.rotationDegrees(-rotate);
+
+        stack.rotate(rotation);
+        stack.translate(0.11, .5, 0);
+        //stack.rotate(rotationZ);
+        //stack.rotate(rotationX);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
+        //Top page
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .3f, .2f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .8f, 2.8f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.3f, 1.5f, 2.8f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.3f, 1f, .2f).color(1f, 1f,1f, fadein).endVertex();
+
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .3f, .2f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .8f, 2.8f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.3f, 1.5f, 2.8f).color(1f, 1f,1f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.3f, 1f, .2f).color(1f, 1f,1f, fadein).endVertex();
+
+        //Middle page
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .2f, .2f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .7f, 2.8f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.3f, 1.4f, 2.8f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.3f, .9f, .2f).color(.9f, .9f,.9f, fadein).endVertex();
+
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .2f, .2f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .7f, 2.8f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.3f, 1.4f, 2.8f).color(.9f, .9f,.9f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.3f, .9f, .2f).color(.9f, .9f,.9f, fadein).endVertex();
+
+        //Bottom page
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .1f, .2f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .6f, 2.8f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.4f, 1.3f, 2.8f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.4f, .8f, .2f).color(.8f, .8f,.8f, fadein).endVertex();
+
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .1f, .2f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .6f, 2.8f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.4f, 1.3f, 2.8f).color(.8f, .8f,.8f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.4f, .8f, .2f).color(.8f, .8f,.8f, fadein).endVertex();
+
+
+
+        //Spacer
+        //stack.rotate(revrotation);
+        ShaderHelper.useShader(BotaniaShader.BOOK, b, new int[5]);
+
+        //Book cover
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, 0f, 0f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, 0.5f, 3f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.5f, 1.2f, 3f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), -1.5f, .7f, 0f).color(.668f, .246f,0f, fadein).endVertex();
+
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, 0f, 0f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 0f, .5f, 3f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.5f, 1.2f, 3f).color(.668f, .246f,0f, fadein).endVertex();
+        bufferbuilder.pos(stack.getLast().getMatrix(), 1.5f, .7f, 0f).color(.668f, .246f,0f, fadein).endVertex();
+        tessellator.draw();
+        ShaderHelper.releaseShader();
+        stack.pop();
+
     }
 }

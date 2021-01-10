@@ -12,6 +12,7 @@ public class ClientProxy implements IProxy {
     public static final KeyBinding nenPower1 = new KeyBinding("Nen Power 1", 88, "Nen Abilities");
     public static final KeyBinding nenPower2 = new KeyBinding("Nen Power 2", 90, "Nen Abilities");
     public static final KeyBinding book = new KeyBinding("Book", 91, "Nen Abilities");
+    public static final KeyBinding transformCard = new KeyBinding("Transform Card", 92, "Nen Abilities");
 
     @Override
     public void registerHandlers() {
@@ -23,6 +24,7 @@ public class ClientProxy implements IProxy {
         ClientRegistry.registerKeyBinding(nenPower1);
         ClientRegistry.registerKeyBinding(nenPower2);
         ClientRegistry.registerKeyBinding(book);
+        ClientRegistry.registerKeyBinding(transformCard);
         ShaderHelper.initShaders();
     }
 }

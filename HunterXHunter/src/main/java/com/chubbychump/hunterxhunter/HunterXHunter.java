@@ -1,7 +1,6 @@
 package com.chubbychump.hunterxhunter;
 
 import com.chubbychump.hunterxhunter.client.core.handler.ClientProxy;
-import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.ContainerScreenGreedIsland;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookStorage;
@@ -10,43 +9,41 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.*;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
+import com.chubbychump.hunterxhunter.common.entities.renderers.NeferpitouRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufCloneRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.YoupiRenderer;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
+import jdk.nashorn.internal.objects.Global;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.NBTTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +51,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
@@ -72,7 +68,8 @@ public class HunterXHunter {
 
     //Add Neferpitou animation overlay for BloodLust
 
-    //Must solve a gui puzzle in order to increase nen power, otherwise increment fail counter (3 fail counters = increase anyways)
+    //Add custom screen for every type? Kinda an update screen for current nen capacity + abilities
+
     //Create animation for adding card to book
     //Keep a running list of blockitems vs Items vs foods vs tools in the 100
     // - 5 food
@@ -102,7 +99,7 @@ public class HunterXHunter {
     /*
     - Custom dimension for after all items are collected
     // Boss battle - 4 islands, 1 starting island and 3 opponent islands
-    // ShiaPouf creates bat/phantom entities, 2 per player, in order to satisfy bloodlust
+    // ShiaPouf creates phantom entities, 2 per player, in order to satisfy bloodlust
     // Youpi detonates random locations
     // Neferpitou does severe knockback
 
@@ -115,6 +112,16 @@ public class HunterXHunter {
      */
 
     //Rod that launches you in a direction - tool
+
+    //Custom structure at start to get "Hunter License" - use NBT data from woodland mansion, build custom setup, then scan it
+    // - 1. Beating Satotz in a race
+    // - 2. Foggy Maze
+    // - 3. Tower of traps
+    // - 4. Press button to get one book
+
+    //TemplateManager templateManager = player.getEntityWorld().getServer().getTemplateManager();
+    //templateManager.getTemplate();
+
 
     public HunterXHunter() {
         DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
@@ -129,16 +136,52 @@ public class HunterXHunter {
     private void setup(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
         CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Enhancer());
+        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Manipulator());
+        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Emitter());
+        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Transmuter());
+        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Conjurer());
+//TODO: sync book on death/change dimension/clone event stuff
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
         CapabilityManager.INSTANCE.register(ItemStackHandler.class, new BookStorage(), () -> new BookItemStackHandler(100));
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
+        GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 1.0D)
+                .createMutableAttribute(Attributes.FLYING_SPEED, 1.0D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
+                .create());
+        GlobalEntityTypeAttributes.put(YOUPI_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.8F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 100.0D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D)
+                .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 50.0D)
+                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+
+
+        GlobalEntityTypeAttributes.put(NEFERPITOU_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.6F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 40.0D)
+                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+
+        GlobalEntityTypeAttributes.put(SHIAPOUF_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.0F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
+                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
         //CapabilityManager.INSTANCE.register();
 
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        //RenderingRegistry.registerEntityRenderingHandler(RAYBEAM, RayBeamRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_ENTITY.get(), ShiapoufRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(YOUPI_ENTITY.get(), YoupiRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(NEFERPITOU_ENTITY.get(), NeferpitouRenderer::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_CLONE_ENTITY.get(), ShiapoufCloneRenderer::new);
+
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
         ScreenManager.registerFactory(GREED_ISLAND_CONTAINER.get(), ContainerScreenGreedIsland::new);
     }
