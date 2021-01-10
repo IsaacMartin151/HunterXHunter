@@ -17,13 +17,15 @@ public class NenStorage implements Capability.IStorage<NenUser> {
     @Override
     public INBT writeNBT(Capability<NenUser> capability, NenUser instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt("currentnen", instance.getCurrentNen());
+        tag.putFloat("currentnen", instance.getCurrentNen());
         tag.putInt("nenpower", instance.getNenPower());
         tag.putBoolean("nenactivated", instance.isNenActivated());
         tag.putBoolean("gyo", instance.getGyo());
         tag.putBoolean("en", instance.getEn());
         tag.putBoolean("ren", instance.getRen());
         tag.putBoolean("zetsu", instance.getZetsu());
+        tag.putInt("passivepower", instance.getPassivePower());
+        tag.putBoolean("blocknext", instance.blockDamage());
 
         return tag;
     }
@@ -31,12 +33,14 @@ public class NenStorage implements Capability.IStorage<NenUser> {
     @Override
     public void readNBT(Capability<NenUser> capability, NenUser instance, Direction side, INBT nbt) {
         CompoundNBT tag = (CompoundNBT) nbt;
-        instance.setCurrentNen(tag.getInt("currentnen"));
+        instance.setCurrentNen(tag.getFloat("currentnen"));
         instance.setNenPower(tag.getInt("nenpower"));
         instance.nenActivated = tag.getBoolean("nenactivated");
         instance.gyo = tag.getBoolean("gyo");
         instance.en = tag.getBoolean("en");
         instance.ren = tag.getBoolean("ren");
         instance.zetsu = tag.getBoolean("zetsu");
+        instance.passivePower = tag.getInt("passivepower");
+        instance.blockDamage = tag.getBoolean("blocknext");
     }
 }

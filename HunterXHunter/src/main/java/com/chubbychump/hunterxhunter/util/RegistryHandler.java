@@ -5,7 +5,10 @@ import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.common.blocks.PortalBlock;
 import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
-import com.chubbychump.hunterxhunter.common.entities.EntityRayBeam;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.Neferpitou;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.Shiapouf;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.ShiapoufClone;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
 import com.chubbychump.hunterxhunter.common.items.*;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.PotatoSoup;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.RoastedPorkDish;
@@ -20,8 +23,6 @@ import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEnti
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -38,13 +39,9 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.lang.reflect.Method;
-import java.util.Set;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
@@ -53,12 +50,14 @@ public class RegistryHandler {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MOD_ID);
+
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
     public static final DeferredRegister<ContainerType<?>> CONTAINER = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
     public static final DeferredRegister<PointOfInterestType> POINT_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, MOD_ID);
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, MOD_ID);
     public static final DeferredRegister<Potion> POTION_TYPES = DeferredRegister.create(ForgeRegistries.POTION_TYPES, MOD_ID);
     public static final DeferredRegister<Effect> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, MOD_ID);
+    //TODO: Register shiapouf clone entity
 
     public static void init() {
         CONTAINER.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -98,6 +97,10 @@ public class RegistryHandler {
     public static final RegistryObject<SoundEvent> WORLD_OF_ADVENTURES = SOUNDS.register("worldofadventures", () -> new SoundEvent(new ResourceLocation(MOD_ID, "worldofadventures")));
     public static final RegistryObject<SoundEvent> DEPARTURE = SOUNDS.register("departure", () -> new SoundEvent(new ResourceLocation(MOD_ID, "departure")));
     public static final RegistryObject<SoundEvent> HISOKA = SOUNDS.register("hisoka", () -> new SoundEvent(new ResourceLocation(MOD_ID, "hisoka")));
+    public static final RegistryObject<SoundEvent> STONESLIDE = SOUNDS.register("stoneslide", () -> new SoundEvent(new ResourceLocation(MOD_ID, "stoneslide")));
+    public static final RegistryObject<SoundEvent> OPEN_BOOK = SOUNDS.register("openbook", () -> new SoundEvent(new ResourceLocation(MOD_ID, "openbook")));
+    public static final RegistryObject<SoundEvent> LOUNGE_MUSIC = SOUNDS.register("loungemusic", () -> new SoundEvent(new ResourceLocation(MOD_ID, "loungemusic")));
+    public static final RegistryObject<SoundEvent> EMBARK_ADVENTURE = SOUNDS.register("embarkadventure", () -> new SoundEvent(new ResourceLocation(MOD_ID, "embarkadventure")));
 
     //Items
     public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
@@ -128,11 +131,32 @@ public class RegistryHandler {
     public static final RegistryObject<ContainerType<GreedIslandContainer>> GREED_ISLAND_CONTAINER = CONTAINER.register("greedislandbook", () -> IForgeContainerType.create(GreedIslandContainer::createContainerClientSide));
 
     //Entities
-    public static final RegistryObject<EntityType<EntityRayBeam>> RAY_BEAM_ENTITY = ENTITY_TYPES.register("raybeam", () -> EntityType.Builder.<EntityRayBeam>create(EntityRayBeam::new, EntityClassification.MISC)
-            .size(.9f, .9f)
-            .setTrackingRange(32)
-            .setUpdateInterval(40)
-            .setShouldReceiveVelocityUpdates(false)
+    public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapoufclone", () -> EntityType.Builder.<ShiapoufClone>create(ShiapoufClone::new, EntityClassification.MONSTER)
+            .size(.5f, .5f)
+            .setTrackingRange(64)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<Youpi>> YOUPI_ENTITY = ENTITY_TYPES.register("youpi", () -> EntityType.Builder.<Youpi>create(Youpi::new, EntityClassification.MONSTER)
+            .size(1f, 1f)
+            .setTrackingRange(128)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<Neferpitou>> NEFERPITOU_ENTITY = ENTITY_TYPES.register("neferpitou", () -> EntityType.Builder.<Neferpitou>create(Neferpitou::new, EntityClassification.MONSTER)
+            .size(1f, 1f)
+            .setTrackingRange(128)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<Shiapouf>> SHIAPOUF_ENTITY = ENTITY_TYPES.register("shiapouf", () -> EntityType.Builder.<Shiapouf>create(Shiapouf::new, EntityClassification.MONSTER)
+            .size(1f, 1f)
+            .setTrackingRange(128)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     //Point Of Interests

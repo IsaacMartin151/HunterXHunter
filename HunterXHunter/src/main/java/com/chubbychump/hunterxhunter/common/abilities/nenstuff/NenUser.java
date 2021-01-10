@@ -9,25 +9,46 @@ import net.minecraft.nbt.CompoundNBT;
 
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 
-public class NenUser {
+public abstract class NenUser {
     protected int nenPower = 1;
-    protected int currentNen;
+    protected int passivePower = -1;
+    protected float currentNen;
+    protected int failCounter;
     public boolean nenActivated;
     public boolean gyo;
     public boolean en;
     public boolean ren;
     public boolean zetsu;
-    public boolean passivePower;
     protected int nencolor = 0;
+    protected boolean blockDamage = false;
+    protected boolean openedBook = false;
+    protected int burnout = 0;
+    public long lastOpenedBook = 2000;
 
     public NenUser() {
         currentNen = 0;
+        failCounter = 0;
         nenActivated = false;
         gyo = false;
         en = false;
         ren = false;
         zetsu = false;
-        passivePower = false;
+    }
+
+    public boolean openedBook() {
+        return openedBook;
+    }
+
+    public void setOpenedBook(boolean opened) {
+        this.openedBook = opened;
+    }
+
+    public int getBurnout() {
+        return burnout;
+    }
+
+    public void setBurnout(int burn) {
+        this.burnout = burn;
     }
 
     public static void updateClient(ServerPlayerEntity player, NenUser cap) {
@@ -38,19 +59,19 @@ public class NenUser {
         PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
     }
 
-    public boolean getPassivePower() {
+    public int getPassivePower() {
         return passivePower;
     }
 
-    public void togglePassivePower() {
-        this.passivePower = !passivePower;
+    public void setPassivePower(int i) {
+        this.passivePower = i;
     }
 
     public void setNenPower(int power) {
         this.nenPower = power;
     }
 
-    public void increaseNenPower(PlayerEntity theEntity) {
+    public void increaseNenPower() {
         if (nenPower < 30) {
             nenPower += 1;
             HunterXHunter.LOGGER.info("User nen power has increased. Total is now " + nenPower);
@@ -58,7 +79,6 @@ public class NenUser {
         else {
             HunterXHunter.LOGGER.info("Nen Power is capped at 30. Current power is " + nenPower);
         }
-
     }
 
     public void resetNen() {
@@ -72,14 +92,23 @@ public class NenUser {
     public void toggleNen() {
         this.nenActivated = !this.nenActivated;
         HunterXHunter.LOGGER.info("Nen toggled, nen is now " + nenActivated);
-        if (nenActivated == false) {
+        if (!nenActivated) {
             resetNen();
         }
+    }
+
+    public int getFailCounter() {
+        return failCounter;
+    }
+
+    public void setFailCounter(int counter) {
+        failCounter = counter;
     }
 
     public void copy(NenUser other) {
         this.setCurrentNen(other.getCurrentNen());
         this.setNenPower(other.getNenPower());
+        this.setPassivePower(other.getPassivePower());
         //TODO: carry over boolean states?
     }
 
@@ -88,19 +117,20 @@ public class NenUser {
     }
 
     public int getMaxCurrentNen() {
-        return nenPower * 100;
+        return 100 + nenPower * 10;
     }
-
+    public boolean blockDamage() {return false;}
+    public void setBlockDamage(boolean blockNext) {}
     public boolean isNenActivated() {
         return nenActivated;
     }
     public int getNenPower() {
         return nenPower;
     }
-    public int getCurrentNen() {
+    public float getCurrentNen() {
         return currentNen;
     }
-    public void setCurrentNen(int newNen) {
+    public void setCurrentNen(float newNen) {
         this.currentNen = newNen;
     }
     public void setNencolor(int color) {
@@ -132,5 +162,7 @@ public class NenUser {
     public boolean getRen() {
         return ren;
     }
-    public void nenpower1(PlayerEntity player) { return; }
+    public void nenpower1(PlayerEntity player) { }
+
+
 }
