@@ -13,13 +13,17 @@ import net.minecraftforge.common.capabilities.Capability;
 /**
  * This class is responsible for saving and reading nen data from or to server
  */
-public class NenStorage implements Capability.IStorage<NenUser> {
+public class NenStorage implements Capability.IStorage<INenUser> {
     @Override
-    public INBT writeNBT(Capability<NenUser> capability, NenUser instance, Direction side) {
+    public INBT writeNBT(Capability<INenUser> capability, INenUser instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();
+        tag.putInt("type", instance.getNenType());
+        tag.putBoolean("conjurer", instance.getConjurerActivated());
+        tag.putBoolean("book", instance.openedBook());
         tag.putFloat("currentnen", instance.getCurrentNen());
         tag.putInt("nenpower", instance.getNenPower());
-        tag.putBoolean("nenactivated", instance.isNenActivated());
+        tag.putInt("burnout", instance.getBurnout());
+        tag.putBoolean("nenactivated", instance.getNenActivated());
         tag.putBoolean("gyo", instance.getGyo());
         tag.putBoolean("en", instance.getEn());
         tag.putBoolean("ren", instance.getRen());
@@ -31,16 +35,20 @@ public class NenStorage implements Capability.IStorage<NenUser> {
     }
 
     @Override
-    public void readNBT(Capability<NenUser> capability, NenUser instance, Direction side, INBT nbt) {
+    public void readNBT(Capability<INenUser> capability, INenUser instance, Direction side, INBT nbt) {
         CompoundNBT tag = (CompoundNBT) nbt;
+        instance.setType(tag.getInt("type"));
+        instance.setConjurerActivated(tag.getBoolean("conjurer"));
+        instance.setOpenedBook(tag.getBoolean("book"));
         instance.setCurrentNen(tag.getFloat("currentnen"));
         instance.setNenPower(tag.getInt("nenpower"));
-        instance.nenActivated = tag.getBoolean("nenactivated");
-        instance.gyo = tag.getBoolean("gyo");
-        instance.en = tag.getBoolean("en");
-        instance.ren = tag.getBoolean("ren");
-        instance.zetsu = tag.getBoolean("zetsu");
-        instance.passivePower = tag.getInt("passivepower");
-        instance.blockDamage = tag.getBoolean("blocknext");
+        instance.setBurnout(tag.getInt("burnout"));
+        instance.setNenActivated(tag.getBoolean("nenactivated"));
+        instance.setGyo(tag.getBoolean("gyo"));
+        instance.setEn(tag.getBoolean("en"));
+        instance.setRen(tag.getBoolean("ren"));
+        instance.setZetsu(tag.getBoolean("zetsu"));
+        instance.setPassivePower(tag.getInt("passivepower"));
+        instance.setBlockDamage(tag.getBoolean("blocknext"));
     }
 }

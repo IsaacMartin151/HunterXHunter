@@ -7,11 +7,10 @@ import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookStorag
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.*;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
 import com.chubbychump.hunterxhunter.common.entities.renderers.NeferpitouRenderer;
 import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufCloneRenderer;
 import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufRenderer;
@@ -19,7 +18,7 @@ import com.chubbychump.hunterxhunter.common.entities.renderers.YoupiRenderer;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
-import jdk.nashorn.internal.objects.Global;
+import net.minecraft.block.trees.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
@@ -28,8 +27,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
@@ -54,7 +51,6 @@ import java.util.UUID;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod("hunterxhunter")
 public class HunterXHunter {
     public static final Logger LOGGER = LogManager.getLogger();
@@ -64,23 +60,38 @@ public class HunterXHunter {
 
     //Phantom Troupe final boss battle for last item - use theme music
 
-    //FIX FILE PATH FFMPEG FILE DEPARTURE.MP4
-
     //Add Neferpitou animation overlay for BloodLust
 
     //Add custom screen for every type? Kinda an update screen for current nen capacity + abilities
 
     //Create animation for adding card to book
-    //Keep a running list of blockitems vs Items vs foods vs tools in the 100
+    // Separate categories for the types of hunters
+    // Beast Hunters, Blacklist Hunters - killing strong mobs, Botanical Hunters, Sea Hunters, Treasure Hunters, Ruins Hunters
     // - 5 food
     // - 20 usable items
     // - 30 crafting ingredients
+        // 5 regular mob dropx
+        // 2 minerals
+        // 3 world gen - new tree (World tree?), other overworld structure/flowers
+        // 1 boss drop?
+        //
+
+    // Waila shows if block is harvestable
     // - 10 placeable
     // - 15 tools
 
+    //KilledTrigger
+
+    // - Biome structure loot
+    // - Animals in Tundra, Badlands, Swamp, Jungle, Plains, maybe new biome?
+
+    // New biome with tough monster, add "Bomber" underground entity
+
+    // Loot chests from dungeons, abandoned mineshafts, strongholds can hold treasure items
+
     // - 30 vanilla items
 
-    //Transmuter = fully repair durability - increased speed?
+    //Transmuter = Enchantment, AOE electrocute
     // - Button 1: Dash Move
     //Enhancer = increased health, damage, regen?
     // - Button 1: Select
@@ -101,11 +112,12 @@ public class HunterXHunter {
     // Boss battle - 4 islands, 1 starting island and 3 opponent islands
     // ShiaPouf creates phantom entities, 2 per player, in order to satisfy bloodlust
     // Youpi detonates random locations
-    // Neferpitou does severe knockback
+    // Neferpitou causes bloodlust, ranged attack
+
+    // Add a blindness thing to get Gyo to actually do something - maybe ren?
 
     - "Cards" need to be able to be converted to and from item form, so each card needs corresponding item (Not all need to be new items)
     - If card of certain rarity, play sound
-    -
     - Cool Animation for adding card to the book feat. transforming into card texture vs regular texture
     -
     - Custom cutscene for when someone beats the game, gets something cool and permanent card
@@ -114,7 +126,7 @@ public class HunterXHunter {
     //Rod that launches you in a direction - tool
 
     //Custom structure at start to get "Hunter License" - use NBT data from woodland mansion, build custom setup, then scan it
-    // - 1. Beating Satotz in a race
+    // - 1. Beating Satotz in a race - Race while rendering an entity
     // - 2. Foggy Maze
     // - 3. Tower of traps
     // - 4. Press button to get one book
@@ -126,7 +138,6 @@ public class HunterXHunter {
     public HunterXHunter() {
         DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
         proxy.registerHandlers();        // Register the setup method for modloading
-        //DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         RegistryHandler.init();
@@ -135,12 +146,7 @@ public class HunterXHunter {
 
     private void setup(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
-        CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Enhancer());
-        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Manipulator());
-        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Emitter());
-        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Transmuter());
-        //CapabilityManager.INSTANCE.register(NenUser.class, new NenStorage(), () -> new Conjurer());
-//TODO: sync book on death/change dimension/clone event stuff
+        CapabilityManager.INSTANCE.register(INenUser.class, new NenStorage(), () -> new NenUser());
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
         CapabilityManager.INSTANCE.register(ItemStackHandler.class, new BookStorage(), () -> new BookItemStackHandler(100));
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
@@ -157,7 +163,6 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
-
         GlobalEntityTypeAttributes.put(NEFERPITOU_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.6F)
@@ -170,9 +175,6 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.0F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
-
-        //CapabilityManager.INSTANCE.register();
-
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -212,14 +214,9 @@ public class HunterXHunter {
             cap.setRampPosition((short) 0);
         }
 
-        // Health Loop
-        // Add a heart to the player if...
-        // - Ramp position is less than the ramp length AND
-        // - The player's level is greater than the next ramp position AND
-        // - The player has not hit the maximum health
-        LazyOptional<NenUser> yo = player.getCapability(NENUSER, null);
+        LazyOptional<INenUser> yo = player.getCapability(NENUSER, null);
         int Type = yo.orElseThrow(null).getNenType();
-        while (cap.getRampPosition() < ramp.size() && level >= ramp.get(cap.getRampPosition()) && (player.getMaxHealth() < max || Type == 1)) {
+        while (cap.getRampPosition() < ramp.size() && (player.getMaxHealth() < max || Type == 1)) {
             changed = true;
 
             // Increase ramp position, add two half hearts, and notify the player
@@ -235,10 +232,6 @@ public class HunterXHunter {
             }
         }
 
-        // Post-loop changes
-        // If changed...
-        // - Notify the client of the changes to the capability
-        // - Set the player to max health
         if (changed) {
             MoreHealth.updateClient((ServerPlayerEntity) player, cap);
             player.setHealth(player.getMaxHealth());

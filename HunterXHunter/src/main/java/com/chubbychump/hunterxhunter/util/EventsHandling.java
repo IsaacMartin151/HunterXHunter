@@ -11,16 +11,22 @@ import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslan
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
+import com.chubbychump.hunterxhunter.common.blocks.ConjurerBlock;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.common.tileentities.TileEntityConjurerBlock;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
+import com.chubbychump.hunterxhunter.init.ModBlocks;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
 import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.advancements.criterion.ItemDurabilityTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -57,6 +63,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
@@ -96,7 +103,7 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        NenUser yo = NenUser.getFromPlayer(player);
+        INenUser yo = NenUser.getFromPlayer(player);
         ItemStackHandler itemHandler = player.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
 
         int Type = yo.getNenType();
@@ -145,20 +152,6 @@ public class EventsHandling {
         }
     }
 
-
-/*
-    @SubscribeEvent
-    public static void itemToss(ItemTossEvent event) {
-        event.getEntityItem().getItem()
-        event.getEntityItem().getItem();
-        if (event.getEntityItem().getItem().getItem().isIn(ItemTags.getCollection().get(THEONEHUNDRED))) {
-            event.setCanceled(true);
-            event.getEntity().
-            LOGGER.info("Attached capability to player with ID# "+event.getObject().getUniqueID());
-        }
-    }
- */
-
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
         // Fetch & Copy Capability
@@ -166,11 +159,15 @@ public class EventsHandling {
         PlayerEntity playerNew = event.getPlayer();
         IMoreHealth capOld = MoreHealth.getFromPlayer(playerOld);
         IMoreHealth capNew = MoreHealth.getFromPlayer(playerNew);
-        NenUser nenOld = NenUser.getFromPlayer(playerOld);
-        NenUser nenNew = NenUser.getFromPlayer(playerNew);
+        INenUser nenOld = NenUser.getFromPlayer(playerOld);
+        INenUser nenNew = NenUser.getFromPlayer(playerNew);
+        ItemStackHandler bookOld = playerOld.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
+        ItemStackHandler bookNew = playerNew.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
 
+        bookNew.deserializeNBT(bookOld.serializeNBT());
         nenNew.copy(nenOld);
         capNew.copy(capOld);
+
 
         int Type = nenNew.getNenType();
         // Copy Health on Dimension Change
@@ -195,7 +192,8 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        NenUser nenCap = NenUser.getFromPlayer(player);
+        INenUser nenCap = NenUser.getFromPlayer(player);
+
 
         // Handle "The End"
         if (event.isEndConquered()) {
@@ -262,7 +260,7 @@ public class EventsHandling {
         // Re-add health modifier and fill health
         HunterXHunter.recalcPlayerHealth(player, player.experienceLevel);
         //TODO: maybe recalc nen? HunterXHunter.recalcPlayerNen(player, player.experienceLevel);
-        NenUser yo = NenUser.getFromPlayer(player);
+        INenUser yo = NenUser.getFromPlayer(player);
         int Type = yo.getNenType();
         if (Type == 1) {
             HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
@@ -282,7 +280,7 @@ public class EventsHandling {
             if (event.getSource() == DamageSource.FALL) {
                 if (event.getEntity() instanceof PlayerEntity) {
                     PlayerEntity bruh = (PlayerEntity) event.getEntity();
-                    NenUser yo = NenUser.getFromPlayer(bruh);
+                    INenUser yo = NenUser.getFromPlayer(bruh);
                     if (yo.getNenType() == 1) {
                         if (yo.blockDamage()) {
                             //bruh.getEntityWorld().playSound(bruh.getPosX(), bruh.getPosY(), bruh.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (event.getEntity().world.rand.nextFloat() - event.getEntity().world.rand.nextFloat()) * 0.2F) * 0.7F, false);
@@ -303,27 +301,23 @@ public class EventsHandling {
 
         if(event.getSource() == DamageSource.FALL) {
             if (event.getEntity() instanceof PlayerEntity) {
-                PlayerEntity bruh = (PlayerEntity) event.getEntity();
-                NenUser yo = NenUser.getFromPlayer(bruh);
-                if (yo.getNenType() == 1) {
-                    if (yo.blockDamage()) {
-                        event.setCanceled(true);
-                        player.setInvulnerable(true);
-                        //Explosion
-                        //player.world.createExplosion(player, player.getPosX(), player.getPosY(), player.getPosZ(), (float) yo.getNenPower(), false, Explosion.Mode.DESTROY);
-                        //EnhancerExplosion explosion = new EnhancerExplosion(player.getEntityWorld(), player, player.getPosX(), player.getPosY(), player.getPosZ(), (float) yo.getNenPower(), false, Explosion.Mode.DESTROY);
-                        //if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(player.getEntityWorld(), explosion)) return explosion;
-                        //explosion.doExplosionA();
+                INenUser yo = NenUser.getFromPlayer(player);
+                if (yo.blockDamage()) {
+                    event.setCanceled(true);
+                    player.setInvulnerable(true);
 
-                        //TODO: this can't be on client
-                        //explosion.doExplosionB(true);
+                    //Explosion
+                    //player.world.createExplosion(player, player.getPosX(), player.getPosY(), player.getPosZ(), (float) yo.getNenPower(), false, Explosion.Mode.DESTROY);
+                    //EnhancerExplosion explosion = new EnhancerExplosion(player.getEntityWorld(), player, player.getPosX(), player.getPosY(), player.getPosZ(), (float) yo.getNenPower(), false, Explosion.Mode.DESTROY);
+                    //if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(player.getEntityWorld(), explosion)) return explosion;
+                    //explosion.doExplosionA();
 
+                    //TODO: this can't be on client
+                    //explosion.doExplosionB(true);
 
-                        player.setInvulnerable(false);
-                        yo.setBlockDamage(false);
-                        NenUser.updateClient((ServerPlayerEntity) bruh, yo);
-
-                    }
+                    player.setInvulnerable(false);
+                    yo.setBlockDamage(false);
+                    NenUser.updateClient((ServerPlayerEntity) player, yo);
                 }
             }
         }
@@ -414,7 +408,7 @@ public class EventsHandling {
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        NenUser yo = NenUser.getFromPlayer(player);
+        INenUser yo = NenUser.getFromPlayer(player);
         int Type = yo.getNenType();
         // Re-add health modifier
         if (Type == 1) {
@@ -451,17 +445,33 @@ public class EventsHandling {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
+    public static void renderManipulator(TickEvent.RenderTickEvent event) { //RenderWorldLastEvent for drawing stuff
+        Minecraft bruh = Minecraft.getInstance();
+        if (!bruh.isGamePaused()) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            if (player != null && player.isAlive()) {
+                INenUser yo = NenUser.getFromPlayer(player);
+                if (yo.getOverlay()) {
+                    Minecraft.getInstance().setRenderViewEntity(Minecraft.getInstance().world.getPlayers().get(yo.getPassivePower()));
+                }
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void renderEvent(RenderLivingEvent.Post event) { //RenderWorldLastEvent for drawing stuff
         Minecraft bruh = Minecraft.getInstance();
         if (!bruh.isGamePaused()) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (player.isAlive()) {
-                NenUser yo = NenUser.getFromPlayer(player);
+                INenUser yo = NenUser.getFromPlayer(player);
                 if (event.getEntity() instanceof PlayerEntity) {
-                    NenUser ee = NenUser.getFromPlayer((PlayerEntity) event.getEntity());
-                    ObjectDrawingFunctions.BookRender(event.getMatrixStack(), Util.milliTime() - ee.lastOpenedBook, (PlayerEntity) event.getEntity());
+                    INenUser ee = NenUser.getFromPlayer((PlayerEntity) event.getEntity());
+                    if (ee.openedBook()) {
+                        ObjectDrawingFunctions.BookRender(event.getMatrixStack(), Util.milliTime() - ee.getLastOpenedBook(), (PlayerEntity) event.getEntity());
+                    }
                 }
-
                 boolean erm = yo.getGyo();
                 if (erm && yo.getCurrentNen() > 0) {
                     showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
@@ -474,18 +484,17 @@ public class EventsHandling {
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
         if (event.player.isAlive() && event.phase == TickEvent.Phase.START && event.player.getEntityWorld().isRemote()) {
-            NenUser yo = NenUser.getFromPlayer(event.player);
+            INenUser yo = NenUser.getFromPlayer(event.player);
             boolean updatePlayer = false;
             if (book.isPressed()) {
                 updatePlayer = true;
+                yo.setOpenedBook(true);
+                yo.setLastOpenedBook(Util.milliTime());
                 LOGGER.info("pressed book button");
                 Minecraft.getInstance().player.playSound(OPEN_BOOK.get(), 1, 1);
                 BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
-
                 PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
 
-                yo.setOpenedBook(true);
-                yo.lastOpenedBook = Util.milliTime();
             }
             if (transformCard.isPressed()) {
                 ItemStack oof = event.player.getHeldItemMainhand();
@@ -506,13 +515,39 @@ public class EventsHandling {
                 updatePlayer = true;
             }
             if (nenPower1.isPressed()) {
-                Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+                yo.keybind1();
             }
-            if (nenPower2.isPressed() && yo.getNenPower() > 0) {
-                yo.nenpower1(event.player);
+            if (nenPower2.isPressed()) {
+                LOGGER.info("Type is "+yo.getNenType());
+                switch (yo.getNenType()) {
+                    case 0:
+                        LOGGER.info("enhancer");
+                        break;
+                    case 1:
+                        yo.enhancer1(event.player);
+                        LOGGER.info("enhancer");
+                        break;
+                    case 2:
+                        yo.manipulator1();
+                        LOGGER.info("manipulator");
+                        break;
+                    case 3:
+                        yo.transmuter1(event.player);
+                        LOGGER.info("transmuter");
+                        break;
+                    case 4:
+                        yo.conjurer1(event.player);
+                        LOGGER.info("conjurer");
+                        break;
+                    case 5:
+                        yo.emitter1(event.player);
+                        LOGGER.info("emitter");
+                        break;
+                }
                 updatePlayer = true;
             }
             if (updatePlayer == true) {
+                LOGGER.info("conjureractivated is "+yo.getConjurerActivated());
                 NenUser.updateServer(event.player, yo);
             }
         }
@@ -535,16 +570,16 @@ public class EventsHandling {
         }
     }
 
-    //@OnlyIn(Dist.DEDICATED_SERVER)
+    //DO NOT make this server only, because it gets called from the client
     @SubscribeEvent
     public static void calculateNenEffects(TickEvent.PlayerTickEvent event) {
         if (event.player.isAlive() && !event.player.getEntityWorld().isRemote && event.phase == TickEvent.Phase.START) {
-            NenUser yo = NenUser.getFromPlayer(event.player);
+            INenUser yo = NenUser.getFromPlayer(event.player);
             if (yo.getBurnout() > 0) {
                 yo.setBurnout(yo.getBurnout() - 1);
             }
             int cost = 0;
-            if (yo.isNenActivated()) {
+            if (yo.getNenActivated()) {
                 cost += 1;
             }
             if (yo.getGyo()) {
@@ -552,6 +587,9 @@ public class EventsHandling {
             }
             if (yo.getEn()) {
                 cost += 1;
+            }
+            if (yo.getConjurerActivated()) {
+                cost += 2;
             }
             yo.setCurrentNen(yo.getCurrentNen() - cost);
             if (yo.getCurrentNen() - cost < 0) {
@@ -561,7 +599,7 @@ public class EventsHandling {
             if (cost > 0) {
                 yo.setBurnout(60);
             }
-            if (yo.getBurnout() == 0) {
+            if (yo.getBurnout() <= 0) {
                 yo.setCurrentNen(yo.getCurrentNen() + .3f);
             }
             if (yo.getCurrentNen() > yo.getMaxCurrentNen()) {
@@ -585,7 +623,7 @@ public class EventsHandling {
             profiler.startSection("manaBar");
             PlayerEntity player = mc.player;
             if (!player.isSpectator() && player.isAlive()) {
-                NenUser yo = NenUser.getFromPlayer(player);
+                INenUser yo = NenUser.getFromPlayer(player);
                 boolean anyRequest = (yo.getNenPower() > 0);
                 float totalMana = yo.getCurrentNen();
                 int totalMaxMana = yo.getMaxCurrentNen();
@@ -600,33 +638,12 @@ public class EventsHandling {
             profiler.endSection();
             RenderSystem.color4f(1F, 1F, 1F, 1F);
         }
-
-
     }
-
-    /*
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void renderPlayer(RenderPlayerEvent event) {
-        Minecraft bruh = Minecraft.getInstance();
-        if (!bruh.isGamePaused()) {
-            if (event.getPlayer().isAlive()) {
-                NenUser yo = NenUser.getFromPlayer(event.getPlayer());
-                if (yo.openedBook()) {
-
-                    ObjectDrawingFunctions.BookRender(event.getMatrixStack(), Util.milliTime() - yo.lastOpenedBook, event.getPlayer());
-                }
-            }
-        }
-    }
-
-     */
-
 
     private static void processLightPlacementForEntities(World theWorld) {
-        for (Entity player : Collections.unmodifiableList(theWorld.getPlayers())) {
-            NenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
-            if (yo.isNenActivated() && yo.getCurrentNen() > 0) {
+        for (PlayerEntity player : Collections.unmodifiableList(theWorld.getPlayers())) {
+            INenUser yo = NenUser.getFromPlayer(player);
+            if (yo.getNenActivated() && yo.getCurrentNen() > 0) {
                 BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX()), MathHelper.floor(player.getPosY() - 0.1D - player.getYOffset()), MathHelper.floor(player.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
                 NenLight lightBlockToPlace = NENLIGHT;
@@ -634,13 +651,24 @@ public class EventsHandling {
                     placeLightSourceBlock(player, blockLocation, lightBlockToPlace);
                 }
             }
+            if (yo.getConjurerActivated() && yo.getCurrentNen() > 0) {
+                ConjurerBlock conjurerBlock = ModBlocks.CONJURER_BLOCK;
+                for (int i = 0; i < 9; i++) {
+                    BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX() + (i%3) - 1), MathHelper.floor(player.getPosY() - 2.1D - player.getYOffset()), MathHelper.floor(player.getPosZ()) + (i/3 - 1)).up();
+                    Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
+                    if (blockAtLocation == Blocks.AIR) {
+                        player.world.setBlockState(blockLocation, conjurerBlock.getDefaultState(), 3);
+                    }
+                }
+
+            }
         }
     }
 
     private static void placeLightSourceBlock(Entity player, BlockPos blockLocation, NenLight theLightBlock) {
         player.world.setBlockState(blockLocation, theLightBlock.getDefaultState(), 3);
         TileEntityNenLight lightSource = (TileEntityNenLight) player.world.getTileEntity(blockLocation);
-        NenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
+        INenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
         int bro = yo.getNenPower();
         if(bro > 15) {
             bro = 15;
@@ -654,17 +682,11 @@ public class EventsHandling {
             int[] yuh = {500, 200, 0};
             ObjectDrawingFunctions.DrawSphere(matrixStack, yuh, 2);
         } else if (entity instanceof VillagerEntity){
-            //LazyOptional<NenUser> yo = entity.getCapability(NenProvider.NENUSER, null);
-            //int[] bruh2 = yo.orElseThrow(null).getNencolor();
-            //float oof = (float) (yo.orElseThrow(null).getNenPower()/2.);
             int[] yuh = {500, 200, 0};
             ObjectDrawingFunctions.DrawDragon(matrixStack, yuh);
-            //ObjectDrawingFunctions.DrawSphere(matrixStack, bruh2, oof);
         } else if (entity instanceof PlayerEntity){
             int[] uh = {1000, 500, 0};
-
             ObjectDrawingFunctions.DrawSphere(matrixStack, uh, 2);
         }
     }
-
 }

@@ -3,19 +3,45 @@
   "values": [
     "minecraft:apple",
     "minecraft:bread",
-    "minecraft:iron_ingot",
-    "minecraft:music_disc_blocks",
-    "minecraft:leather",
     "minecraft:cookie",
     "minecraft:melon",
+
+    "minecraft:iron_ingot",
     "minecraft:lava_bucket",
-    "minecraft:diamond",
-    "minecraft:emerald",
-    "minecraft:nether_star",
-    "minecraft:experience_bottle",
-    "minecraft:dragon_breath",
-    "minecraft:netherite_block",
+    "minecraft:diamond_block",
+    "minecraft:diamond_ore",
+    "minecraft:emerald_block",
+    "minecraft:netherite_ingot",
+
     "minecraft:creeper_head",
-    "hunterxhunter:crystal_nen"
+    "minecraft:turtle_egg",
+    "minecraft:leather",
+    "minecraft:experience_bottle",
+    "minecraft:music_disc_blocks",
+    "minecraft:music_disc_pigstep",
+
+    "minecraft:nether_star",
+    "minecraft:dragon_breath",
+
+
+
+
+    "hunterxhunter:bear_claw",
+    "hunterxhunter:exploseive_ashes",
+    "hunterxhunter:lizard_leg",
+    "hunterxhunter:super_string",
+    "hunterxhunter:thorax",
+
+    "hunterxhunter:saturation_stand",
+    "hunterxhunter:duplicator",
+    "hunterxhunter:crystal_nen",
+
+    "hunterxhunter:gon_fishing_pole",
+    "hunterxhunter:self_destruct_button",
+
+    "hunterxhunter:roasted_pork_dish",
+    "hunterxhunter:potato_soup",
+    "hunterxhunter:tasty_food",
+    "hunterxhunter:spider_eagle_egg"
   ]
 }

@@ -23,10 +23,7 @@ public class NenLight extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return ModTileEntityTypes.NENLIGHT.create();
-
     }
-
-
 
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos blockPos) {

@@ -1,6 +1,7 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -281,7 +282,7 @@ public class PuzzleScreen extends Screen {
 
     @Override
     public void onClose() {
-        NenUser yo = minecraft.player.getCapability(NENUSER).orElseThrow(null);
+        INenUser yo = minecraft.player.getCapability(NENUSER).orElseThrow(null);
         if (success == true) {
             yo.setFailCounter(0);
             yo.increaseNenPower();

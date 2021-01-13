@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:polished_blackstone_button"
+    },
+    {
+      "item": "hunterxhunter:explosive_ashes"
+    }
+  ],
+  "result":
+  {
+    "item": "hunterxhunter:self_destruct_button",
+    "count": 1
+  }
+}

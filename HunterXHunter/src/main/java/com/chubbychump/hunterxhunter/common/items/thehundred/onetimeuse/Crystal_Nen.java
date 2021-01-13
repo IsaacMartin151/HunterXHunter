@@ -2,9 +2,11 @@ package com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
 import com.chubbychump.hunterxhunter.client.gui.PuzzleScreen;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -13,14 +15,11 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.WORLD_OF_ADVENTURES;
 
 public class Crystal_Nen extends Item {
     public Crystal_Nen() {
@@ -29,8 +28,14 @@ public class Crystal_Nen extends Item {
 
     @OnlyIn(Dist.CLIENT)
     private void openGui(PlayerEntity player) {
-        NenUser yo = player.getCapability(NENUSER).orElseThrow(null);
-        Minecraft.getInstance().displayGuiScreen(new PuzzleScreen(60 - (2 * yo.getNenPower())));
+        INenUser yo = player.getCapability(NENUSER).orElseThrow(null);
+        if (yo.getNenPower() == 0) {
+            yo.increaseNenPower();
+            Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+        }
+        else {
+            Minecraft.getInstance().displayGuiScreen(new PuzzleScreen(60 - (2 * yo.getNenPower())));
+        }
     }
 
     @Override
@@ -47,9 +52,7 @@ public class Crystal_Nen extends Item {
 
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
-        NenUser yo = NenUser.getFromPlayer(player);
-        yo.setOpenedBook(true);
-        yo.lastOpenedBook = Util.milliTime();
+        INenUser yo = NenUser.getFromPlayer(player);
         int Type = yo.getNenType();
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar
@@ -71,7 +74,6 @@ public class Crystal_Nen extends Item {
             player.setHealth(player.getMaxHealth());
             //player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.DUMMY_UUID);
         }
-
 
         //yo.increaseNenPower(player);
         //NenUser.updateClient((ServerPlayerEntity) player, yo);

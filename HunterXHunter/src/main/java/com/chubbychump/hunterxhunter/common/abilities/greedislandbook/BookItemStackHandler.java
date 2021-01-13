@@ -1,5 +1,6 @@
 package com.chubbychump.hunterxhunter.common.abilities.greedislandbook;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
@@ -31,6 +32,26 @@ public class BookItemStackHandler extends ItemStackHandler {
         Item item = stack.getItem();
         if (item.isIn(ItemTags.getCollection().get(THEONEHUNDRED))) return true; //Changed it to accept only the 100
         return false;
+    }
+
+    public boolean isComplete() {
+        ResourceLocation bruh[] = new ResourceLocation[this.getSlots()];
+        for (int i = 0; i < this.getSlots(); i++) {
+            Item item = stacks.get(i).getItem();
+            if (item.isIn(ItemTags.getCollection().get(THEONEHUNDRED))) {
+                for (int j = 0; j < this.getSlots(); j++) {
+                    if (j != i) {
+                        if (item.getRegistryName() == stacks.get(j).getItem().getRegistryName()) {
+                            HunterXHunter.LOGGER.info("Returning false, book is not complete");
+                            return false;
+                        }
+                    }
+                }
+                bruh[i] = item.getRegistryName();
+            }
+        }
+        HunterXHunter.LOGGER.info("Returning true, bag is complete");
+        return true;
     }
 
     @Override

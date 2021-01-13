@@ -8,7 +8,8 @@ public enum NenPassiveSelection implements IToolMode {
     POWER_ONE("hunterxhunter.power_one"),
     POWER_TWO("hunterxhunter.power_two"),
     POWER_THREE("hunterxhunter.power_three"),
-    POWER_FOUR("hunterxhunter.power_four");
+    POWER_FOUR("hunterxhunter.power_four"),
+    POWER_FIVE("hunterxhunter.power_four");
 
     public final String string;
 
