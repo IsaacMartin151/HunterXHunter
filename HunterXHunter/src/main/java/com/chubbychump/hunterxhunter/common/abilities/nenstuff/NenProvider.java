@@ -10,9 +10,9 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class NenProvider implements ICapabilitySerializable<CompoundNBT> {
 
-    @CapabilityInject(NenUser.class)
-    public static final Capability<NenUser> NENUSER = null;
-    private LazyOptional<NenUser> instance = LazyOptional.of(NENUSER::getDefaultInstance);
+    @CapabilityInject(INenUser.class)
+    public static final Capability<INenUser> NENUSER = null;
+    private LazyOptional<INenUser> instance = LazyOptional.of(NENUSER::getDefaultInstance);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

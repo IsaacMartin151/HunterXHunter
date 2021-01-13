@@ -2,18 +2,15 @@ package com.chubbychump.hunterxhunter.common.tileentities;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 
 import javax.annotation.Nullable;
 
 import static com.chubbychump.hunterxhunter.init.ModTileEntityTypes.NENLIGHT;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
 
 public class TileEntityNenLight extends TileEntity implements ITickableTileEntity {
     private int deathTimer = 40;
@@ -36,7 +33,6 @@ public class TileEntityNenLight extends TileEntity implements ITickableTileEntit
     @Override
     public void tick() {
         if (deathTimer > 0) {
-            HunterXHunter.LOGGER.info("Reducing deathTimer, is now "+deathTimer);
             deathTimer--;
         } else {
             this.remove();

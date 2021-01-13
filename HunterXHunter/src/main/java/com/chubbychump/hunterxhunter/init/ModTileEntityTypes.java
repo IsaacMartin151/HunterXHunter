@@ -9,4 +9,5 @@ import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_
 @ObjectHolder(HunterXHunter.MOD_ID)
 public class ModTileEntityTypes {
     public static final TileEntityType<?> NENLIGHT = NEN_LIGHT_TILE_ENTITY.get(); //I think this part is right, just need to do the eventhandler portion correctly.
+    public static final TileEntityType<?> CONJURER_TILE_ENTITY = NEN_LIGHT_TILE_ENTITY.get();
 }

@@ -3,6 +3,7 @@ package com.chubbychump.hunterxhunter.packets;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
@@ -44,12 +45,12 @@ public class SyncNenPacket {
             ServerPlayerEntity serverPlayer = ctx.get().getSender();
             if (serverPlayer == null) {
                 PlayerEntity player = (PlayerEntity) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid2"));
-                NenUser cap = NenUser.getFromPlayer(player);
+                INenUser cap = NenUser.getFromPlayer(player);
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
             }
             else {
                 //PlayerEntity player = serverPlayer.server.getPlayerList().getPlayerByUUID(serverPlayer.getUniqueID());
-                NenUser cap = NenUser.getFromPlayer(serverPlayer);
+                INenUser cap = NenUser.getFromPlayer(serverPlayer);
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
             }
         });

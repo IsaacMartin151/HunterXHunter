@@ -1,15 +1,13 @@
 package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
-import com.chubbychump.hunterxhunter.common.blocks.BlockItemBase;
-import com.chubbychump.hunterxhunter.common.blocks.NenLight;
-import com.chubbychump.hunterxhunter.common.blocks.PortalBlock;
-import com.chubbychump.hunterxhunter.common.blocks.RubyBlock;
+import com.chubbychump.hunterxhunter.common.blocks.*;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.Neferpitou;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.Shiapouf;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.ShiapoufClone;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
 import com.chubbychump.hunterxhunter.common.items.*;
+import com.chubbychump.hunterxhunter.common.items.thehundred.crafting.*;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.PotatoSoup;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.RoastedPorkDish;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.SpiderEagleEgg;
@@ -17,9 +15,12 @@ import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Crystal_
 import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Duplicator;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.TastyFood;
 import com.chubbychump.hunterxhunter.common.items.thehundred.placeable.SaturationStand;
+import com.chubbychump.hunterxhunter.common.items.thehundred.tools.GonFishingPole;
+import com.chubbychump.hunterxhunter.common.items.thehundred.tools.SelfDestructButton;
 import com.chubbychump.hunterxhunter.common.potions.BloodLust;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEntity;
+import com.chubbychump.hunterxhunter.common.tileentities.TileEntityConjurerBlock;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
@@ -103,28 +104,44 @@ public class RegistryHandler {
     public static final RegistryObject<SoundEvent> EMBARK_ADVENTURE = SOUNDS.register("embarkadventure", () -> new SoundEvent(new ResourceLocation(MOD_ID, "embarkadventure")));
 
     //Items
-    public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
-    public static final RegistryObject<Item> CRYSTALLIZEDNEN = ITEMS.register( "crystal_nen", Crystal_Nen::new);
-    public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tasty_food", TastyFood::new);
-    public static final RegistryObject<Item> DUPLICATOR = ITEMS.register( "duplicator", Duplicator::new);
-    public static final RegistryObject<Item> ROASTED_PORK_DISH = ITEMS.register( "roasted_pork_dish", RoastedPorkDish::new);
-    public static final RegistryObject<Item> POTATO_SOUP = ITEMS.register( "potato_soup", PotatoSoup::new);
-    public static final RegistryObject<Item> SPIDER_EAGLE_EGG = ITEMS.register( "spider_eagle_egg", SpiderEagleEgg::new);
+        //Crafting
+        public static final RegistryObject<Item> BEAR_CLAW = ITEMS.register( "bear_claw", BearClaw::new);
+        public static final RegistryObject<Item> EXPLOSIVE_ASHES = ITEMS.register( "explosive_ashes", ExplosiveAshes::new);
+        public static final RegistryObject<Item> LIZARD_LEG = ITEMS.register( "lizard_leg", LizardLeg::new);
+        public static final RegistryObject<Item> SUPER_STRING = ITEMS.register( "super_string", SuperString::new);
+        public static final RegistryObject<Item> THORAX = ITEMS.register( "thorax", Thorax::new);
+
+
+        //One-time use
+        public static final RegistryObject<Item> RUBY = ITEMS.register( "ruby", ItemBase::new);
+        public static final RegistryObject<Item> CRYSTALLIZEDNEN = ITEMS.register( "crystal_nen", Crystal_Nen::new);
+        public static final RegistryObject<Item> DUPLICATOR = ITEMS.register( "duplicator", Duplicator::new);
+
+        //Repeatable use
+        public static final RegistryObject<Item> SELF_DESTRUCT_BUTTON = ITEMS.register( "self_destruct_button", SelfDestructButton::new);
+        public static final RegistryObject<Item> GON_FISHING_POLE = ITEMS.register( "gon_fishing_pole", GonFishingPole::new);
+
+        //Food
+        public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tasty_food", TastyFood::new);
+        public static final RegistryObject<Item> ROASTED_PORK_DISH = ITEMS.register( "roasted_pork_dish", RoastedPorkDish::new);
+        public static final RegistryObject<Item> POTATO_SOUP = ITEMS.register( "potato_soup", PotatoSoup::new);
+        public static final RegistryObject<Item> SPIDER_EAGLE_EGG = ITEMS.register( "spider_eagle_egg", SpiderEagleEgg::new);
 
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
     public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nenlight", NenLight::new);
     public static final RegistryObject<Block> GREED_ISLAND_PORTAL = BLOCKS.register("twilight_portal", PortalBlock::new);
     public static final RegistryObject<Block> SATURATION_STAND = BLOCKS.register("saturation_stand", SaturationStand::new);
+    public static final RegistryObject<Block> CONJURER_BLOCK = BLOCKS.register("conjurer_block", ConjurerBlock::new);
 
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
-    public static final RegistryObject<Item> NEN_LIGHT_ITEM = ITEMS.register("nen_light", () -> new BlockItemBase(NEN_LIGHT.get()));
     public static final RegistryObject<Item> TWILIGHT_PORTAL_ITEM = ITEMS.register("twilight_portal", () -> new BlockItemBase(GREED_ISLAND_PORTAL.get()));
     public static final RegistryObject<Item> SATURATION_STAND_ITEM = ITEMS.register("saturation_stand", () -> new BlockItemBase(SATURATION_STAND.get()));
 
     //Tile Entities
     public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityConjurerBlock>> CONJURER_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("conjurer_tile_entity", () -> TileEntityType.Builder.create(TileEntityConjurerBlock::new, CONJURER_BLOCK.get()).build(null));
     public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.create(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
 
     //Containers

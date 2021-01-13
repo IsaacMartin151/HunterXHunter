@@ -1,5 +1,7 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,7 +30,7 @@ public class NenEffectSelect extends Screen {
     public int switchTo = 0;
     public int selectedPower = 0;
     public boolean actionUsed = false;
-    public ResourceLocation[] icons = new ResourceLocation[4];
+    public ResourceLocation[] icons = new ResourceLocation[5];
 
     protected NenEffectSelect()
     {
@@ -98,7 +100,7 @@ public class NenEffectSelect extends Screen {
         final double middle_y = height / 2;
 
         final ArrayList<MenuRegion> modes = new ArrayList<MenuRegion>();
-        final NenPassiveSelection[] orderedModes = { NenPassiveSelection.POWER_ONE, NenPassiveSelection.POWER_TWO, NenPassiveSelection.POWER_THREE, NenPassiveSelection.POWER_FOUR };
+        final NenPassiveSelection[] orderedModes = { NenPassiveSelection.POWER_ONE, NenPassiveSelection.POWER_TWO, NenPassiveSelection.POWER_THREE, NenPassiveSelection.POWER_FOUR, NenPassiveSelection.POWER_FIVE };
 
         for (final NenPassiveSelection mode : orderedModes) {
             modes.add( new MenuRegion( mode ) );
@@ -178,7 +180,6 @@ public class NenEffectSelect extends Screen {
             yo.bindTexture(getIconForMode(mnuRgn.mode));
             RenderSystem.bindTexture(yo.getTexture(getIconForMode(mnuRgn.mode)).getGlTextureId());
 
-
             final double scalex = 15 * 1 * 0.5;
             final double scaley = 15 * 1 * 0.5;
             final double x1 = x - scalex;
@@ -246,8 +247,9 @@ public class NenEffectSelect extends Screen {
 
     @Override
     public void onClose() {
-        NenUser yo = NenUser.getFromPlayer(minecraft.player);
-        yo.setPassivePower(selectedPower);
+        HunterXHunter.LOGGER.info("Setting type to "+(selectedPower+1));
+        INenUser yo = NenUser.getFromPlayer(minecraft.player);
+        yo.setType(selectedPower + 1);
         updateServer(minecraft.player, yo);
     }
 

@@ -2,6 +2,8 @@ package com.chubbychump.hunterxhunter.common.abilities.nenstuff.types;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class Manipulator extends NenUser {
     public Manipulator() {
@@ -12,6 +14,7 @@ public class Manipulator extends NenUser {
         this.en = false;
         this.ren = false;
         this.zetsu = false;
+        this.passivePower = 0;
     }
 
     @Override

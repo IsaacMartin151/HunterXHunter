@@ -1,5 +1,7 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -73,9 +75,10 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
 
     @Override
     public void onClose() {
-        super.onClose();
-        NenUser yo = Minecraft.getInstance().player.getCapability(NENUSER).orElseThrow(null);
+        INenUser yo = minecraft.player.getCapability(NENUSER).orElseThrow(null);
         yo.setOpenedBook(false);
+        HunterXHunter.LOGGER.info("book open is false");
         updateServer(minecraft.player, yo);
+        super.onClose();
     }
 }

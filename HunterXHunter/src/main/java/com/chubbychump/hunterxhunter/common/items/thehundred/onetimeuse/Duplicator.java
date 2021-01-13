@@ -22,10 +22,12 @@ public class Duplicator extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-        player.inventory.addItemStackToInventory(new ItemStack(player.getItemStackFromSlot(EquipmentSlotType.OFFHAND).getItem(), 5));
         PlayerInventory yeet = player.inventory;
         ItemStack yo = yeet.getCurrentItem();
-        yo.shrink(1);
-        return ActionResult.resultPass(yo);
+        if (player.inventory.addItemStackToInventory(new ItemStack(player.getItemStackFromSlot(EquipmentSlotType.OFFHAND).getItem(), 1))) {
+            yo.shrink(1);
+            return ActionResult.resultPass(yo);
+        }
+        return ActionResult.resultFail(yo);
     }
 }

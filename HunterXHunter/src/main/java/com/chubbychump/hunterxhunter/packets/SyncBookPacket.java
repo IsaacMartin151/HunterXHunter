@@ -7,6 +7,7 @@ import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslan
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
@@ -60,9 +61,9 @@ public class SyncBookPacket {
                 HunterXHunter.LOGGER.info("Opening GUI");
                 BookItemStackHandler cap = (BookItemStackHandler) serverPlayer.getCapability(BOOK_CAPABILITY).orElseThrow(null);
                 INamedContainerProvider container = new SimpleNamedContainerProvider((w, p, pl) -> new GreedIslandContainer(w, p, cap), new TranslationTextComponent("Book!"));
-                NenUser nenUser = NenUser.getFromPlayer(serverPlayer);
+                INenUser nenUser = NenUser.getFromPlayer(serverPlayer);
                 nenUser.setOpenedBook(true);
-                nenUser.lastOpenedBook = Util.milliTime();
+                nenUser.setLastOpenedBook(Util.milliTime());
                 NetworkHooks.openGui(serverPlayer, container);
             }
         });
