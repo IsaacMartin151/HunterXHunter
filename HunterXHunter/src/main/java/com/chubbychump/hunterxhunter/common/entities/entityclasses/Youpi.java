@@ -55,7 +55,6 @@ public class Youpi extends MonsterEntity implements IChargeableMob, IRangedAttac
     private static final DataParameter<Integer> INVULNERABILITY_TIME = EntityDataManager.createKey(Youpi.class, DataSerializers.VARINT);
 
     private int nextHeadUpdate = 0;
-    private int idleHeadUpdates = 0;
     private float lastexplosion = this.getMaxHealth();
     private int explosionCountdown = 0;
     public int leapTimer = 0;

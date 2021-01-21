@@ -27,10 +27,12 @@
 
 
     "hunterxhunter:bear_claw",
-    "hunterxhunter:exploseive_ashes",
+    "hunterxhunter:explosive_ashes",
     "hunterxhunter:lizard_leg",
     "hunterxhunter:super_string",
-    "hunterxhunter:thorax",
+    "hunterxhunter:carapace",
+
+
 
     "hunterxhunter:saturation_stand",
     "hunterxhunter:duplicator",
@@ -38,6 +40,17 @@
 
     "hunterxhunter:gon_fishing_pole",
     "hunterxhunter:self_destruct_button",
+
+    "hunterxhunter.bat_staff",
+    "hunterxhunter.blaze_staff",
+    "hunterxhunter.chimera_ant_staff",
+    "hunterxhunter.creeper_staff",
+    "hunterxhunter.foxbear_staff",
+    "hunterxhunter.ghast_staff",
+    "hunterxhunter.guardian_staff",
+    "hunterxhunter.phantom_staff",
+    "hunterxhunter.spider_staff",
+    "hunterxhunter.villager_staff",
 
     "hunterxhunter:roasted_pork_dish",
     "hunterxhunter:potato_soup",

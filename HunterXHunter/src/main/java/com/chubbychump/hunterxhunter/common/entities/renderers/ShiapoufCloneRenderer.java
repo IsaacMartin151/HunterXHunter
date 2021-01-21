@@ -3,6 +3,7 @@ package com.chubbychump.hunterxhunter.common.entities.renderers;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.ShiapoufClone;
 import com.chubbychump.hunterxhunter.common.entities.models.ShiapoufCloneModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;

@@ -9,14 +9,30 @@
   "item.hunterxhunter.crystal_nen": "Crystal Nen",
   "item.hunterxhunter.duplicator": "Duplicator",
   "item.hunterxhunter.nenlight": "NenLight",
+
   "item.hunterxhunter.potato_soup": "Potato Soup",
   "item.hunterxhunter.roasted_pork_dish": "Roasted Pork Dish",
   "item.hunterxhunter.spider_eagle_egg": "Spider Eagle Egg",
   "item.hunterxhunter.tasty_food": "Tasty Food",
+
+  "item.hunterxhunter:gon_fishing_pole":  "Gon's fishing pole",
+  "item.hunterxhunter:self_destruct_button":  "Self Destruct Button",
+
+  "item.hunterxhunter.bat_staff": "Bat Staff",
+  "item.hunterxhunter.blaze_staff": "Blaze Staff",
+  "item.hunterxhunter.chimera_ant_staff": "Chimera Staff",
+  "item.hunterxhunter.creeper_staff": "Creeper Staff",
+  "item.hunterxhunter.foxbear_staff": "Foxbear Staff",
+  "item.hunterxhunter.ghast_staff": "Ghast Staff",
+  "item.hunterxhunter.guardian_staff": "Guardian Staff",
+  "item.hunterxhunter.phantom_staff": "Phantom Staff",
+  "item.hunterxhunter.spider_staff": "Spider Staff",
+  "item.hunterxhunter.villager_staff": "Villager Staff",
+
   "block.hunterxhunter.ruby_block": "Ruby Block",
   "block.hunterxhunter.conjurer_block": "Conjurer Block",
   "block.hunterxhunter.twilight_portal": "Twilight Portal",
   "item.hunterxhunter.sapphire": "Sapphire Gem",
-  "itemGroup.hunterxhunter": "HunterXHunter"
+  "itemGroup.hunterxhunter": "Hunter X Hunter"
 
 }

@@ -11,29 +11,31 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
-import com.chubbychump.hunterxhunter.common.entities.renderers.NeferpitouRenderer;
-import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufCloneRenderer;
-import com.chubbychump.hunterxhunter.common.entities.renderers.ShiapoufRenderer;
-import com.chubbychump.hunterxhunter.common.entities.renderers.YoupiRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.*;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.block.trees.Tree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -80,12 +82,14 @@ public class HunterXHunter {
     // - 10 placeable
     // - 15 tools
 
-    //KilledTrigger
-
     // - Biome structure loot
-    // - Animals in Tundra, Badlands, Swamp, Jungle, Plains, maybe new biome?
+    // - Animals in Tundra, Badlands - ant, Swamp - giant lizard, Jungle, Plains - foxbear
 
     // New biome with tough monster, add "Bomber" underground entity
+    //custom biome/structure for zoldyck house?
+    //custom biome for world tree
+    //custom biome for intro puzzle structures
+    //custom biome for "home" - 'Mom' npc that gives an item
 
     // Loot chests from dungeons, abandoned mineshafts, strongholds can hold treasure items
 
@@ -123,7 +127,14 @@ public class HunterXHunter {
     - Custom cutscene for when someone beats the game, gets something cool and permanent card
      */
 
-    //Rod that launches you in a direction - tool
+    //Add burnout potion effect that sets nen to 0?
+
+    //Rods that do stuff - uses the mithril ore, stick, and special item - teleport randomly, give random effect, summon bats - good for bossfight, turn coal ore into gold nuggets, call lightning
+    //launch entity into air,
+
+    //add a tamable flying mount that sucks, tameable ground mount? Maybe the lizard? or something?
+
+    //Add sound indicators for bloodlust removal, staffs,
 
     //Custom structure at start to get "Hunter License" - use NBT data from woodland mansion, build custom setup, then scan it
     // - 1. Beating Satotz in a race - Race while rendering an entity
@@ -131,8 +142,13 @@ public class HunterXHunter {
     // - 3. Tower of traps
     // - 4. Press button to get one book
 
-    //TemplateManager templateManager = player.getEntityWorld().getServer().getTemplateManager();
-    //templateManager.getTemplate();
+    //Grenade item
+
+    //Summoner staff - made in new building block created from new ore
+    //Custom kitchen blocks to cook stuff - Living furnace - uses hostile mob drops as fuel
+    //Summoner staff - creeper, villager staff
+    //Custom armor types - lizardleg boots, foxbear leggings, carapace chestplate, helmet TBD - set bonus = nen bonus?
+    //Maybe the new giant fish from fishing can be last part
 
 
     public HunterXHunter() {
@@ -149,12 +165,15 @@ public class HunterXHunter {
         CapabilityManager.INSTANCE.register(INenUser.class, new NenStorage(), () -> new NenUser());
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
         CapabilityManager.INSTANCE.register(ItemStackHandler.class, new BookStorage(), () -> new BookItemStackHandler(100));
+
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
+
         GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 1.0D)
                 .createMutableAttribute(Attributes.FLYING_SPEED, 1.0D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
                 .create());
+
         GlobalEntityTypeAttributes.put(YOUPI_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.8F)
@@ -167,7 +186,6 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.6F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 40.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
         GlobalEntityTypeAttributes.put(SHIAPOUF_ENTITY.get(), MobEntity.func_233666_p_()
@@ -175,14 +193,36 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.0F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+
+        GlobalEntityTypeAttributes.put(CHIMERA_ANT_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.5F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
+                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+
+        GlobalEntityTypeAttributes.put(FOXBEAR_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D)
+                .createMutableAttribute(Attributes.ARMOR, 3.0D).create());
+
+        GlobalEntityTypeAttributes.put(GIANT_LIZARD_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 16.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D).create());
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_ENTITY.get(), ShiapoufRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(YOUPI_ENTITY.get(), YoupiRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(NEFERPITOU_ENTITY.get(), NeferpitouRenderer::new);
-
         RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_CLONE_ENTITY.get(), ShiapoufCloneRenderer::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(CHIMERA_ANT_ENTITY.get(), ChimeraAntRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(FOXBEAR_ENTITY.get(), FoxBearRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(GIANT_LIZARD_ENTITY.get(), GiantLizardRenderer::new);
 
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
         ScreenManager.registerFactory(GREED_ISLAND_CONTAINER.get(), ContainerScreenGreedIsland::new);
@@ -191,7 +231,7 @@ public class HunterXHunter {
     public static final ItemGroup TAB = new ItemGroup("hunterxhunter") {
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(RegistryHandler.RUBY.get());
+            return new ItemStack(GON_FISHING_POLE.get());
         }
     };
 

@@ -18,6 +18,8 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
 import com.chubbychump.hunterxhunter.common.blocks.ConjurerBlock;
 import com.chubbychump.hunterxhunter.common.blocks.NenLight;
 import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.common.items.thehundred.tools.PhantomStaff;
+import com.chubbychump.hunterxhunter.common.items.thehundred.tools.SpiderStaff;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityConjurerBlock;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.init.ModBlocks;
@@ -27,9 +29,7 @@ import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.criterion.ItemDurabilityTrigger;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.DeathScreen;
@@ -37,6 +37,7 @@ import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,11 +45,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.status.server.SServerInfoPacket;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -61,14 +64,18 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -480,6 +487,41 @@ public class EventsHandling {
         }
     }
 
+    @SubscribeEvent
+    public static void livingUpdate(LivingEvent.LivingUpdateEvent event) {
+        //LOGGER.info("Checking side. In livingupdate");
+        if (event.getEntity() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getEntity();
+            if (player.getHeldItemMainhand().getItem() instanceof PhantomStaff) {
+                PhantomStaff staff = (PhantomStaff) player.getHeldItemMainhand().getItem();
+
+                if (staff.isOn()) {
+                    player.noClip = true;
+                    player.setNoGravity(true);
+                    player.setMotion(new Vector3d(event.getEntity().getMotion().x, 0, event.getEntity().getMotion().z));
+                    player.setPose(Pose.SWIMMING);
+                    if (event.getEntity().ticksExisted % 40 == 0) {
+                        player.getHeldItemMainhand().damageItem(1, player, (player1) -> {
+                            player1.sendBreakAnimation(Hand.MAIN_HAND);
+                        });
+                    }
+                }
+                else {
+                    //player.fallDistance = 0;
+                    player.noClip = false;
+                    player.setNoGravity(false);
+                    player.setPose(Pose.STANDING);
+                }
+            }
+            else {
+                //player.fallDistance = 0;
+                player.noClip = false;
+                player.setNoGravity(false);
+                player.setPose(Pose.STANDING);
+            }
+        }
+    }
+
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
@@ -494,7 +536,6 @@ public class EventsHandling {
                 Minecraft.getInstance().player.playSound(OPEN_BOOK.get(), 1, 1);
                 BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
                 PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
-
             }
             if (transformCard.isPressed()) {
                 ItemStack oof = event.player.getHeldItemMainhand();
@@ -553,6 +594,7 @@ public class EventsHandling {
         }
     }
 
+
     @SubscribeEvent
     public static void potionexpire(PotionEvent.PotionExpiryEvent event) {
         LOGGER.info("Potion expiring");
@@ -569,6 +611,7 @@ public class EventsHandling {
             LOGGER.info("It's an instance of bloodlust, cancelling removal");
         }
     }
+
 
     //DO NOT make this server only, because it gets called from the client
     @SubscribeEvent

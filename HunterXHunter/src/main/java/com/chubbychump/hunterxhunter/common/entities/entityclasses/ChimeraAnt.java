@@ -18,6 +18,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -38,10 +39,10 @@ public class ChimeraAnt extends FlyingEntity implements IMob {
 
     public ChimeraAnt(EntityType<? extends ChimeraAnt> type, World worldIn) {
         super(type, worldIn);
-
         this.experienceValue = 5;
         this.moveController = new ChimeraAnt.MoveHelperController(this);
         this.lookController = new ChimeraAnt.LookHelperController(this);
+        this.setCustomName(ITextComponent.getTextComponentOrEmpty("Chimera Ant"));
     }
 
     protected BodyController createBodyController() {

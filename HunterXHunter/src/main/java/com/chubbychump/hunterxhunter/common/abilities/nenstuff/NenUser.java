@@ -34,6 +34,7 @@ public class NenUser implements INenUser {
     protected int burnout = 0;
     public long lastOpenedBook = 2000;
     protected boolean manipulatorOverlay = false;
+    private boolean clipping = false;
 
     public NenUser() { }
 
@@ -43,6 +44,14 @@ public class NenUser implements INenUser {
 
     public int getNenType() {
         return type;
+    }
+
+    public void setClipping(boolean clip) {
+        this.clipping = clip;
+    }
+
+    public boolean getClipping() {
+        return clipping;
     }
 
     public boolean openedBook() {
@@ -94,7 +103,7 @@ public class NenUser implements INenUser {
     }
 
     public void keybind1() {
-        Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+        //Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
     }
 
     public void increaseNenPower() {

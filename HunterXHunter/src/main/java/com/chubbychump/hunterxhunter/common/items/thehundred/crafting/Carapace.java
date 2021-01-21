@@ -5,8 +5,8 @@ import net.minecraft.item.Item;
 
 import static net.minecraft.item.Rarity.UNCOMMON;
 
-public class Thorax extends Item {
-    public Thorax() {
+public class Carapace extends Item {
+    public Carapace() {
         super(new Item.Properties().maxStackSize(64).group(HunterXHunter.TAB).rarity(UNCOMMON));
     }
 }
