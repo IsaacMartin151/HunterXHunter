@@ -1,40 +1,39 @@
 package com.chubbychump.hunterxhunter.common.entities.renderers;
 
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.FoxBear;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.ShiapoufClone;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.GiantLizard;
 import com.chubbychump.hunterxhunter.common.entities.models.FoxBearModel;
-import com.chubbychump.hunterxhunter.common.entities.models.ShiapoufCloneModel;
+import com.chubbychump.hunterxhunter.common.entities.models.GiantLizardModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.RavagerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FoxBearRenderer extends MobRenderer<FoxBear, FoxBearModel<FoxBear>> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/foxbear.png");
+public class GiantLizardRenderer extends MobRenderer<GiantLizard, GiantLizardModel<GiantLizard>> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/giantlizard.png");
 
-    public FoxBearRenderer(EntityRendererManager renderManagerIn) {
-        super(renderManagerIn, new FoxBearModel(), 0.75F);
+    public GiantLizardRenderer(EntityRendererManager renderManagerIn) {
+        super(renderManagerIn, new GiantLizardModel<>(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
 
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(FoxBear entity) {
+    public ResourceLocation getEntityTexture(GiantLizard entity) {
         return TEXTURE;
     }
 
-    protected void preRenderCallback(FoxBear entitylivingbaseIn, MatrixStack matrixStackIn, float partialTickTime) {
+    protected void preRenderCallback(GiantLizard entitylivingbaseIn, MatrixStack matrixStackIn, float partialTickTime) {
         //float f = 2F;
         //matrixStackIn.scale(f, f, f);
     }
 
-    protected void applyRotations(FoxBear entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+    protected void applyRotations(GiantLizard entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
         super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
         matrixStackIn.rotate(Vector3f.XP.rotationDegrees(entityLiving.rotationPitch));
     }

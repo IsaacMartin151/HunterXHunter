@@ -2,10 +2,7 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
 import com.chubbychump.hunterxhunter.common.blocks.*;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.Neferpitou;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.Shiapouf;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.ShiapoufClone;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
 import com.chubbychump.hunterxhunter.common.items.*;
 import com.chubbychump.hunterxhunter.common.items.thehundred.crafting.*;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.PotatoSoup;
@@ -15,8 +12,7 @@ import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Crystal_
 import com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse.Duplicator;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.TastyFood;
 import com.chubbychump.hunterxhunter.common.items.thehundred.placeable.SaturationStand;
-import com.chubbychump.hunterxhunter.common.items.thehundred.tools.GonFishingPole;
-import com.chubbychump.hunterxhunter.common.items.thehundred.tools.SelfDestructButton;
+import com.chubbychump.hunterxhunter.common.items.thehundred.tools.*;
 import com.chubbychump.hunterxhunter.common.potions.BloodLust;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEntity;
@@ -71,12 +67,6 @@ public class RegistryHandler {
         POTIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
         POINT_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
         PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        //try {
-        //    Method func_221052_a = ObfuscationReflectionHelper.findMethod(PointOfInterestType.class, "func_221052_a", PointOfInterestType.class);
-        //    func_221052_a.invoke(null, MASADORIAN_POI);
-        //} catch (Exception e) {
-        //    e.printStackTrace();
-       // }
     }
 
     //Particles
@@ -109,7 +99,7 @@ public class RegistryHandler {
         public static final RegistryObject<Item> EXPLOSIVE_ASHES = ITEMS.register( "explosive_ashes", ExplosiveAshes::new);
         public static final RegistryObject<Item> LIZARD_LEG = ITEMS.register( "lizard_leg", LizardLeg::new);
         public static final RegistryObject<Item> SUPER_STRING = ITEMS.register( "super_string", SuperString::new);
-        public static final RegistryObject<Item> THORAX = ITEMS.register( "thorax", Thorax::new);
+        public static final RegistryObject<Item> CARAPACE = ITEMS.register( "carapace", Carapace::new);
 
 
         //One-time use
@@ -120,6 +110,18 @@ public class RegistryHandler {
         //Repeatable use
         public static final RegistryObject<Item> SELF_DESTRUCT_BUTTON = ITEMS.register( "self_destruct_button", SelfDestructButton::new);
         public static final RegistryObject<Item> GON_FISHING_POLE = ITEMS.register( "gon_fishing_pole", GonFishingPole::new);
+
+            //Staffs
+            public static final RegistryObject<Item> BAT_STAFF = ITEMS.register( "bat_staff", BatStaff::new);
+            public static final RegistryObject<Item> BLAZE_STAFF = ITEMS.register( "blaze_staff", BlazeStaff::new);
+            public static final RegistryObject<Item> CHIMERA_ANT_STAFF = ITEMS.register( "chimera_ant_staff", ChimeraAntStaff::new);
+            public static final RegistryObject<Item> CREEPER_STAFF = ITEMS.register( "creeper_staff", CreeperStaff::new);
+            public static final RegistryObject<Item> FOXBEAR_STAFF = ITEMS.register( "foxbear_staff", FoxbearStaff::new);
+            public static final RegistryObject<Item> GHAST_STAFF = ITEMS.register( "ghast_staff", GhastStaff::new);
+            public static final RegistryObject<Item> GUARDIAN_STAFF = ITEMS.register( "guardian_staff", GuardianStaff::new);
+            public static final RegistryObject<Item> PHANTOM_STAFF = ITEMS.register( "phantom_staff", PhantomStaff::new);
+            public static final RegistryObject<Item> SPIDER_STAFF = ITEMS.register( "spider_staff", SpiderStaff::new);
+            public static final RegistryObject<Item> VILLAGER_STAFF = ITEMS.register( "villager_staff", VillagerStaff::new);
 
         //Food
         public static final RegistryObject<Item> TASTY_FOOD = ITEMS.register( "tasty_food", TastyFood::new);
@@ -133,11 +135,13 @@ public class RegistryHandler {
     public static final RegistryObject<Block> GREED_ISLAND_PORTAL = BLOCKS.register("twilight_portal", PortalBlock::new);
     public static final RegistryObject<Block> SATURATION_STAND = BLOCKS.register("saturation_stand", SaturationStand::new);
     public static final RegistryObject<Block> CONJURER_BLOCK = BLOCKS.register("conjurer_block", ConjurerBlock::new);
+    public static final RegistryObject<Block> SUPER_COBWEB = BLOCKS.register("super_cobweb", SuperCobweb::new);
 
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
     public static final RegistryObject<Item> TWILIGHT_PORTAL_ITEM = ITEMS.register("twilight_portal", () -> new BlockItemBase(GREED_ISLAND_PORTAL.get()));
     public static final RegistryObject<Item> SATURATION_STAND_ITEM = ITEMS.register("saturation_stand", () -> new BlockItemBase(SATURATION_STAND.get()));
+    public static final RegistryObject<Item> SUPER_COBWEB_ITEM = ITEMS.register("super_cobweb", () -> new BlockItemBase(SUPER_COBWEB.get()));
 
     //Tile Entities
     public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
@@ -150,28 +154,49 @@ public class RegistryHandler {
     //Entities
     public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapoufclone", () -> EntityType.Builder.<ShiapoufClone>create(ShiapoufClone::new, EntityClassification.MONSTER)
             .size(.5f, .5f)
-            .setTrackingRange(64)
+            .setTrackingRange(20)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<Youpi>> YOUPI_ENTITY = ENTITY_TYPES.register("youpi", () -> EntityType.Builder.<Youpi>create(Youpi::new, EntityClassification.MONSTER)
-            .size(1f, 1f)
+            .size(3f, 3f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<Neferpitou>> NEFERPITOU_ENTITY = ENTITY_TYPES.register("neferpitou", () -> EntityType.Builder.<Neferpitou>create(Neferpitou::new, EntityClassification.MONSTER)
-            .size(1f, 1f)
+            .size(2f, 3f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<Shiapouf>> SHIAPOUF_ENTITY = ENTITY_TYPES.register("shiapouf", () -> EntityType.Builder.<Shiapouf>create(Shiapouf::new, EntityClassification.MONSTER)
-            .size(1f, 1f)
+            .size(2f, 3f)
             .setTrackingRange(128)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimeraant", () -> EntityType.Builder.<ChimeraAnt>create(ChimeraAnt::new, EntityClassification.MONSTER)
+            .size(1.2f, 2f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<FoxBear>> FOXBEAR_ENTITY = ENTITY_TYPES.register("foxbear", () -> EntityType.Builder.<FoxBear>create(FoxBear::new, EntityClassification.MONSTER)
+            .size(2f, 2.2f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giantlizard", () -> EntityType.Builder.<GiantLizard>create(GiantLizard::new, EntityClassification.CREATURE)
+            .size(3f, 2f)
+            .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));

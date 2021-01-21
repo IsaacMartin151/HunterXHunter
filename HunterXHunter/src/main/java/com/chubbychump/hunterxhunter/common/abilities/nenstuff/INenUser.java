@@ -22,6 +22,8 @@ public interface INenUser {
     static void updateServer(PlayerEntity player, NenUser cap) {
         PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
     }
+    void setClipping(boolean clip);
+    boolean getClipping();
     int getPassivePower();
     void setPassivePower(int i);
     void setNenPower(int power);

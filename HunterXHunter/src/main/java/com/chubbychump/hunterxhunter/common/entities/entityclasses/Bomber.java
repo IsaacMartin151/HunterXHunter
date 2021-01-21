@@ -6,8 +6,12 @@ import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.fish.AbstractFishEntity;
+import net.minecraft.entity.passive.fish.CodEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -18,6 +22,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
@@ -30,7 +35,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 
-public class Bomber extends FlyingEntity implements IMob {
+public class Bomber extends CreeperEntity implements IMob {
     private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(Bomber.class, DataSerializers.VARINT);
     private Vector3d orbitOffset = Vector3d.ZERO;
     private BlockPos orbitPosition = BlockPos.ZERO;
@@ -42,6 +47,7 @@ public class Bomber extends FlyingEntity implements IMob {
         this.experienceValue = 5;
         this.moveController = new Bomber.MoveHelperController(this);
         this.lookController = new Bomber.LookHelperController(this);
+        this.setCustomName(ITextComponent.getTextComponentOrEmpty("Bomber"));
     }
 
     protected BodyController createBodyController() {

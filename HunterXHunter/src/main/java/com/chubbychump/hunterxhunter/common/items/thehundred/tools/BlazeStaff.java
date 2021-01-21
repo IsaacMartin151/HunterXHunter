@@ -1,0 +1,45 @@
+package com.chubbychump.hunterxhunter.common.items.thehundred.tools;
+
+import com.chubbychump.hunterxhunter.common.items.StaffBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.ShoulderRidingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.LavaFluid;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+
+public class BlazeStaff extends StaffBase {
+    public BlazeStaff() {
+        super();
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        if (!worldIn.isRemote) {
+            itemstack.damageItem(1, playerIn, (player) -> {
+                player.sendBreakAnimation(handIn);
+            });
+            LavaFluid bro = new LavaFluid.Source();
+            Vector3d pc = new Vector3d(playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ());
+            for (int x = -2; x < 3; x++) {
+                for (int z = -2; z < 3; z++) {
+                    if (z < 2 && z > -2 && x < 2 && x > -2) {
+                        break;
+                    }
+                    BlockPos pos1 = new BlockPos(pc.x + x, pc.y - 1, pc.z + z);
+                    worldIn.setBlockState(pos1, bro.getDefaultState().getBlockState(), 11);
+                }
+            }
+        }
+        return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+    }
+}
