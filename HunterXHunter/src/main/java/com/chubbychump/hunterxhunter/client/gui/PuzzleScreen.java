@@ -20,9 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -287,6 +285,7 @@ public class PuzzleScreen extends Screen {
             yo.setFailCounter(0);
             yo.increaseNenPower();
             Minecraft.getInstance().player.playSound(WORLD_OF_ADVENTURES.get(), 1f, 1f);
+            minecraft.player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent(minecraft.player.getName().getString()+" passed their trial").setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
         }
         else {
             int j = yo.getFailCounter() + 1;
@@ -294,10 +293,9 @@ public class PuzzleScreen extends Screen {
             if (j >= 3) {
                 yo.setFailCounter(0);
                 yo.increaseNenPower();
-                Minecraft.getInstance().player.sendChatMessage("Player failed three times, upgrading anyways");
+                minecraft.player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent(minecraft.player.getName().getString()+" failed their trial").setStyle(Style.EMPTY.setColor(Color.fromInt(16896)).setItalic(true)), Util.DUMMY_UUID);
                 Minecraft.getInstance().player.playSound(WORLD_OF_ADVENTURES.get(), 1f, .5f);
             }
-            Minecraft.getInstance().player.sendChatMessage("Failed their nen upgrade, fail counter is "+yo.getFailCounter());
         }
         updateServer(minecraft.player, yo);
     }

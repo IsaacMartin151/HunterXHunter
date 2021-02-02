@@ -67,6 +67,6 @@ public class GonFishingPole extends Item implements IVanishable {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("Gon's fishing rod. This item has Luck 5 and Lure 5"));
+        tooltip.add(new TranslationTextComponent("Gon's fishing rod. Has Luck 5 and Lure 5"));
     }
 }

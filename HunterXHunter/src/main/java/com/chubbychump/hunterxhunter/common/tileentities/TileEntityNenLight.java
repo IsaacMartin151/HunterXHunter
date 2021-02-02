@@ -10,15 +10,14 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-import static com.chubbychump.hunterxhunter.init.ModTileEntityTypes.NENLIGHT;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.NEN_LIGHT_TILE_ENTITY;
 
 public class TileEntityNenLight extends TileEntity implements ITickableTileEntity {
     private int deathTimer = 40;
     public int levelOfLight = 0;
 
     public TileEntityNenLight() {
-        super(NENLIGHT);
-        this.deathTimer = 40;
+        super(NEN_LIGHT_TILE_ENTITY.get());
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "type": "hunterxhunter:vat",
+  "ingredient0": {
+    "item": "hunterxhunter:bat_wing"
+  },
+  "ingredient1": {
+    "item": "minecraft:sugar"
+  },
+  "result": "hunterxhunter:aspect_of_bat",
+  "experience": 0.15,
+  "cookingtime": 100
+}

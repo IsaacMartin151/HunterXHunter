@@ -26,6 +26,8 @@ public interface INenUser {
     boolean getClipping();
     int getPassivePower();
     void setPassivePower(int i);
+    int getManipulatorSelection();
+    void setManipulatorSelection(int i);
     void setNenPower(int power);
     void keybind1();
     void increaseNenPower();

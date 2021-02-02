@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "xzx",
+    "zyz",
+    "xzx"
+  ],
+  "key":
+  {
+    "x":
+    {
+      "item": "minecraft:basalt"
+    },
+    "y":
+    {
+      "item": "hunterxhunter:potent_aura"
+    },
+    "z":
+    {
+      "item": "minecraft:emerald"
+    }
+  },
+  "result":
+  {
+    "item": "hunterxhunter:vat",
+    "count": 1
+  }
+}

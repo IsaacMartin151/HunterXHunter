@@ -1,0 +1,12 @@
+{
+  "type": "hunterxhunter:vat",
+  "ingredient0": {
+    "item": "minecraft:gunpowder"
+  },
+  "ingredient1": {
+    "item": "hunterxhunter:explosive_ashes"
+  },
+  "result": "hunterxhunter:aspect_of_creeper",
+  "experience": 0.15,
+  "cookingtime": 100
+}

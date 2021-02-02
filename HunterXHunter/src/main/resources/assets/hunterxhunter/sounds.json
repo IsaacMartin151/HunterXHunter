@@ -7,5 +7,7 @@
   "openbook": { "sounds":[{"name": "hunterxhunter:openbook", "stream": false}] },
   "stoneslide": { "sounds": [{"name":  "hunterxhunter:stoneslideone", "stream":  false}, {"name":  "hunterxhunter:stoneslidetwo", "stream":  false}]},
   "loungemusic": { "sounds":[{"name": "hunterxhunter:loungemusic", "stream": true}] },
-  "embarkadventure": { "sounds":[{"name": "hunterxhunter:embarkadventure", "stream": true}] }
+  "embarkadventure": { "sounds":[{"name": "hunterxhunter:embarkadventure", "stream": true}] },
+  "wind": { "sounds":["hunterxhunter:wind"], "subtitle": "wind", "stream": true },
+  "urawizard": { "sounds":["hunterxhunter:urawizard"], "subtitle": "urawizard", "stream": true }
 }

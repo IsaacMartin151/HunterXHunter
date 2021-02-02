@@ -1,0 +1,12 @@
+{
+  "type": "hunterxhunter:vat",
+  "ingredient0": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "ingredient1": {
+    "item": "hunterxhunter:bat_wing"
+  },
+  "result": "hunterxhunter:aspect_of_phantom",
+  "experience": 0.15,
+  "cookingtime": 100
+}

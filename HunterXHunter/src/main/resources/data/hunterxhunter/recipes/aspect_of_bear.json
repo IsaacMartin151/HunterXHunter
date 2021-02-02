@@ -1,0 +1,12 @@
+{
+  "type": "hunterxhunter:vat",
+  "ingredient0": {
+    "item": "hunterxhunter:bear_claw"
+  },
+  "ingredient1": {
+    "item": "minecraft:cod"
+  },
+  "result": "hunterxhunter:aspect_of_bear",
+  "experience": 0.15,
+  "cookingtime": 100
+}
