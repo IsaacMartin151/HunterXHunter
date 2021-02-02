@@ -34,6 +34,7 @@ public class NenUser implements INenUser {
     protected int burnout = 0;
     public long lastOpenedBook = 2000;
     protected boolean manipulatorOverlay = false;
+    public int manipulatorSelection = 0;
     private boolean clipping = false;
 
     public NenUser() { }
@@ -96,6 +97,14 @@ public class NenUser implements INenUser {
 
     public void setPassivePower(int i) {
         this.passivePower = i;
+    }
+
+    public int getManipulatorSelection() {
+        return manipulatorSelection;
+    }
+
+    public void setManipulatorSelection(int i) {
+        this.manipulatorSelection = i;
     }
 
     public void setNenPower(int power) {
@@ -239,7 +248,10 @@ public class NenUser implements INenUser {
         }
     }
 
-    public void manipulator1() { manipulatorOverlay = !manipulatorOverlay; }
+    public void manipulator1() {
+        //manipulatorOverlay = !manipulatorOverlay;
+        manipulatorSelection++;
+    }
 
     public void transmuter1(PlayerEntity player) {
         float setTo = getCurrentNen() - 50 - getNenPower() * 10;

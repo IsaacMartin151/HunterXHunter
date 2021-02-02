@@ -43,7 +43,7 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
     public static FFmpegFrameGrabber eff = new FFmpegFrameGrabber(file);
     private boolean needstorestart = false;
     private boolean start = false;
-    private Button startbutton = new Button(0 + 80, 0 + 20, 80, 20, ITextComponent.getTextComponentOrEmpty("Start"), (p_213094_1_) -> {
+    private Button startbutton = new Button(0, 0, 60, 20, ITextComponent.getTextComponentOrEmpty("Start"), (p_213094_1_) -> {
         this.start = true;
     });
 
@@ -180,11 +180,19 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
         if (start == true) {
             for (int i = 0; i < this.buttons.size(); i++) {
                 if (buttons.get(i) != startbutton) {
+                    buttons.get(i).active = true;
+                    buttons.get(i).visible = true;
                     buttons.get(i).render(matrixStack, mouseX, mouseY, partialTicks);
                 }
             }
         }
         else {
+            for (int i = 0; i < this.buttons.size(); i++) {
+                if (buttons.get(i) != startbutton) {
+                    buttons.get(i).visible = false;
+                    buttons.get(i).active = false;
+                }
+            }
             this.startbutton.render(matrixStack, mouseX, mouseY, partialTicks);
         }
         lastpartialticks += partialTicks;

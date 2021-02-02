@@ -12,31 +12,39 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
+import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
-import net.minecraft.block.LadderBlock;
-import net.minecraft.block.trees.Tree;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.entity.EntityType;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.monster.SpiderEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -83,6 +91,7 @@ public class HunterXHunter {
     // - 15 tools
 
     // - Biome structure loot
+    // - Custom biome for spider eagle with winds
     // - Animals in Tundra, Badlands - ant, Swamp - giant lizard, Jungle, Plains - foxbear
 
     // New biome with tough monster, add "Bomber" underground entity
@@ -95,22 +104,21 @@ public class HunterXHunter {
 
     // - 30 vanilla items
 
-    //Transmuter = Enchantment, AOE electrocute
+    //Transmuter
     // - Button 1: Dash Move
-    //Enhancer = increased health, damage, regen?
-    // - Button 1: Select
+    // - Button 2: Enchant
+    //Enhancer
+    // - Button 1: Maybe Regen? Select Jump type? Already has extra hearts
     // - Button 1: Aerial Attack
     //Emitter = create explosions at range, explosion based on power
     // - Button 1: Select Projectile Type
-    // - Button 2:
-    //Conjurer = create winged ally entities? Create temporary walls/floors/steps/protective pyramid
-    // - Button 1: Select Structure Type/Create Structure
-    // - Button 2:
-    //Manipulator = view other people's perspectives, freeze/control movement few seconds after hitting them with projectile
-    // - Button 1: Select person/Toggle overlay
-    // - Button 2: Select Post-Damage effect
-    //Specialist = Really high damage + health cap?
-
+    // - Button 2: Fire Projectile
+    //Conjurer
+    // - Button 1: Select Structure Type
+    // - Button 2: Create Structure
+    //Manipulator
+    // - Button 1: Select person render view
+    // - Button 2: Select Post-Damage effect - levitation, extreme knockback, fire, slowness
     /*
     - Custom dimension for after all items are collected
     // Boss battle - 4 islands, 1 starting island and 3 opponent islands
@@ -129,7 +137,7 @@ public class HunterXHunter {
 
     //Add burnout potion effect that sets nen to 0?
 
-    //Rods that do stuff - uses the mithril ore, stick, and special item - teleport randomly, give random effect, summon bats - good for bossfight, turn coal ore into gold nuggets, call lightning
+    //Rods that do stuff - uses the aura stone, stick, and special item - teleport randomly, give random effect, summon bats - good for bossfight, turn coal ore into gold nuggets, call lightning
     //launch entity into air,
 
     //add a tamable flying mount that sucks, tameable ground mount? Maybe the lizard? or something?
@@ -145,8 +153,10 @@ public class HunterXHunter {
     //Grenade item
 
     //Summoner staff - made in new building block created from new ore
+
+    //Custom "Forge" block to convert 10 mob drops into crystal
+
     //Custom kitchen blocks to cook stuff - Living furnace - uses hostile mob drops as fuel
-    //Summoner staff - creeper, villager staff
     //Custom armor types - lizardleg boots, foxbear leggings, carapace chestplate, helmet TBD - set bonus = nen bonus?
     //Maybe the new giant fish from fishing can be last part
 
@@ -156,7 +166,7 @@ public class HunterXHunter {
         proxy.registerHandlers();        // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        RegistryHandler.init();
+        RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -212,6 +222,23 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MAX_HEALTH, 16.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D).create());
+
+
+        BiomeManager.addBiome(BiomeManager.BiomeType.DESERT, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
+        BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.SPARSE);
+        BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.DRY);
+        BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.PLATEAU);
+
+        BiomeManager.addBiome(BiomeManager.BiomeType.ICY, new BiomeManager.BiomeEntry(WORLD_TREE_KEY, 10));
+        BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.SPOOKY);
+        BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.MAGICAL);
+        BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.OVERWORLD);
+
+        BrewingRecipeRegistry.addRecipe(new BloodLustRecipe());
+
+        DeferredWorkQueue.runLater(() -> {
+            //PostGeneration.applyBiomeFeatures();
+        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
@@ -223,6 +250,8 @@ public class HunterXHunter {
         RenderingRegistry.registerEntityRenderingHandler(CHIMERA_ANT_ENTITY.get(), ChimeraAntRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FOXBEAR_ENTITY.get(), FoxBearRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(GIANT_LIZARD_ENTITY.get(), GiantLizardRenderer::new);
+
+        RenderTypeLookup.setRenderLayer(SUPER_COBWEB.get(), RenderType.getTranslucent());
 
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
         ScreenManager.registerFactory(GREED_ISLAND_CONTAINER.get(), ContainerScreenGreedIsland::new);

@@ -10,13 +10,13 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.Nullable;
 
-import static com.chubbychump.hunterxhunter.init.ModTileEntityTypes.CONJURER_TILE_ENTITY;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.CONJURER_BLOCK_TILE_ENTITY;
 
 public class TileEntityConjurerBlock extends TileEntity implements ITickableTileEntity {
     private int deathTimer = 100;
 
     public TileEntityConjurerBlock() {
-        super(CONJURER_TILE_ENTITY);
+        super(CONJURER_BLOCK_TILE_ENTITY.get());
         this.deathTimer = 40;
     }
 

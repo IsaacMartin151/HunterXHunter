@@ -1,0 +1,12 @@
+{
+  "type": "hunterxhunter:vat",
+  "ingredient0": {
+    "item": "minecraft:blaze_rod"
+  },
+  "ingredient1": {
+    "item": "minecraft:blaze_powder"
+  },
+  "result": "hunterxhunter:aspect_of_blaze",
+  "experience": 0.15,
+  "cookingtime": 100
+}

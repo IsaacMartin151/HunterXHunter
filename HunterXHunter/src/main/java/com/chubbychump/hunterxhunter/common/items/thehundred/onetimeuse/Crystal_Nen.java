@@ -9,15 +9,25 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.*;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+
+import javax.annotation.Nullable;
+
+import java.util.List;
 
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 
@@ -34,6 +44,7 @@ public class Crystal_Nen extends Item {
             Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
         }
         else {
+            player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent("Facing a trial. Duration: "+(120-(2*yo.getNenPower()))).setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
             Minecraft.getInstance().displayGuiScreen(new PuzzleScreen(60 - (2 * yo.getNenPower())));
         }
     }
@@ -72,7 +83,7 @@ public class Crystal_Nen extends Item {
                 HunterXHunter.applyHealthModifier(player, cap.getTrueModifier());
             }
             player.setHealth(player.getMaxHealth());
-            //player.sendMessage(new TranslationTextComponent("Just leveled up!"), Util.DUMMY_UUID);
+
         }
 
         //yo.increaseNenPower(player);
@@ -81,5 +92,11 @@ public class Crystal_Nen extends Item {
         // Remove item and mark as success
         stack.setCount(stack.getCount() - 1);
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(new TranslationTextComponent("Used to increase one's Aura"));
     }
 }

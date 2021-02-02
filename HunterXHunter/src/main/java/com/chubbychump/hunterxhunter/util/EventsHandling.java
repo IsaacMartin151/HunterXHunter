@@ -4,6 +4,7 @@ import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
+import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
@@ -14,23 +15,19 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvi
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.types.Enhancer;
-import com.chubbychump.hunterxhunter.common.blocks.ConjurerBlock;
-import com.chubbychump.hunterxhunter.common.blocks.NenLight;
-import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
+import com.chubbychump.hunterxhunter.common.generation.WorldTreeTrunkPlacer;
 import com.chubbychump.hunterxhunter.common.items.thehundred.tools.PhantomStaff;
-import com.chubbychump.hunterxhunter.common.items.thehundred.tools.SpiderStaff;
-import com.chubbychump.hunterxhunter.common.tileentities.TileEntityConjurerBlock;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
-import com.chubbychump.hunterxhunter.init.ModBlocks;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
 import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.advancements.criterion.ItemDurabilityTrigger;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
@@ -38,61 +35,62 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.status.server.SServerInfoPacket;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
+import net.minecraft.world.gen.feature.FeatureSpread;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.template.RuleTest;
+import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.gen.feature.TwoLayerFeature;
+import net.minecraft.world.gen.foliageplacer.DarkOakFoliagePlacer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
-import static com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen.bruhh;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.init.ModBlocks.NENLIGHT;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
 //import net.minecraft.world.gen.placement.CountRangeConfig;
@@ -100,6 +98,25 @@ import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 //@SuppressWarnings("ALL")
 @Mod.EventBusSubscriber
 public class EventsHandling {
+    @SubscribeEvent
+    public static void biomeGeneration(BiomeLoadingEvent event) {
+        event.getGeneration().getFeatures(GenerationStage.Decoration.UNDERGROUND_ORES).add(() -> ORE_AURA.get().withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, AURA_STONE.get().getDefaultState(), 4)));
+        if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
+            LOGGER.info("adding feature to world tree biome");
+            event.getGeneration().getFeatures(GenerationStage.Decoration.VEGETAL_DECORATION).add(WORLD_TREE.get().withConfiguration(new BaseWorldTreeFeatureConfig.Builder(
+                    new SimpleBlockStateProvider(Blocks.OAK_LOG.getDefaultState()),
+                    new SimpleBlockStateProvider(Blocks.OAK_LEAVES.getDefaultState()),
+                    new DarkOakFoliagePlacer(FeatureSpread.func_242252_a(0), FeatureSpread.func_242252_a(0)),
+                    new WorldTreeTrunkPlacer(31, 23, 23),
+                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
+        }
+
+        if (event.getName().toString().equals(SPIDER_EAGLE_BIOME.getId().toString())) {
+            LOGGER.info("adding carver to spider eagle biome");
+            event.getGeneration().getCarvers(GenerationStage.Carving.AIR).add(() -> SPIDER_EAGLE_CARVER.get().func_242761_a(new ProbabilityConfig(.9f)));
+        }
+    }
+
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         // Ensure server-side only
@@ -170,11 +187,9 @@ public class EventsHandling {
         INenUser nenNew = NenUser.getFromPlayer(playerNew);
         ItemStackHandler bookOld = playerOld.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
         ItemStackHandler bookNew = playerNew.getCapability(BOOK_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("Book can not be null"));
-
         bookNew.deserializeNBT(bookOld.serializeNBT());
         nenNew.copy(nenOld);
         capNew.copy(capOld);
-
 
         int Type = nenNew.getNenType();
         // Copy Health on Dimension Change
@@ -195,7 +210,6 @@ public class EventsHandling {
         if (event.getPlayer().getEntityWorld().isRemote) {
             return;
         }
-
         // Fetch Capability
         PlayerEntity player = event.getPlayer();
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
@@ -362,9 +376,14 @@ public class EventsHandling {
             return;
         }
 
+
+
         // Ensure player only
         PlayerEntity player;
         if (!(event.getEntity() instanceof PlayerEntity)) {
+            if (event.getEntity() instanceof BatEntity) {
+                event.getEntity().getEntityWorld().addEntity(new ItemEntity(event.getEntity().getEntityWorld(), event.getEntity().getPosition().getX(), event.getEntity().getPosition().getY(), event.getEntity().getPosition().getZ(), BAT_WING.get().getDefaultInstance()));
+            }
             return;
         } else {
             player = (PlayerEntity) event.getEntity();
@@ -381,29 +400,6 @@ public class EventsHandling {
             }
             player.inventory.dropAllItems();
         }
-    }
-
-    @SubscribeEvent
-    public static void generateOres(FMLLoadCompleteEvent event) {
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (biome.getCategory() == Biome.Category.NETHER) {
-
-            }
-            else if (biome.getCategory() == Biome.Category.THEEND) {
-
-            }
-            else {
-                genOre(biome, 5, 8, 5, 50, OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, NEN_LIGHT.get().getDefaultState(), 2);
-            }
-        }
-    }
-
-    private static void genOre(Biome biome, int count, int bottomOffset, int topOffset, int max, RuleTest filler, BlockState defaultBlockstate, int size) {
-        //CountRangeConfig range = new CountRangeConfig(count, bottomOffset, topOffset, max);
-        //RuleTest
-        //OreFeatureConfig feature = new OreFeatureConfig(filler, defaultBlockstate, size);
-        //ConfiguredPlacement config = Placement.COUNT_RANGE.configure(range);
-        //biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(feature).withPlacement(config));
     }
 
     @SubscribeEvent
@@ -452,16 +448,23 @@ public class EventsHandling {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void renderManipulator(TickEvent.RenderTickEvent event) { //RenderWorldLastEvent for drawing stuff
-        Minecraft bruh = Minecraft.getInstance();
-        if (!bruh.isGamePaused()) {
+    public static void renderManipulator(TickEvent.RenderTickEvent event) {
+        if (event.renderTickTime % 5 == 0) {
+            Minecraft bruh = Minecraft.getInstance();
             PlayerEntity player = Minecraft.getInstance().player;
-            if (player != null && player.isAlive()) {
-                INenUser yo = NenUser.getFromPlayer(player);
-                if (yo.getOverlay()) {
-                    Minecraft.getInstance().setRenderViewEntity(Minecraft.getInstance().world.getPlayers().get(yo.getPassivePower()));
+            if (!bruh.isGamePaused()) {
+                if (player != null && player.isAlive()) {
+                    INenUser yo = NenUser.getFromPlayer(player);
+                    //event.setCanceled(true);
+                    AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 20, player.getPosY() - 5, player.getPosZ() - 20, player.getPosX() + 20, player.getPosY() + 5, player.getPosZ() + 20);
+                    List<AbstractClientPlayerEntity> viewEntity = Minecraft.getInstance().world.getPlayers();
+                    if (viewEntity.size() > 0) {
+                        Minecraft.getInstance().setRenderViewEntity(viewEntity.get(yo.getManipulatorSelection() % viewEntity.size()));
+                        return;
+                    }
                 }
             }
+
         }
     }
 
@@ -556,7 +559,7 @@ public class EventsHandling {
                 updatePlayer = true;
             }
             if (nenPower1.isPressed()) {
-                yo.keybind1();
+                Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
             }
             if (nenPower2.isPressed()) {
                 LOGGER.info("Type is "+yo.getNenType());
@@ -612,6 +615,21 @@ public class EventsHandling {
         }
     }
 
+    @SubscribeEvent
+    public static void breakingBlock(PlayerEvent.BreakSpeed event) {
+        if (event.getState().getBlock() == SUPER_COBWEB.get()) {
+            LOGGER.info("It's an instance of super cobweb");
+            if (event.getPlayer().getHeldItemMainhand().getItem() == Items.SHEARS) {
+                LOGGER.info("Player is holding shears");
+                event.setNewSpeed(64f);
+            }
+            if (event.getPlayer().getHeldItemMainhand().getItem() instanceof SwordItem) {
+                LOGGER.info("Player is holding a sword");
+                event.setNewSpeed(12f);
+            }
+        }
+    }
+
 
     //DO NOT make this server only, because it gets called from the client
     @SubscribeEvent
@@ -653,6 +671,19 @@ public class EventsHandling {
         if (event.player.isAlive() && event.player.ticksExisted % 10 == 0) {
             processLightPlacementForEntities(event.player.getEntityWorld());
         }
+
+        if (event.player.isAlive() && event.player.getEntityWorld().isRemote() && event.phase == TickEvent.Phase.START) {
+            if (event.player.getEntityWorld().getBiome(event.player.getPosition()).getRegistryName().toString().equals(SPIDER_EAGLE_BIOME.getId().toString())) {
+                LOGGER.info("time is "+event.player.getEntityWorld().getGameTime());
+                if (event.player.getEntityWorld().getGameTime() % 900 == 800) {
+                    event.player.playSound(WIND.get(), 1, 1);
+                }
+                if (event.player.getEntityWorld().getGameTime() % 900 < 300 && !(event.player.isOnGround() && event.player.getPosY() > 64)) {
+                    LOGGER.info("adding motion");
+                    event.player.addVelocity(0, Math.max(.1 * (80 - event.player.getPosY()) / 16, 0), 0);
+                }
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -689,13 +720,13 @@ public class EventsHandling {
             if (yo.getNenActivated() && yo.getCurrentNen() > 0) {
                 BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX()), MathHelper.floor(player.getPosY() - 0.1D - player.getYOffset()), MathHelper.floor(player.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
-                NenLight lightBlockToPlace = NENLIGHT;
+                Block lightBlockToPlace = NEN_LIGHT.get();
                 if (blockAtLocation == Blocks.AIR) {
                     placeLightSourceBlock(player, blockLocation, lightBlockToPlace);
                 }
             }
             if (yo.getConjurerActivated() && yo.getCurrentNen() > 0) {
-                ConjurerBlock conjurerBlock = ModBlocks.CONJURER_BLOCK;
+                Block conjurerBlock = CONJURER_BLOCK.get();
                 for (int i = 0; i < 9; i++) {
                     BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX() + (i%3) - 1), MathHelper.floor(player.getPosY() - 2.1D - player.getYOffset()), MathHelper.floor(player.getPosZ()) + (i/3 - 1)).up();
                     Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
@@ -708,7 +739,7 @@ public class EventsHandling {
         }
     }
 
-    private static void placeLightSourceBlock(Entity player, BlockPos blockLocation, NenLight theLightBlock) {
+    private static void placeLightSourceBlock(Entity player, BlockPos blockLocation, Block theLightBlock) {
         player.world.setBlockState(blockLocation, theLightBlock.getDefaultState(), 3);
         TileEntityNenLight lightSource = (TileEntityNenLight) player.world.getTileEntity(blockLocation);
         INenUser yo = NenUser.getFromPlayer((PlayerEntity) player);
