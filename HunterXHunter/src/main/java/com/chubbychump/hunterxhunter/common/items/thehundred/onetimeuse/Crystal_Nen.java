@@ -2,12 +2,13 @@ package com.chubbychump.hunterxhunter.common.items.thehundred.onetimeuse;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
-import com.chubbychump.hunterxhunter.client.gui.PuzzleScreen;
+import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
+import com.chubbychump.hunterxhunter.client.screens.PuzzleScreen;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -23,7 +24,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 
 import javax.annotation.Nullable;
 
@@ -41,10 +41,9 @@ public class Crystal_Nen extends Item {
         INenUser yo = player.getCapability(NENUSER).orElseThrow(null);
         if (yo.getNenPower() == 0) {
             yo.increaseNenPower();
-            Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+            NenUser.updateServer(player, yo);
         }
         else {
-            player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent("Facing a trial. Duration: "+(120-(2*yo.getNenPower()))).setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
             Minecraft.getInstance().displayGuiScreen(new PuzzleScreen(60 - (2 * yo.getNenPower())));
         }
     }
@@ -61,9 +60,15 @@ public class Crystal_Nen extends Item {
             return result;
         }
 
+
+
         // Get capability
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
         INenUser yo = NenUser.getFromPlayer(player);
+        if (yo.getNenPower() != 0) {
+            player.getServer().sendMessage(new TranslationTextComponent("Facing a trial. Duration: " + (120 - (2 * yo.getNenPower()))).setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
+        }
+
         int Type = yo.getNenType();
 
         // If the player's at max health, or they've reached the heart container limit, only fill health bar

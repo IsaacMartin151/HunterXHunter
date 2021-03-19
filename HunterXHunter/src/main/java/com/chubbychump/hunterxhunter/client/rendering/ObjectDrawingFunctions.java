@@ -8,19 +8,24 @@ import static org.lwjgl.opengl.GL11.*;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper.BotaniaShader;
+import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import sun.jvm.hotspot.debugger.cdbg.LoadObject;
@@ -34,6 +39,7 @@ public class ObjectDrawingFunctions {
     //private static ResourceLocation flameTexture2 = new ResourceLocation(HunterXHunter.MOD_ID, "textures/entity/raybeam2.png");
     public static ResourceLocation noiseTexture2 = new ResourceLocation(HunterXHunter.MOD_ID,"textures/entity/noise3.png");
     public static ResourceLocation scaleTexture = new ResourceLocation(HunterXHunter.MOD_ID, "textures/scaletexture.png");
+    public static ResourceLocation projectileTexture = new ResourceLocation(HunterXHunter.MOD_ID, "textures/entity/projectile.png");
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private static final float M_PI = 3.14f;
     private static final boolean Distort = true;
@@ -374,8 +380,6 @@ public class ObjectDrawingFunctions {
 
         stack.rotate(rotation);
         stack.translate(0.11, .5, 0);
-        //stack.rotate(rotationZ);
-        //stack.rotate(rotationX);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -435,4 +439,197 @@ public class ObjectDrawingFunctions {
         stack.pop();
 
     }
+
+    public static void ProjectileRender(MatrixStack matrixStackIn, long ticks, Entity entityIn) {
+        float r0 = .2f;
+        float g0 = .2f;
+        float b0 = .9f;
+        float a0 = 1f;
+
+        long time = System.currentTimeMillis();
+        int angle = (int) ((time / 7) % 360);
+        int angle2 = (int) ((time / 3) % 360);
+
+        Quaternion rotall = new Quaternion(angle2, angle2, angle2, true);
+        int type = NenUser.getFromPlayer(Minecraft.getInstance().player).getNenType();
+        RenderSystem.disableBlend();
+        RenderSystem.disableCull();
+        RenderSystem.shadeModel(GL_SMOOTH);
+        //RenderSystem.disableTexture();
+        RenderSystem.enableDepthTest();
+
+        yo.bindTexture(projectileTexture);
+        a = yo.getTexture(projectileTexture).getGlTextureId();
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+
+        builder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+
+        //Initialial movements and stuff
+        matrixStackIn.push();
+        //matrixStackIn.getLast().getNormal().
+        matrixStackIn.scale(.5f, .5f, .5f);
+        matrixStackIn.rotate(new Quaternion(angle, 0, 0, true));
+        matrixStackIn.rotate(new Quaternion(0, angle2, 0, true));
+        matrixStackIn.translate(-1f/2f, -1f/2f, (-.5f - .433f / 2.0f)/2f);
+
+        //Cube 1
+        matrixStackIn.push();
+        matrixStackIn.rotate(rotall);
+        matrixStackIn.translate(-.5f, -.5f, -.5f);
+
+        isaacCube(matrixStackIn.getLast().getMatrix(), builder, r0, g0, b0, a0);
+        matrixStackIn.pop();
+
+        //Cube 2
+        matrixStackIn.push();
+        matrixStackIn.translate(1f, 0.0f, 0.0f);
+        matrixStackIn.rotate(rotall);
+        matrixStackIn.translate(-.5f, -.5f, -.5f);
+        isaacCube(matrixStackIn.getLast().getMatrix(), builder, r0, g0, b0, a0);
+        matrixStackIn.pop();
+
+        //Cube 3
+        matrixStackIn.push();
+        matrixStackIn.translate(.5f, .866f, 0.0f);
+        matrixStackIn.rotate(rotall);
+        matrixStackIn.translate(-.5f, -.5f, -.5f);
+        isaacCube(matrixStackIn.getLast().getMatrix(), builder, r0, g0, b0, a0);
+        matrixStackIn.pop();
+
+        //Cube 4
+        matrixStackIn.push();
+        matrixStackIn.translate(.5f, .433f, .866f);
+        matrixStackIn.rotate(rotall);
+        matrixStackIn.translate(-.5f, -.5f, -.5f);
+        isaacCube(matrixStackIn.getLast().getMatrix(), builder, r0, g0, b0, a0);
+        matrixStackIn.pop();
+
+        ShaderHelper.useShader(BotaniaShader.LIGHTING, a, new int[5]);
+        tessellator.draw();
+
+        matrixStackIn.pop();
+        ShaderHelper.releaseShader();
+        RenderSystem.shadeModel(GL_FLAT);
+        //RenderSystem.enableTexture();
+    }
+
+    public static void isaacCube(Matrix4f matrix, BufferBuilder bufferBuilder, float r, float g, float b, float a) {
+        //Front
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r, g, b, a, 0, 0, 1);
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r, g, b, a, 0, 0, 1);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 0, 0, 1);
+        drawVertex(matrix, bufferBuilder, 0, 1, 0, r, g, b, a, 0, 0, 1);
+
+        //Top
+        drawVertex(matrix, bufferBuilder, 0, 1, 0, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 0, 1, 0);
+
+        //Left
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 0, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r, g, b, a, -1, 0, 0);
+
+        //Back
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+
+        //Bottom
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+
+        //Right
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r, g, b, a, 1, 0, 0);
+    }
+
+    public static void drawVertex(Matrix4f matrix, BufferBuilder bufferBuilder, int offsetX, int offsetY, int offsetZ, float r, float b, float g, float a, int nx, int ny, int nz) {
+        bufferBuilder.pos(matrix, (float)offsetX, (float)offsetY, (float)offsetZ).tex(0, 0).color(r, b, g, a).normal(nx, ny, nz).endVertex();
+    }
+
+    public static void PuzzleScreenSuccess(MatrixStack matrixStackIn, long ticks, Entity entityIn) {
+        float r0 = .2f;
+        float g0 = .9f;
+        float b0 = .2f;
+        float a0 = 1f;
+
+        long time = System.currentTimeMillis();
+        int angle = (int) ((time / 7) % 360);
+        int angle2 = (int) ((time / 3) % 360);
+
+        Quaternion rotall = new Quaternion(0, 0, angle2, true);
+        int type = NenUser.getFromPlayer(Minecraft.getInstance().player).getNenType();
+        RenderSystem.disableBlend();
+        RenderSystem.disableCull();
+        //RenderSystem.disableTexture();
+        RenderSystem.enableDepthTest();
+
+        yo.bindTexture(projectileTexture);
+        a = yo.getTexture(projectileTexture).getGlTextureId();
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+
+        builder.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+
+        //Cube 1
+        matrixStackIn.push();
+        matrixStackIn.rotate(rotall);
+        matrixStackIn.translate(-.5f, -.5f, -.5f);
+
+        isaacStar(matrixStackIn.getLast().getMatrix(), builder, r0, g0, b0, a0);
+        matrixStackIn.pop();
+
+        tessellator.draw();
+
+    }
+
+    public static void isaacStar(Matrix4f matrix, BufferBuilder bufferBuilder, float r, float g, float b, float a) {
+
+        //Front
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r, g, b, a, 0, 0, 1);
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r, g, b, a, 0, 0, 1);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 0, 0, 1);
+
+        //Top
+        drawVertex(matrix, bufferBuilder, 0, 1, 0, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r, g, b, a, 0, 1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 0, 1, 0);
+
+        //Left
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 0, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r, g, b, a, -1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r, g, b, a, -1, 0, 0);
+
+        //Back
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+        drawVertex(matrix, bufferBuilder, 0, 1, 1, r/1.1f, g/1.1f, b/1.1f, a, 0, 0, -1);
+
+        //Bottom
+        drawVertex(matrix, bufferBuilder, 0, 0, 0, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+        drawVertex(matrix, bufferBuilder, 0, 0, 1, r/1.2f, g/1.2f, b/1.2f, a, 0, -1, 0);
+
+        //Right
+        drawVertex(matrix, bufferBuilder, 1, 0, 0, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 0, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 1, 1, r, g, b, a, 1, 0, 0);
+        drawVertex(matrix, bufferBuilder, 1, 0, 1, r, g, b, a, 1, 0, 0);
+    }
+
 }

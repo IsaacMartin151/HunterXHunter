@@ -518,7 +518,6 @@ public class ChimeraAnt extends FlyingEntity implements IMob {
             } else if (ChimeraAnt.this.collidedHorizontally || ChimeraAnt.this.hurtTime > 0) {
                 ChimeraAnt.this.attackPhase = ChimeraAnt.AttackPhase.CIRCLE;
             }
-
         }
     }
 }

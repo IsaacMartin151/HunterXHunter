@@ -11,10 +11,12 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
+import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
 public class BookItemStackHandler extends ItemStackHandler {
     public static ResourceLocation THEONEHUNDRED = new ResourceLocation(MOD_ID, "theonehundred");
+    public static ResourceLocation THEONEHUNDREDCARDS = new ResourceLocation(MOD_ID, "theonehundredcards");
 
     public static final int MIN_FLOWER_SLOTS = 1;
     public static final int MAX_FLOWER_SLOTS = 100;
@@ -30,7 +32,20 @@ public class BookItemStackHandler extends ItemStackHandler {
         }
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
-        if (item.isIn(ItemTags.getCollection().get(THEONEHUNDRED))) return true; //Changed it to accept only the 100
+        if (item.isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
+            LOGGER.info("Target item is a collection card, verifying it's not already in there");
+            for (int i = 0; i < this.getSlots(); i++) {
+                for (int j = 0; j < this.getSlots(); j++) {
+                    if (j != i) {
+                        if (item == stacks.get(j).getItem()) {
+                            HunterXHunter.LOGGER.info("Returning false, item is already in a slot");
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true; //Changed it to accept only the 100
+        }
         return false;
     }
 
@@ -38,7 +53,7 @@ public class BookItemStackHandler extends ItemStackHandler {
         ResourceLocation bruh[] = new ResourceLocation[this.getSlots()];
         for (int i = 0; i < this.getSlots(); i++) {
             Item item = stacks.get(i).getItem();
-            if (item.isIn(ItemTags.getCollection().get(THEONEHUNDRED))) {
+            if (item.isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
                 for (int j = 0; j < this.getSlots(); j++) {
                     if (j != i) {
                         if (item.getRegistryName() == stacks.get(j).getItem().getRegistryName()) {
@@ -57,7 +72,7 @@ public class BookItemStackHandler extends ItemStackHandler {
     @Override
     protected int getStackLimit(int slot, @Nonnull ItemStack stack)
     {
-        return 999999;
+        return 64;
     }
 
     /** returns true if the contents have changed since the last call.
@@ -77,16 +92,6 @@ public class BookItemStackHandler extends ItemStackHandler {
      * @param slot
      */
     protected void onContentsChanged(int slot) {
-        // A problem - the ItemStack and the ItemStackHandler don't know which player is holding the flower bag.  Or in fact whether
-        //   the bag is being held by any player at all.
-        // We have a few choices -
-        // * we can search all the players on the server to see which one is holding the bag; or
-        // * we can try to store the owner of the ItemStack in the ItemStackHandler, ItemStack, or ContainerFlowerBag,
-        //   (which becomes problematic if the owner drops the ItemStack, or if there is no container); or
-        // * we can mark the bag as dirty and let the containerFlowerBag detect that.
-        // I've used the third method because it is easier to code, produces less coupling between classes, and probably more efficient
-        // Fortunately, we only need to manually force an update when the player has the container open.  If changes could occur while the
-        //   item was discarded (inside an ItemEntity) it would be much trickier.
         isDirty = true;
     }
 

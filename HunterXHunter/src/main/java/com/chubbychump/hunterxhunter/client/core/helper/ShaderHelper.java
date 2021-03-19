@@ -48,11 +48,14 @@ public final class ShaderHelper {
     public static final String SHADER_PATTERN_VERT = PREFIX_SHADER + "pattern.vert";
     public static final String SHADER_BOOK_FRAG = PREFIX_SHADER + "book.frag";
     public static final String SHADER_BOOK_VERT = PREFIX_SHADER + "book.vert";
+    public static final String LIGHTING_FRAG = PREFIX_SHADER + "lighting.frag";
+    public static final String LIGHTING_VERT = PREFIX_SHADER + "lighting.vert";
 
     public enum BotaniaShader {
         FILM_GRAIN(SHADER_PASSTHROUGH_VERT, SHADER_FILM_GRAIN_FRAG),
         DRAGON(SHADER_PATTERN_VERT, SHADER_PATTERN_FRAG),
-        BOOK(SHADER_BOOK_VERT, SHADER_BOOK_FRAG);
+        BOOK(SHADER_BOOK_VERT, SHADER_BOOK_FRAG),
+        LIGHTING(LIGHTING_VERT, LIGHTING_FRAG);
 
         public final String vertexShaderPath;
         public final String fragmentShaderPath;

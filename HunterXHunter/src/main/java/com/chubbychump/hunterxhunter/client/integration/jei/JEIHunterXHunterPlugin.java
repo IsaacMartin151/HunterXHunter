@@ -1,29 +1,17 @@
 package com.chubbychump.hunterxhunter.client.integration.jei;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
 import com.chubbychump.hunterxhunter.common.recipes.VatRecipes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import mezz.jei.plugins.vanilla.brewing.JeiBrewingRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.common.brewing.VanillaBrewingRecipe;
 
 import javax.annotation.Nonnull;
 
-import java.util.Collections;
-
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.GON_FISHING_POLE;
 
 @JeiPlugin
 public class JEIHunterXHunterPlugin implements IModPlugin {

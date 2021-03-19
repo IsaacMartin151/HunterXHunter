@@ -3,6 +3,7 @@ package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -68,15 +69,12 @@ public interface INenUser {
     boolean getConjurerActivated();
     void setConjurerActivated(boolean oof);
 
+    void setEntityID(int e);
+    int getEntityID();
+
     void enhancer1(PlayerEntity player);
-    void manipulator1();
+    void manipulator1(PlayerEntity player);
     void transmuter1(PlayerEntity player);
     void conjurer1(PlayerEntity player);
     void emitter1(PlayerEntity player);
-
-    void enhancer2(PlayerEntity player);
-    void manipulator2();
-    void transmuter2(PlayerEntity player);
-    void conjurer2(PlayerEntity player);
-    void emitter2(PlayerEntity player);
 }

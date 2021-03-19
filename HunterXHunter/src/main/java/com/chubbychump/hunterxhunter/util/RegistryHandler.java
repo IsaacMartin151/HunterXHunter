@@ -1,8 +1,13 @@
 package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
+import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
+import com.chubbychump.hunterxhunter.common.advancements.AbilityUseTrigger;
 import com.chubbychump.hunterxhunter.common.blocks.*;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.BaseMagicProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeFeature;
@@ -21,11 +26,9 @@ import com.chubbychump.hunterxhunter.common.potions.BloodLust;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.common.recipes.VatRecipeSerializer;
 import com.chubbychump.hunterxhunter.common.recipes.VatRecipes;
-import com.chubbychump.hunterxhunter.common.tileentities.SaturationStandTileEntity;
-import com.chubbychump.hunterxhunter.common.tileentities.TileEntityConjurerBlock;
-import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
-import com.chubbychump.hunterxhunter.common.tileentities.VatTileEntity;
+import com.chubbychump.hunterxhunter.common.tileentities.*;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -112,6 +115,12 @@ public class RegistryHandler {
         FEATURES.register(bus);
         STRUCTURES.register(bus);
 
+        registerCriteriaTriggers();
+    }
+
+    public static void registerCriteriaTriggers() {
+        CriteriaTriggers.register(AbilityUseTrigger.INSTANCE);
+        CriteriaTriggers.register(AbilityMaxTrigger.INSTANCE);
     }
 
     //Particles
@@ -192,6 +201,117 @@ public class RegistryHandler {
         public static final RegistryObject<Item> POTATO_SOUP = ITEMS.register( "potato_soup", PotatoSoup::new);
         public static final RegistryObject<Item> SPIDER_EAGLE_EGG = ITEMS.register( "spider_eagle_egg", SpiderEagleEgg::new);
 
+    //Cards
+    public static final RegistryObject<Item> CARD_1 = ITEMS.register("card_1", ItemBase::new);
+    public static final RegistryObject<Item> CARD_2 = ITEMS.register("card_2", ItemBase::new);
+    public static final RegistryObject<Item> CARD_3 = ITEMS.register("card_3", ItemBase::new);
+    public static final RegistryObject<Item> CARD_4 = ITEMS.register("card_4", ItemBase::new);
+    public static final RegistryObject<Item> CARD_5 = ITEMS.register("card_5", ItemBase::new);
+    public static final RegistryObject<Item> CARD_6 = ITEMS.register("card_6", ItemBase::new);
+    public static final RegistryObject<Item> CARD_7 = ITEMS.register("card_7", ItemBase::new);
+    public static final RegistryObject<Item> CARD_8 = ITEMS.register("card_8", ItemBase::new);
+    public static final RegistryObject<Item> CARD_9 = ITEMS.register("card_9", ItemBase::new);
+    public static final RegistryObject<Item> CARD_10 = ITEMS.register("card_10", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_11 = ITEMS.register("card_11", ItemBase::new);
+    public static final RegistryObject<Item> CARD_12 = ITEMS.register("card_12", ItemBase::new);
+    public static final RegistryObject<Item> CARD_13 = ITEMS.register("card_13", ItemBase::new);
+    public static final RegistryObject<Item> CARD_14 = ITEMS.register("card_14", ItemBase::new);
+    public static final RegistryObject<Item> CARD_15 = ITEMS.register("card_15", ItemBase::new);
+    public static final RegistryObject<Item> CARD_16 = ITEMS.register("card_16", ItemBase::new);
+    public static final RegistryObject<Item> CARD_17 = ITEMS.register("card_17", ItemBase::new);
+    public static final RegistryObject<Item> CARD_18 = ITEMS.register("card_18", ItemBase::new);
+    public static final RegistryObject<Item> CARD_19 = ITEMS.register("card_19", ItemBase::new);
+    public static final RegistryObject<Item> CARD_20 = ITEMS.register("card_20", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_21 = ITEMS.register("card_21", ItemBase::new);
+    public static final RegistryObject<Item> CARD_22 = ITEMS.register("card_22", ItemBase::new);
+    public static final RegistryObject<Item> CARD_23 = ITEMS.register("card_23", ItemBase::new);
+    public static final RegistryObject<Item> CARD_24 = ITEMS.register("card_24", ItemBase::new);
+    public static final RegistryObject<Item> CARD_25 = ITEMS.register("card_25", ItemBase::new);
+    public static final RegistryObject<Item> CARD_26 = ITEMS.register("card_26", ItemBase::new);
+    public static final RegistryObject<Item> CARD_27 = ITEMS.register("card_27", ItemBase::new);
+    public static final RegistryObject<Item> CARD_28 = ITEMS.register("card_28", ItemBase::new);
+    public static final RegistryObject<Item> CARD_29 = ITEMS.register("card_29", ItemBase::new);
+    public static final RegistryObject<Item> CARD_30 = ITEMS.register("card_30", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_31 = ITEMS.register("card_31", ItemBase::new);
+    public static final RegistryObject<Item> CARD_32 = ITEMS.register("card_32", ItemBase::new);
+    public static final RegistryObject<Item> CARD_33 = ITEMS.register("card_33", ItemBase::new);
+    public static final RegistryObject<Item> CARD_34 = ITEMS.register("card_34", ItemBase::new);
+    public static final RegistryObject<Item> CARD_35 = ITEMS.register("card_35", ItemBase::new);
+    public static final RegistryObject<Item> CARD_36 = ITEMS.register("card_36", ItemBase::new);
+    public static final RegistryObject<Item> CARD_37 = ITEMS.register("card_37", ItemBase::new);
+    public static final RegistryObject<Item> CARD_38 = ITEMS.register("card_38", ItemBase::new);
+    public static final RegistryObject<Item> CARD_39 = ITEMS.register("card_39", ItemBase::new);
+    public static final RegistryObject<Item> CARD_40 = ITEMS.register("card_40", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_41 = ITEMS.register("card_41", ItemBase::new);
+    public static final RegistryObject<Item> CARD_42 = ITEMS.register("card_42", ItemBase::new);
+    public static final RegistryObject<Item> CARD_43 = ITEMS.register("card_43", ItemBase::new);
+    public static final RegistryObject<Item> CARD_44 = ITEMS.register("card_44", ItemBase::new);
+    public static final RegistryObject<Item> CARD_45 = ITEMS.register("card_45", ItemBase::new);
+    public static final RegistryObject<Item> CARD_46 = ITEMS.register("card_46", ItemBase::new);
+    public static final RegistryObject<Item> CARD_47 = ITEMS.register("card_47", ItemBase::new);
+    public static final RegistryObject<Item> CARD_48 = ITEMS.register("card_48", ItemBase::new);
+    public static final RegistryObject<Item> CARD_49 = ITEMS.register("card_49", ItemBase::new);
+    public static final RegistryObject<Item> CARD_50 = ITEMS.register("card_50", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_51 = ITEMS.register("card_51", ItemBase::new);
+    public static final RegistryObject<Item> CARD_52 = ITEMS.register("card_52", ItemBase::new);
+    public static final RegistryObject<Item> CARD_53 = ITEMS.register("card_53", ItemBase::new);
+    public static final RegistryObject<Item> CARD_54 = ITEMS.register("card_54", ItemBase::new);
+    public static final RegistryObject<Item> CARD_55 = ITEMS.register("card_55", ItemBase::new);
+    public static final RegistryObject<Item> CARD_56 = ITEMS.register("card_56", ItemBase::new);
+    public static final RegistryObject<Item> CARD_57 = ITEMS.register("card_57", ItemBase::new);
+    public static final RegistryObject<Item> CARD_58 = ITEMS.register("card_58", ItemBase::new);
+    public static final RegistryObject<Item> CARD_59 = ITEMS.register("card_59", ItemBase::new);
+    public static final RegistryObject<Item> CARD_60 = ITEMS.register("card_60", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_61 = ITEMS.register("card_61", ItemBase::new);
+    public static final RegistryObject<Item> CARD_62 = ITEMS.register("card_62", ItemBase::new);
+    public static final RegistryObject<Item> CARD_63 = ITEMS.register("card_63", ItemBase::new);
+    public static final RegistryObject<Item> CARD_64 = ITEMS.register("card_64", ItemBase::new);
+    public static final RegistryObject<Item> CARD_65 = ITEMS.register("card_65", ItemBase::new);
+    public static final RegistryObject<Item> CARD_66 = ITEMS.register("card_66", ItemBase::new);
+    public static final RegistryObject<Item> CARD_67 = ITEMS.register("card_67", ItemBase::new);
+    public static final RegistryObject<Item> CARD_68 = ITEMS.register("card_68", ItemBase::new);
+    public static final RegistryObject<Item> CARD_69 = ITEMS.register("card_69", ItemBase::new);
+    public static final RegistryObject<Item> CARD_70 = ITEMS.register("card_70", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_71 = ITEMS.register("card_71", ItemBase::new);
+    public static final RegistryObject<Item> CARD_72 = ITEMS.register("card_72", ItemBase::new);
+    public static final RegistryObject<Item> CARD_73 = ITEMS.register("card_73", ItemBase::new);
+    public static final RegistryObject<Item> CARD_74 = ITEMS.register("card_74", ItemBase::new);
+    public static final RegistryObject<Item> CARD_75 = ITEMS.register("card_75", ItemBase::new);
+    public static final RegistryObject<Item> CARD_76 = ITEMS.register("card_76", ItemBase::new);
+    public static final RegistryObject<Item> CARD_77 = ITEMS.register("card_77", ItemBase::new);
+    public static final RegistryObject<Item> CARD_78 = ITEMS.register("card_78", ItemBase::new);
+    public static final RegistryObject<Item> CARD_79 = ITEMS.register("card_79", ItemBase::new);
+    public static final RegistryObject<Item> CARD_80 = ITEMS.register("card_80", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_81 = ITEMS.register("card_81", ItemBase::new);
+    public static final RegistryObject<Item> CARD_82 = ITEMS.register("card_82", ItemBase::new);
+    public static final RegistryObject<Item> CARD_83 = ITEMS.register("card_83", ItemBase::new);
+    public static final RegistryObject<Item> CARD_84 = ITEMS.register("card_84", ItemBase::new);
+    public static final RegistryObject<Item> CARD_85 = ITEMS.register("card_85", ItemBase::new);
+    public static final RegistryObject<Item> CARD_86 = ITEMS.register("card_86", ItemBase::new);
+    public static final RegistryObject<Item> CARD_87 = ITEMS.register("card_87", ItemBase::new);
+    public static final RegistryObject<Item> CARD_88 = ITEMS.register("card_88", ItemBase::new);
+    public static final RegistryObject<Item> CARD_89 = ITEMS.register("card_89", ItemBase::new);
+    public static final RegistryObject<Item> CARD_90 = ITEMS.register("card_90", ItemBase::new);
+
+    public static final RegistryObject<Item> CARD_91 = ITEMS.register("card_91", ItemBase::new);
+    public static final RegistryObject<Item> CARD_92 = ITEMS.register("card_92", ItemBase::new);
+    public static final RegistryObject<Item> CARD_93 = ITEMS.register("card_93", ItemBase::new);
+    public static final RegistryObject<Item> CARD_94 = ITEMS.register("card_94", ItemBase::new);
+    public static final RegistryObject<Item> CARD_95 = ITEMS.register("card_95", ItemBase::new);
+    public static final RegistryObject<Item> CARD_96 = ITEMS.register("card_96", ItemBase::new);
+    public static final RegistryObject<Item> CARD_97 = ITEMS.register("card_97", ItemBase::new);
+    public static final RegistryObject<Item> CARD_98 = ITEMS.register("card_98", ItemBase::new);
+    public static final RegistryObject<Item> CARD_99 = ITEMS.register("card_99", ItemBase::new);
+    public static final RegistryObject<Item> CARD_100 = ITEMS.register("card_100", ItemBase::new);
+
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
     public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nenlight", NenLight::new);
@@ -202,6 +322,7 @@ public class RegistryHandler {
     public static final RegistryObject<Block> SUPER_COBWEB = BLOCKS.register("super_cobweb", () -> new SuperCobweb(AbstractBlock.Properties.create(Material.WEB).doesNotBlockMovement().setRequiresTool().hardnessAndResistance(4.0F).variableOpacity().notSolid()));
     public static final RegistryObject<Block> AURA_STONE = BLOCKS.register("aura_stone", AuraStone::new);
     public static final RegistryObject<Block> UR_A_WIZARD = BLOCKS.register("ur_a_wizard", UrAWizardHarry::new);
+    public static final RegistryObject<Block> SHIFTY_BLOCK = BLOCKS.register("shifty_block", ShiftyBlock::new);
     public static final RegistryObject<Block> SPIDER_EAGLE_EGG_BLOCK = BLOCKS.register("spider_eagle_egg_block", () -> new SpiderEagleEggBlock(AbstractBlock.Properties.create(Material.DRAGON_EGG, MaterialColor.SAND).hardnessAndResistance(0.5F).sound(SoundType.METAL).notSolid()));
 
     //Block Items
@@ -212,6 +333,7 @@ public class RegistryHandler {
     public static final RegistryObject<Item> SPIDER_EAGLE_EGG_ITEM = ITEMS.register("spider_eagle_egg_item", () -> new BlockItemBase(SPIDER_EAGLE_EGG_BLOCK.get()));
     public static final RegistryObject<Item> AURA_STONE_ITEM = ITEMS.register("aura_stone", () -> new BlockItemBase(AURA_STONE.get()));
     public static final RegistryObject<Item> VAT_ITEM = ITEMS.register("vat", () -> new BlockItemBase(VAT.get()));
+    public static final RegistryObject<Item> SHIFTY_BLOCK_ITEM = ITEMS.register("shifty_block", () -> new BlockItemBase(SHIFTY_BLOCK.get()));
 
 
     //Recipes
@@ -219,6 +341,7 @@ public class RegistryHandler {
 
     //Tile Entities
     public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
+    public static final RegistryObject<TileEntityType<ShiftyTileEntity>> SHIFTY_TILE_ENTITY = TILE_ENTITY_TYPES.register("shifty_tile_entity", () -> TileEntityType.Builder.create(ShiftyTileEntity::new, SHIFTY_BLOCK.get()).build(null));
     public static final RegistryObject<TileEntityType<TileEntityConjurerBlock>> CONJURER_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("conjurer_tile_entity", () -> TileEntityType.Builder.create(TileEntityConjurerBlock::new, CONJURER_BLOCK.get()).build(null));
     public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.create(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
     public static final RegistryObject<TileEntityType<VatTileEntity>> VAT_TILE_ENTITY = TILE_ENTITY_TYPES.register("vat_tile_entity", () -> TileEntityType.Builder.create(() -> new VatTileEntity(), VAT.get()).build(null));
@@ -227,7 +350,7 @@ public class RegistryHandler {
     public static final RegistryObject<ContainerType<GreedIslandContainer>> GREED_ISLAND_CONTAINER = CONTAINER.register("greedislandbook", () -> IForgeContainerType.create(GreedIslandContainer::createContainerClientSide));
 
     //Entities
-    public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapoufclone", () -> EntityType.Builder.<ShiapoufClone>create(ShiapoufClone::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapouf_clone", () -> EntityType.Builder.<ShiapoufClone>create(ShiapoufClone::new, EntityClassification.MONSTER)
             .size(.5f, .5f)
             .setTrackingRange(20)
             .setUpdateInterval(1)
@@ -255,7 +378,7 @@ public class RegistryHandler {
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimeraant", () -> EntityType.Builder.<ChimeraAnt>create(ChimeraAnt::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimera_ant", () -> EntityType.Builder.<ChimeraAnt>create(ChimeraAnt::new, EntityClassification.MONSTER)
             .size(1.2f, 2f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
@@ -269,12 +392,44 @@ public class RegistryHandler {
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giantlizard", () -> EntityType.Builder.<GiantLizard>create(GiantLizard::new, EntityClassification.CREATURE)
+    public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giant_lizard", () -> EntityType.Builder.<GiantLizard>create(GiantLizard::new, EntityClassification.CREATURE)
             .size(3f, 2f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
+
+
+    public static final RegistryObject<EntityType<ConjurerMount>> CONJURER_MOUNT = ENTITY_TYPES.register("conjurer_mount", () -> EntityType.Builder.<ConjurerMount>create(ConjurerMount::new, EntityClassification.CREATURE)
+            .size(.87f, 4f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
+    public static final RegistryObject<EntityType<BaseMagicProjectile>> BASE_MAGIC_PROJECTILE = ENTITY_TYPES.register("base_magic_projectile", () -> EntityType.Builder.<BaseMagicProjectile>create(BaseMagicProjectile::new, EntityClassification.MISC)
+            .size(.25f, .25f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .func_233608_b_(10)
+            .build(""));
+
+    public static final RegistryObject<EntityType<NoGravityProjectile>> NO_GRAVITY_PROJECTILE = ENTITY_TYPES.register("no_gravity_projectile", () -> EntityType.Builder.<NoGravityProjectile>create(NoGravityProjectile::new, EntityClassification.MISC)
+            .size(.25f, .25f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .func_233608_b_(10)
+            .build(""));
+
+    public static final RegistryObject<EntityType<CameraEntity>> CAMERA_ENTITY = ENTITY_TYPES.register("invisible_camera_entity", () -> EntityType.Builder.<CameraEntity>create(CameraEntity::new, EntityClassification.CREATURE)
+            .size(.25f, .25f)
+            .setTrackingRange(15)
+            .setUpdateInterval(1)
+            .setShouldReceiveVelocityUpdates(true)
+            .build(""));
+
 
     //Point Of Interests
     public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorianpoi", () -> new PointOfInterestType("masadorianpoi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));

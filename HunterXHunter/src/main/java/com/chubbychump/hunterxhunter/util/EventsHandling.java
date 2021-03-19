@@ -4,7 +4,9 @@ import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
-import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
+import com.chubbychump.hunterxhunter.client.screens.PowerSelectScreen;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
@@ -41,11 +43,13 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -64,9 +68,7 @@ import net.minecraft.world.gen.feature.TwoLayerFeature;
 import net.minecraft.world.gen.foliageplacer.DarkOakFoliagePlacer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -75,6 +77,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -89,8 +92,8 @@ import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
+import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
 //import net.minecraft.world.gen.placement.CountRangeConfig;
@@ -446,6 +449,14 @@ public class EventsHandling {
         }
      }
 
+     @OnlyIn(Dist.CLIENT)
+     @SubscribeEvent
+     public static void worldLast(RenderHandEvent event) {
+        if (Minecraft.getInstance().getRenderViewEntity() instanceof CameraEntity) {
+            event.setCanceled(true);
+        }
+     }
+
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderManipulator(TickEvent.RenderTickEvent event) {
@@ -462,6 +473,7 @@ public class EventsHandling {
                         Minecraft.getInstance().setRenderViewEntity(viewEntity.get(yo.getManipulatorSelection() % viewEntity.size()));
                         return;
                     }
+
                 }
             }
 
@@ -531,68 +543,75 @@ public class EventsHandling {
         if (event.player.isAlive() && event.phase == TickEvent.Phase.START && event.player.getEntityWorld().isRemote()) {
             INenUser yo = NenUser.getFromPlayer(event.player);
             boolean updatePlayer = false;
-            if (book.isPressed()) {
-                updatePlayer = true;
-                yo.setOpenedBook(true);
-                yo.setLastOpenedBook(Util.milliTime());
-                LOGGER.info("pressed book button");
-                Minecraft.getInstance().player.playSound(OPEN_BOOK.get(), 1, 1);
-                BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
-                PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
-            }
-            if (transformCard.isPressed()) {
-                ItemStack oof = event.player.getHeldItemMainhand();
-                if (oof.getItem().isIn(ItemTags.getCollection().get(THEONEHUNDRED))) {
-                    PacketManager.sendToServer(new SyncTransformCardPacket(event.player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(yo, null)));
-                }
-            }
-            if (nenControl.isPressed()) {
-                yo.toggleNen();
-                updatePlayer = true;
-            }
             if (increaseNen.isPressed()) {
                 yo.increaseNenPower();
                 updatePlayer = true;
             }
-            if (gyo.isPressed()) {
-                yo.toggleGyo();
-                updatePlayer = true;
-            }
-            if (nenPower1.isPressed()) {
-                Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
-            }
-            if (nenPower2.isPressed()) {
-                LOGGER.info("Type is "+yo.getNenType());
-                switch (yo.getNenType()) {
-                    case 0:
-                        LOGGER.info("enhancer");
-                        break;
-                    case 1:
-                        yo.enhancer1(event.player);
-                        LOGGER.info("enhancer");
-                        break;
-                    case 2:
-                        yo.manipulator1();
-                        LOGGER.info("manipulator");
-                        break;
-                    case 3:
-                        yo.transmuter1(event.player);
-                        LOGGER.info("transmuter");
-                        break;
-                    case 4:
-                        yo.conjurer1(event.player);
-                        LOGGER.info("conjurer");
-                        break;
-                    case 5:
-                        yo.emitter1(event.player);
-                        LOGGER.info("emitter");
-                        break;
+            if (yo.getNenPower() > 0) {
+                if (book.isPressed()) {
+                    updatePlayer = true;
+                    yo.setOpenedBook(true);
+                    yo.setLastOpenedBook(Util.milliTime());
+                    LOGGER.info("pressed book button");
+                    Minecraft.getInstance().player.playSound(OPEN_BOOK.get(), 1, 1);
+                    BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
+                    PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
                 }
-                updatePlayer = true;
-            }
-            if (updatePlayer == true) {
-                LOGGER.info("conjureractivated is "+yo.getConjurerActivated());
-                NenUser.updateServer(event.player, yo);
+                if (transformCard.isPressed()) {
+                    ItemStack oof = event.player.getHeldItemMainhand();
+                    ITag<Item> bro = ItemTags.getCollection().get(THEONEHUNDRED);
+                    ITag<Item> cards = ItemTags.getCollection().get(THEONEHUNDREDCARDS);
+                    if (oof.getItem().isIn(ItemTags.getCollection().get(THEONEHUNDRED)) || oof.getItem().isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
+                        if (!oof.isDamaged()) {
+                            LOGGER.info("Item can be transformed into card");
+                            PacketManager.sendToServer(new SyncTransformCardPacket(event.player.getEntityId(), new CompoundNBT()));
+                        }
+                    }
+                }
+                if (nenControl.isPressed() && yo.getCurrentNen() > 0f) {
+                    yo.toggleNen();
+                    updatePlayer = true;
+                }
+                if (gyo.isPressed() && yo.getCurrentNen() > 0f) {
+                    yo.toggleGyo();
+                    updatePlayer = true;
+                }
+                if (nenPower1.isPressed()) {
+                    LOGGER.info("Type is " + yo.getNenType());
+                    switch (yo.getNenType()) {
+                        case 0:
+                            break;
+                        case 1:
+                            yo.enhancer1(event.player);
+                            break;
+                        case 2:
+                            yo.manipulator1(event.player);
+                            yo.setEntityID(-2);
+                            break;
+                        case 3:
+                            yo.transmuter1(event.player);
+                            break;
+                        case 4:
+                            yo.conjurer1(event.player);
+                            break;
+                        case 5:
+                            yo.emitter1(event.player);
+                            break;
+                    }
+                    updatePlayer = true;
+                }
+                if (nenPower2.isPressed()) {
+                    if (yo.getNenType() != 0) {
+                        Minecraft.getInstance().displayGuiScreen(PowerSelectScreen.instance);
+                    }
+                }
+                if (devTesting.isPressed()) {
+                    Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+                }
+
+                if (updatePlayer == true) {
+                    NenUser.updateServer(event.player, yo);
+                }
             }
         }
     }
@@ -728,13 +747,12 @@ public class EventsHandling {
             if (yo.getConjurerActivated() && yo.getCurrentNen() > 0) {
                 Block conjurerBlock = CONJURER_BLOCK.get();
                 for (int i = 0; i < 9; i++) {
-                    BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX() + (i%3) - 1), MathHelper.floor(player.getPosY() - 2.1D - player.getYOffset()), MathHelper.floor(player.getPosZ()) + (i/3 - 1)).up();
+                    BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX() + (i%3) - 1), MathHelper.floor(player.getPosY() - 2.4D - player.getYOffset()), MathHelper.floor(player.getPosZ()) + (i/3 - 1)).up();
                     Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
                     if (blockAtLocation == Blocks.AIR) {
                         player.world.setBlockState(blockLocation, conjurerBlock.getDefaultState(), 3);
                     }
                 }
-
             }
         }
     }
@@ -763,4 +781,6 @@ public class EventsHandling {
             ObjectDrawingFunctions.DrawSphere(matrixStack, uh, 2);
         }
     }
+
+
 }

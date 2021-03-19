@@ -1,16 +1,18 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.packets.HXHEntitySpawn;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ToolType;
 
@@ -35,7 +37,10 @@ public class NenUser implements INenUser {
     public long lastOpenedBook = 2000;
     protected boolean manipulatorOverlay = false;
     public int manipulatorSelection = 0;
+    public int formationSelection = 0;
+    public int p0 = -1;
     private boolean clipping = false;
+    public String entityID = null;
 
     public NenUser() { }
 
@@ -227,81 +232,156 @@ public class NenUser implements INenUser {
         return ren;
     }
     public void nenpower1(PlayerEntity player) { }
+    public void setEntityID(int e) {
+        this.p0 = e;
+    }
+    public int getEntityID() {
+        return p0;
+    }
 
     public void enhancer1(PlayerEntity player) {
-        float setTo = getCurrentNen() - 50;
-        if (setTo > 0) {
-            setCurrentNen(setTo);
-            setBurnout(60);
-            setBlockDamage(true);
-            if (player.isOnGround()) {
-                player.addVelocity(0, 2, 0);
-                player.velocityChanged = true;
-            } else {
-                player.setMotion(0, 0, 0);
-                Vector3d stare = player.getLookVec();
-                stare.normalize();
-                Vector3d move = new Vector3d(stare.x * 3, .2, stare.z * 3);
-                player.addVelocity(move.x, move.y, move.z);
-                player.velocityChanged = true;
-            }
+        switch (passivePower) {
+            case 0:
+                HunterXHunter.LOGGER.info("Enhancer jump");
+                float setTo = getCurrentNen() - 50;
+                if (setTo > 0) {
+                    setCurrentNen(setTo);
+                    setBurnout(60);
+                    setBlockDamage(true);
+                    if (player.isOnGround()) {
+                        player.addVelocity(0, 2, 0);
+                        player.velocityChanged = true;
+                    } else {
+                        player.setMotion(0, 0, 0);
+                        Vector3d stare = player.getLookVec();
+                        stare.normalize();
+                        Vector3d move = new Vector3d(stare.x * 3, .2, stare.z * 3);
+                        player.addVelocity(move.x, move.y, move.z);
+                        player.velocityChanged = true;
+                    }
+                }
+                break;
+            case 1:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                break;
+            case 2:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                break;
+            case 3:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                break;
         }
     }
 
-    public void manipulator1() {
-        //manipulatorOverlay = !manipulatorOverlay;
-        manipulatorSelection++;
+    public void manipulator1(PlayerEntity player) {
+        switch (passivePower) {
+            case 0:
+                HunterXHunter.LOGGER.info("Iterating through spectated player");
+                manipulatorSelection++;
+                break;
+            case 1:
+                HunterXHunter.LOGGER.info("Adding tp entity/swapping with it");
+                Entity bruh = player.world.getEntityByID(p0);
+                if (bruh == null) {
+                    PacketManager.sendToServer(new HXHEntitySpawn(1, -2, new CompoundNBT()));
+                }
+                else {
+                    PacketManager.sendToServer(new HXHEntitySpawn(1, -3, new CompoundNBT()));
+                }
+                break;
+            case 2:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                //random potion effect on hit?
+                break;
+            case 3:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                break;
+        }
     }
 
     public void transmuter1(PlayerEntity player) {
-        float setTo = getCurrentNen() - 50 - getNenPower() * 10;
-        if (setTo > 0) {
-            //Repair item durability
-            ItemStack held = player.getHeldItemMainhand();
-
-            if (held.isEnchantable()) {
-                setCurrentNen(setTo);
-                setBurnout(60);
-                if (held.getToolTypes().contains(ToolType.PICKAXE) || held.getToolTypes().contains(ToolType.AXE) || held.getToolTypes().contains(ToolType.SHOVEL)) {
-                    held.addEnchantment(Enchantments.EFFICIENCY, 1 + getNenPower() * 2 / 4);
-                } else if (held.getItem() instanceof ArmorItem) {
-                    held.addEnchantment(Enchantments.PROTECTION, 1 + getNenPower() * 2 / 4);
-                } else if (held.getItem() instanceof SwordItem) {
-                    held.addEnchantment(Enchantments.SHARPNESS, 1 + getNenPower() * 2 / 4);
-                } else if (held.getItem() instanceof BowItem) {
-                    held.addEnchantment(Enchantments.POWER, 1 + getNenPower() * 2 / 6);
-                } else {
-                    held.addEnchantment(Enchantments.UNBREAKING, 1 + (getNenPower()) / 4);
+        switch (passivePower) {
+            case 0:
+                HunterXHunter.LOGGER.info("Attempting to enchant held item");
+                float setTo = getCurrentNen() - 50 - getNenPower() * 10;
+                if (setTo > 0) {
+                    //Repair item durability
+                    ItemStack held = player.getHeldItemMainhand();
+                    if (held.isEnchantable()) {
+                        setCurrentNen(setTo);
+                        setBurnout(60);
+                        if (held.getToolTypes().contains(ToolType.PICKAXE) || held.getToolTypes().contains(ToolType.AXE) || held.getToolTypes().contains(ToolType.SHOVEL)) {
+                            held.addEnchantment(Enchantments.EFFICIENCY, 1 + getNenPower() * 2 / 4);
+                        } else if (held.getItem() instanceof ArmorItem) {
+                            held.addEnchantment(Enchantments.PROTECTION, 1 + getNenPower() * 2 / 4);
+                        } else if (held.getItem() instanceof SwordItem) {
+                            held.addEnchantment(Enchantments.SHARPNESS, 1 + getNenPower() * 2 / 4);
+                        } else if (held.getItem() instanceof BowItem) {
+                            held.addEnchantment(Enchantments.POWER, 1 + getNenPower() * 2 / 6);
+                        } else {
+                            held.addEnchantment(Enchantments.UNBREAKING, 1 + (getNenPower()) / 4);
+                        }
+                    }
                 }
-            }
+                break;
+            case 1:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                //Dash move
+                break;
+            case 2:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                //Electrical crackle
+                break;
+            case 3:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                // ???
         }
     }
 
     public void conjurer1(PlayerEntity player) {
-        setConjurerActivated(!conjurerActivated);
+        switch (passivePower) {
+            case 0:
+                HunterXHunter.LOGGER.info("Toggling ConjurerActivated");
+                setConjurerActivated(!conjurerActivated);
+                break;
+            case 1:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                //iterate through blocks?
+                break;
+            case 2:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                //iterate through formations?
+                break;
+            case 3:
+                HunterXHunter.LOGGER.info("Placeholder logging");
+                PacketManager.sendToServer(new HXHEntitySpawn(2, -2, new CompoundNBT()));
+                break;
+        }
     }
 
     public void emitter1(PlayerEntity player) {
-
-    }
-
-    public void enhancer2(PlayerEntity player) {
-
-    }
-
-    public void manipulator2() {
-
-    }
-
-    public void transmuter2(PlayerEntity player) {
-
-    }
-
-    public void conjurer2(PlayerEntity player) {
-
-    }
-
-    public void emitter2(PlayerEntity player) {
-
+        Vector3d look = player.getLookVec();
+        switch (passivePower) {
+            case 0:
+                HunterXHunter.LOGGER.info("Adding emitter projectile");
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -1, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 1:
+                HunterXHunter.LOGGER.info("Adding emitter projectile");
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -2, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 2:
+                HunterXHunter.LOGGER.info("Adding emitter projectile");
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -3, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 3:
+                HunterXHunter.LOGGER.info("Adding emitter projectile");
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -4, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+        }
     }
 }

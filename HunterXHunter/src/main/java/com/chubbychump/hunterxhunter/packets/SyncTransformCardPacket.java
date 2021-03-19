@@ -1,31 +1,19 @@
 package com.chubbychump.hunterxhunter.packets;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
+import com.chubbychump.hunterxhunter.client.screens.CameraScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.function.Supplier;
 
-import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.CRYSTALLIZEDNEN;
+import static com.chubbychump.hunterxhunter.common.items.CardFunctions.getCorrespondingStack;
+import static com.chubbychump.hunterxhunter.util.RegistryHandler.CAMERA_ENTITY;
 
 public class SyncTransformCardPacket {
 
@@ -33,7 +21,7 @@ public class SyncTransformCardPacket {
 
     public SyncTransformCardPacket(int entityId, CompoundNBT nbt) {
         // Add entity id
-        nbt.putInt("entityid3", entityId);
+        nbt.putInt("entityid4", entityId);
         this.nbt = nbt;
     }
 
@@ -53,9 +41,23 @@ public class SyncTransformCardPacket {
         ctx.get().enqueueWork(() -> {
             ServerPlayerEntity serverPlayer = ctx.get().getSender();
             if (serverPlayer != null) {
-                if (serverPlayer.inventory.addItemStackToInventory(CRYSTALLIZEDNEN.get().getDefaultInstance())) {
-                    serverPlayer.inventory.decrStackSize(serverPlayer.inventory.currentItem, 1);
-                }
+                ItemStack held = serverPlayer.getHeldItemMainhand();
+                ItemStack corresponding = getCorrespondingStack(held);
+                corresponding.setCount(held.getCount());
+                CameraEntity bruh = new CameraEntity(CAMERA_ENTITY.get(), serverPlayer.world, (PlayerEntity) serverPlayer.world.getEntityByID(msg.nbt.getInt("entityid4")), corresponding);
+                held.shrink(held.getCount());
+                bruh.setPosition(serverPlayer.getPosX(), serverPlayer.getPosY(), serverPlayer.getPosZ());
+                serverPlayer.getEntityWorld().addEntity(bruh);
+                //HunterXHunter.LOGGER.info("Adding camera entity");
+                PacketManager.sendTo(serverPlayer, new SyncTransformCardPacket(bruh.getEntityId(), new CompoundNBT()));
+            }
+            else {
+                Minecraft mc = Minecraft.getInstance();
+                int oof = msg.nbt.getInt("entityid4");
+                CameraEntity camera = (CameraEntity) mc.world.getEntityByID(oof);
+                mc.world.addEntity(camera);
+                Minecraft.getInstance().displayGuiScreen(CameraScreen.cameraScreenInstance);
+                Minecraft.getInstance().setRenderViewEntity(camera);
             }
         });
         ctx.get().setPacketHandled(true);

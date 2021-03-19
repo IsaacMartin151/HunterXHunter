@@ -1,4 +1,4 @@
-package com.chubbychump.hunterxhunter.common.entities;
+package com.chubbychump.hunterxhunter.common.entities.goals;
 
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.Youpi;
 import net.minecraft.entity.IRangedAttackMob;

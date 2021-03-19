@@ -1,23 +1,20 @@
-package com.chubbychump.hunterxhunter.client.gui;
+package com.chubbychump.hunterxhunter.client.screens;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.EnderDragonRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
@@ -27,15 +24,16 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
+import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
 public class PuzzleScreen extends Screen {
     private Button modButton;
+    private double p = Math.PI;
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private int timer = 60;
     private int initialtimer;
@@ -46,13 +44,16 @@ public class PuzzleScreen extends Screen {
     private int bruh = 0;
     private int postpuzzleticks = 0;
     public ResourceLocation[] icons = new ResourceLocation[4];
+    public ResourceLocation BUBBLES = new ResourceLocation(MOD_ID, "textures/gui/bubbles.png");
 
     public PuzzleScreen(int q) {
         super(new StringTextComponent("Puzzle"));
-        ResourceLocation sprite0 = new ResourceLocation( "hunterxhunter", "puzzles/gon.png");
-        ResourceLocation sprite1 = new ResourceLocation( "hunterxhunter", "puzzles/killua.png");
-        ResourceLocation sprite2 = new ResourceLocation( "hunterxhunter", "puzzles/kurapika.png");
-        ResourceLocation sprite3 = new ResourceLocation( "hunterxhunter", "puzzles/leorio.png");
+        //this.width = 1000;
+        //this.height = 500;
+        ResourceLocation sprite0 = new ResourceLocation( MOD_ID, "puzzles/gon.png");
+        ResourceLocation sprite1 = new ResourceLocation( MOD_ID, "puzzles/killua.png");
+        ResourceLocation sprite2 = new ResourceLocation( MOD_ID, "puzzles/kurapika.png");
+        ResourceLocation sprite3 = new ResourceLocation( MOD_ID, "puzzles/leorio.png");
         icons[0] = sprite0;
         icons[1] = sprite1;
         icons[2] = sprite2;
@@ -83,17 +84,21 @@ public class PuzzleScreen extends Screen {
             int placeholder = array[j];
             array[j] = array[l];
             array[l] = placeholder;
-            HunterXHunter.LOGGER.info("Swapped locations "+j+" and "+l);
+            //HunterXHunter.LOGGER.info("Swapped locations "+j+" and "+l);
         }
         //printArray();
         bruh = rand.nextInt(4);
-        modButton = this.addButton(new Button(width/2, height/2 + 20, 50, 20, ITextComponent.getTextComponentOrEmpty("Confirm"), button -> {
-            this.onClose();
+        Minecraft.getInstance().player.playSound(LOUNGE_MUSIC.get(), 1, 1);
+    }
+
+    @Override
+    public void init() {
+        modButton = this.addButton(new Button(width/2 - 50, height/2 - 10, 100, 20, ITextComponent.getTextComponentOrEmpty("Confirm"), button -> {
             this.minecraft.displayGuiScreen(null);
             this.minecraft.setGameFocused(true);
         }));
         modButton.visible = false;
-        Minecraft.getInstance().player.playSound(LOUNGE_MUSIC.get(), 1, 1);
+        modButton.active = false;
     }
 
     private int verifyRandomSwap(int j, int k) {
@@ -114,53 +119,74 @@ public class PuzzleScreen extends Screen {
     }
 
     @Override
-    public Minecraft getMinecraft() {
-        return Minecraft.getInstance();
+    public void resize(Minecraft minecraft, int width, int height) {
+        this.init(minecraft, width, height);
+        if (success || failed) {
+            modButton.active = true;
+            modButton.visible = true;
+        }
     }
 
-    private void drawTriangles(BufferBuilder buffer) {
-        buffer.pos(width/2, height/2 + 20, 0).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(width/2 -5, height/2, 0).color(1f, 1f, 1f, 1f).endVertex();
-        buffer.pos(width/2 + 5, height/2, 0).color(1f, 1f, 1f, 1f).endVertex();
+    private void drawTriangles(BufferBuilder buffer, Matrix4f matrix) {
+        int outerR = (int) (this.height/2.5);
+        int innerR = this.height/5;
+        for (int i = 0; i < 5; i++) {
+            float oobruh = (float) (innerR * Math.cos(2 * p * i/5 + p/2 - p/5) + width/2);
+            float oobruhy = (float) (innerR * Math.sin(2*p*i/5+p/2 - p/5) + height/2);
+            float obruh = (float) (outerR * Math.cos(2 * p * i/5 + p/2) + width/2);
+            float obruhy = (float) (outerR * Math.sin(2*p*i/5+p/2) + height/2);
+            float bruh = (float) (innerR * Math.cos(2 * p * i/5 + p/2 + p/5) + width/2);
+            float bruhy = (float) (innerR * Math.sin(2*p*i/5+p/2 + p/5) + height/2);
+            buffer.pos(matrix, oobruh, oobruhy, 0).color(1f, 1f, 1f, 1f).tex(0, 0).endVertex();
+            buffer.pos(matrix, obruh, obruhy, 0).color(1f, 1f, 1f, 1f).tex(.5f, 1).endVertex();
+            buffer.pos(matrix, bruh, bruhy, 0).color(1f, 1f, 1f, 1f).tex(1, 0).endVertex();
+
+        }
     }
+
 
     @Override
-    public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        //HunterXHunter.LOGGER.info("width, height: "+this.width+", "+this.height);
         matrixStack.push();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
-        final Tessellator tessellator = Tessellator.getInstance();
-        final BufferBuilder buffer = tessellator.getBuffer();
-
-        RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.enableTexture();
-        RenderSystem.color4f(1, 1, 1, 1.0f);
         RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
 
         if (success == true || failed == true) {
-            //super.render(matrixStack, mouseX, mouseY, partialTicks);
-            modButton.render(matrixStack, mouseX, mouseY, partialTicks);
-            //blit(matrixStack, width, height, 0, 0, 16, 16);
-            buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
-            Quaternion rotation = Vector3f.ZP.rotationDegrees(72);
-            for (int i = 0; i < 5; i++) {
-                drawTriangles(buffer);
-                //matrixStack.rotate(rotation);
-            }
+            RenderSystem.disableCull();
+            matrixStack.push();
+
+            matrixStack.translate(this.width/2, this.height/2, 0);
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((Util.milliTime() / 60) % 360));
+            matrixStack.translate(-this.width/2, -this.height/2, 0);
+            buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR_TEX);
+            yo.bindTexture(BUBBLES);
+            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getGlTextureId());
+            drawTriangles(buffer, matrixStack.getLast().getMatrix());
             tessellator.draw();
+            matrixStack.pop();
 
-
+            if (success) {
+                font.drawStringWithShadow(matrixStack, "Success! Nen power increased", width/2 - 75, height/2 - 20, 0xffff80ff);
+            }
+            else {
+                font.drawStringWithShadow(matrixStack, "Fail. Better luck next time", width/2 - 60, height/2 - 20, 0xff8080ff);
+            }
+            super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         }
         else {
             timer = initialtimer - (int) (Util.milliTime()/1000 - timing/1000);
             if (timer < 0) {
                 failed = true;
+                modButton.visible = true;
+                modButton.active = true;
             }
-            fillGradient(matrixStack, 0, 0, width, height, 0, 10);
 
             buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-
             yo.bindTexture(icons[bruh]);
             RenderSystem.bindTexture(yo.getTexture(icons[bruh]).getGlTextureId());
             int upperleftX = 0;
@@ -280,12 +306,12 @@ public class PuzzleScreen extends Screen {
 
     @Override
     public void onClose() {
+        super.onClose();
         INenUser yo = minecraft.player.getCapability(NENUSER).orElseThrow(null);
         if (success == true) {
             yo.setFailCounter(0);
             yo.increaseNenPower();
             Minecraft.getInstance().player.playSound(WORLD_OF_ADVENTURES.get(), 1f, 1f);
-            minecraft.player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent(minecraft.player.getName().getString()+" passed their trial").setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
         }
         else {
             int j = yo.getFailCounter() + 1;
@@ -293,10 +319,10 @@ public class PuzzleScreen extends Screen {
             if (j >= 3) {
                 yo.setFailCounter(0);
                 yo.increaseNenPower();
-                minecraft.player.getEntityWorld().getServer().sendMessage(new TranslationTextComponent(minecraft.player.getName().getString()+" failed their trial").setStyle(Style.EMPTY.setColor(Color.fromInt(16896)).setItalic(true)), Util.DUMMY_UUID);
                 Minecraft.getInstance().player.playSound(WORLD_OF_ADVENTURES.get(), 1f, .5f);
             }
         }
+        Minecraft.getInstance().getSoundHandler().stop(LOUNGE_MUSIC.getId(), null);
         updateServer(minecraft.player, yo);
     }
 
@@ -319,6 +345,7 @@ public class PuzzleScreen extends Screen {
         success = true;
         postpuzzleticks = 1;
         modButton.visible = true;
+        modButton.active = true;
     }
 
     private void moveEmptyTile(int index) {
@@ -349,10 +376,17 @@ public class PuzzleScreen extends Screen {
 
     @Override
     public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         if (success != true && failed != true) {
             int index = getArrayIndex(mouseX, mouseY);
             moveEmptyTile(index);
         }
+
         return true;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

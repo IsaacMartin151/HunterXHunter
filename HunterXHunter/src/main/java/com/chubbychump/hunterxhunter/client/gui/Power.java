@@ -2,16 +2,8 @@ package com.chubbychump.hunterxhunter.client.gui;
 
 import net.minecraft.item.ItemStack;
 
-public interface IToolMode {
-
-    void setMode(int i);
-
+public interface Power {
     String getName();
-
     String name();
-
-    boolean isDisabled();
-
     int ordinal();
-
 }
