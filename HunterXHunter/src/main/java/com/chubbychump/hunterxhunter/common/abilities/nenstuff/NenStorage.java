@@ -30,6 +30,7 @@ public class NenStorage implements Capability.IStorage<INenUser> {
         tag.putBoolean("zetsu", instance.getZetsu());
         tag.putInt("passivepower", instance.getPassivePower());
         tag.putBoolean("blocknext", instance.blockDamage());
+        tag.putInt("eID", instance.getEntityID());
 
         return tag;
     }
@@ -50,5 +51,8 @@ public class NenStorage implements Capability.IStorage<INenUser> {
         instance.setZetsu(tag.getBoolean("zetsu"));
         instance.setPassivePower(tag.getInt("passivepower"));
         instance.setBlockDamage(tag.getBoolean("blocknext"));
+        if (tag.getInt("eID") != -2) {
+            instance.setEntityID(tag.getInt("eID"));
+        }
     }
 }

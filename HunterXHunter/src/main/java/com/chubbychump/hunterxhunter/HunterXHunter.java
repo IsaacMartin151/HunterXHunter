@@ -2,6 +2,7 @@ package com.chubbychump.hunterxhunter;
 
 import com.chubbychump.hunterxhunter.client.core.handler.ClientProxy;
 import com.chubbychump.hunterxhunter.client.gui.ContainerScreenGreedIsland;
+import com.chubbychump.hunterxhunter.client.rendering.ShiftyTERenderer;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookStorage;
 import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
@@ -11,8 +12,11 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.BaseMagicProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
+import com.chubbychump.hunterxhunter.common.tileentities.ShiftyTileEntity;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
@@ -20,8 +24,15 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.SpriteRenderer;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -30,10 +41,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,6 +54,8 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -80,8 +90,8 @@ public class HunterXHunter {
     // - 5 food
     // - 20 usable items
     // - 30 crafting ingredients
-        // 5 regular mob dropx
-        // 2 minerals
+        // 5 regular mob drops - DONE
+        // 2 minerals -
         // 3 world gen - new tree (World tree?), other overworld structure/flowers
         // 1 boss drop?
         //
@@ -91,13 +101,15 @@ public class HunterXHunter {
     // - 15 tools
 
     // - Biome structure loot
-    // - Custom biome for spider eagle with winds
     // - Animals in Tundra, Badlands - ant, Swamp - giant lizard, Jungle, Plains - foxbear
 
     // New biome with tough monster, add "Bomber" underground entity
     //custom biome/structure for zoldyck house?
-    //custom biome for world tree
-    //custom biome for intro puzzle structures
+    //custom feature/structure for puzzle structures and intro puzzle structures
+
+    //Room where player can see entity from afar and control them, has to navigate them through a simple maze to reach the end and give rewards
+    //Room/biome where Motion TNTs drop from the ceiling and push players into lava
+
     //custom biome for "home" - 'Mom' npc that gives an item
 
     // Loot chests from dungeons, abandoned mineshafts, strongholds can hold treasure items
@@ -105,20 +117,22 @@ public class HunterXHunter {
     // - 30 vanilla items
 
     //Transmuter
-    // - Button 1: Dash Move
+    // - Button 1: Dash Move - add ton of velocity and ignore gravity, then set velocity to 0 and reinstate gravity
     // - Button 2: Enchant
     //Enhancer
     // - Button 1: Maybe Regen? Select Jump type? Already has extra hearts
     // - Button 1: Aerial Attack
     //Emitter = create explosions at range, explosion based on power
-    // - Button 1: Select Projectile Type
+    // - Button 1: Select Projectile Type - Slowness, levitation, explosion - all knock self back a little
     // - Button 2: Fire Projectile
     //Conjurer
-    // - Button 1: Select Structure Type
+    // - Button 1: Select Structure Type/width/height
     // - Button 2: Create Structure
     //Manipulator
-    // - Button 1: Select person render view
-    // - Button 2: Select Post-Damage effect - levitation, extreme knockback, fire, slowness
+    // - Button 1: Move to next person render view
+    // - Button 2: Select Post-Damage effect - levitation, extreme knockback, fire, slowness - or choose to halt their own motion?
+    // - OR: Throw a projectile, swap position on recast if not null
+
     /*
     - Custom dimension for after all items are collected
     // Boss battle - 4 islands, 1 starting island and 3 opponent islands
@@ -137,9 +151,6 @@ public class HunterXHunter {
 
     //Add burnout potion effect that sets nen to 0?
 
-    //Rods that do stuff - uses the aura stone, stick, and special item - teleport randomly, give random effect, summon bats - good for bossfight, turn coal ore into gold nuggets, call lightning
-    //launch entity into air,
-
     //add a tamable flying mount that sucks, tameable ground mount? Maybe the lizard? or something?
 
     //Add sound indicators for bloodlust removal, staffs,
@@ -153,8 +164,6 @@ public class HunterXHunter {
     //Grenade item
 
     //Summoner staff - made in new building block created from new ore
-
-    //Custom "Forge" block to convert 10 mob drops into crystal
 
     //Custom kitchen blocks to cook stuff - Living furnace - uses hostile mob drops as fuel
     //Custom armor types - lizardleg boots, foxbear leggings, carapace chestplate, helmet TBD - set bonus = nen bonus?
@@ -223,6 +232,16 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D).create());
 
+        GlobalEntityTypeAttributes.put(CONJURER_MOUNT.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).9F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
+
+        GlobalEntityTypeAttributes.put(CAMERA_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).5F)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
+
 
         BiomeManager.addBiome(BiomeManager.BiomeType.DESERT, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.SPARSE);
@@ -241,17 +260,33 @@ public class HunterXHunter {
         });
     }
 
+    private static class MagicProjectileRendererFactory implements IRenderFactory<BaseMagicProjectile> {
+        @Override
+        public EntityRenderer<? super BaseMagicProjectile> createRenderFor(EntityRendererManager manager) {
+            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+            return new SpriteRenderer<>(manager, itemRenderer);
+        }
+    }
+
     private void doClientStuff(final FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_ENTITY.get(), ShiapoufRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(YOUPI_ENTITY.get(), YoupiRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(NEFERPITOU_ENTITY.get(), NeferpitouRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_CLONE_ENTITY.get(), ShiapoufCloneRenderer::new);
-
         RenderingRegistry.registerEntityRenderingHandler(CHIMERA_ANT_ENTITY.get(), ChimeraAntRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(FOXBEAR_ENTITY.get(), FoxBearRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(GIANT_LIZARD_ENTITY.get(), GiantLizardRenderer::new);
 
+        RenderingRegistry.registerEntityRenderingHandler(CONJURER_MOUNT.get(), ConjurerMountRenderer::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(BASE_MAGIC_PROJECTILE.get(), new MagicProjectileRendererFactory());
+        RenderingRegistry.registerEntityRenderingHandler(NO_GRAVITY_PROJECTILE.get(), NoGravityProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(CAMERA_ENTITY.get(), CameraEntityRenderer::new);
+
         RenderTypeLookup.setRenderLayer(SUPER_COBWEB.get(), RenderType.getTranslucent());
+
+        //RenderTypeLookup.setRenderLayer(SHIFTY_BLOCK.get(), RenderType.getTranslucent());
+        ClientRegistry.bindTileEntityRenderer(SHIFTY_TILE_ENTITY.get(), ShiftyTERenderer::new);
 
         MinecraftForge.EVENT_BUS.register(new IngameGui(Minecraft.getInstance()));
         ScreenManager.registerFactory(GREED_ISLAND_CONTAINER.get(), ContainerScreenGreedIsland::new);

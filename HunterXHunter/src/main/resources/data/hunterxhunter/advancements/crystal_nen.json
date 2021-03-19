@@ -1,0 +1,23 @@
+{
+  "display": {
+    "title": "Hunter X Hunter",
+    "description" : "Mine some aura stone with a diamond pickaxe",
+    "icon": {
+      "item": "hunterxhunter:crystal_nen"
+    },
+    "background": "minecraft:textures/block/netherite_block.png",
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "trigger_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hunterxhunter:crystal_nen"
+          }
+        ]
+      }
+    }
+  }
+}

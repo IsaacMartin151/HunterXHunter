@@ -1,11 +1,8 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff.types;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.NenEffectSelect;
+import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class Enhancer extends NenUser {
     boolean attackSequenceOne = true;

@@ -6,6 +6,8 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvi
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
+import com.chubbychump.hunterxhunter.common.advancements.AbilityUseTrigger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -52,9 +54,14 @@ public class SyncNenPacket {
                 //PlayerEntity player = serverPlayer.server.getPlayerList().getPlayerByUUID(serverPlayer.getUniqueID());
                 INenUser cap = NenUser.getFromPlayer(serverPlayer);
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
+                if (cap.getNenPower() > 0) {
+                    AbilityUseTrigger.INSTANCE.trigger(serverPlayer);
+                    if (cap.getNenPower() == 16) {
+                        AbilityMaxTrigger.INSTANCE.trigger(serverPlayer);
+                    }
+                }
             }
         });
         ctx.get().setPacketHandled(true);
     }
-
 }

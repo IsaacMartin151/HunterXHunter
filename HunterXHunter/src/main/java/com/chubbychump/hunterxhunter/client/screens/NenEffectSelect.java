@@ -1,6 +1,8 @@
-package com.chubbychump.hunterxhunter.client.gui;
+package com.chubbychump.hunterxhunter.client.screens;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.gui.Power;
+import com.chubbychump.hunterxhunter.client.gui.select.*;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -26,19 +28,22 @@ public class NenEffectSelect extends Screen {
     public static NenEffectSelect instance = new NenEffectSelect();
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private float visibility = 0.0f;
-    private boolean canRaise = true;
-    public int switchTo = 0;
     public int selectedPower = 0;
-    public boolean actionUsed = false;
     public ResourceLocation[] icons = new ResourceLocation[5];
 
     protected NenEffectSelect()
     {
         super(new StringTextComponent("Menu"));
-        for ( final NenPassiveSelection mode : NenPassiveSelection.values() ) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + mode.name().toLowerCase() + ".png");
-            icons[mode.ordinal()] = sprite;
-        }
+        icons[0] = new ResourceLocation( "hunterxhunter", "icons/gon.png");
+        icons[1] = new ResourceLocation( "hunterxhunter", "icons/hisoka.png");
+        icons[2] = new ResourceLocation( "hunterxhunter", "icons/killua.png");
+        icons[3] = new ResourceLocation( "hunterxhunter", "icons/morel.png");
+        icons[4] = new ResourceLocation( "hunterxhunter", "icons/razor.png");
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 
     @Override
@@ -48,19 +53,18 @@ public class NenEffectSelect extends Screen {
     }
 
     static class MenuRegion {
-        public IToolMode mode;
-        //public ResourceLocation regionTexture;
+        public Power power;
         public double x1, x2;
         public double y1, y2;
         public boolean highlighted;
 
-        public MenuRegion(IToolMode mode) {
-            this.mode = mode;
+        public MenuRegion(Power power) {
+            this.power = power;
         }
 
     };
 
-    public ResourceLocation getIconForMode(final IToolMode mode) {
+    public ResourceLocation getIconForMode(final Power mode) {
         ResourceLocation yah = instance.icons[mode.ordinal()];
         return yah;
     }
@@ -99,21 +103,23 @@ public class NenEffectSelect extends Screen {
         final double middle_x = width / 2;
         final double middle_y = height / 2;
 
-        final ArrayList<MenuRegion> modes = new ArrayList<MenuRegion>();
+        final ArrayList<MenuRegion> powers = new ArrayList<MenuRegion>();
         final NenPassiveSelection[] orderedModes = { NenPassiveSelection.POWER_ONE, NenPassiveSelection.POWER_TWO, NenPassiveSelection.POWER_THREE, NenPassiveSelection.POWER_FOUR, NenPassiveSelection.POWER_FIVE };
 
-        for (final NenPassiveSelection mode : orderedModes) {
-            modes.add( new MenuRegion( mode ) );
+
+        for (final NenPassiveSelection nenTypes : orderedModes) {
+
+            powers.add( new MenuRegion(nenTypes) );
         }
 
-        if (!modes.isEmpty()) {
-            final int totalModes = Math.max(3, modes.size());
+        if (!powers.isEmpty()) {
+            final int totalModes = Math.max(3, powers.size());
             int currentMode = 0;
             final double fragment = Math.PI * 0.005;
             final double fragment2 = Math.PI * 0.0025;
             final double perObject = 2.0 * Math.PI / totalModes;
 
-            for ( final MenuRegion mnuRgn : modes ) {
+            for ( final MenuRegion mnuRgn : powers ) {
                 final double begin_rad = currentMode * perObject - quarterCircle;
                 final double end_rad = ( currentMode + 1 ) * perObject - quarterCircle;
 
@@ -145,10 +151,10 @@ public class NenEffectSelect extends Screen {
                         x2m2, y2m2,
                         vecX, vecY );
 
-                if ( begin_rad <= radians && radians <= end_rad && quad || mnuRgn.mode.ordinal() == selectedPower) {
+                if ( begin_rad <= radians && radians <= end_rad && quad || mnuRgn.power.ordinal() == selectedPower) {
                     f = 1;
                     mnuRgn.highlighted = true;
-                    selectedPower = mnuRgn.mode.ordinal();
+                    selectedPower = mnuRgn.power.ordinal();
                 }
 
                 buffer.pos( middle_x + x1m1, middle_y + y1m1, 0 ).color( f, f, f, a ).endVertex();
@@ -173,12 +179,13 @@ public class NenEffectSelect extends Screen {
 
         buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
 
-        for ( final MenuRegion mnuRgn : modes ) {
+        //Drawing texture icons
+        for ( final MenuRegion mnuRgn : powers ) {
             final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
             final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
 
-            yo.bindTexture(getIconForMode(mnuRgn.mode));
-            RenderSystem.bindTexture(yo.getTexture(getIconForMode(mnuRgn.mode)).getGlTextureId());
+            yo.bindTexture(getIconForMode(mnuRgn.power));
+            RenderSystem.bindTexture(yo.getTexture(getIconForMode(mnuRgn.power)).getGlTextureId());
 
             final double scalex = 15 * 1 * 0.5;
             final double scaley = 15 * 1 * 0.5;
@@ -190,27 +197,23 @@ public class NenEffectSelect extends Screen {
             final float f = 1.0f;
             final float a = 1.0f;
 
-            final float u1 = 0 * 16;
-            final float u2 = ( 0 + 1 ) * 16;
-            final float v1 = 0 * 16;
-            final float v2 = ( 0 + 1 ) * 16;
-
-            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( u1, v1 ).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( u1, v2 ).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( u2, v2).color( f, f, f, a ).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( u2, v1).color( f, f, f, a ).endVertex();
+            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( 0, 0).color(1, 1, 1, 1).endVertex();
+            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( 0, 1 ).color(1, 1, 1, 1).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( 1, 1).color(1, 1, 1, 1).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( 1, 0).color(1, 1, 1, 1).endVertex();
         }
 
         tessellator.draw();
 
-        for ( final MenuRegion mnuRgn : modes ) {
+        //Drawing strings
+        for ( final MenuRegion mnuRgn : powers ) {
             if ( mnuRgn.highlighted ) {
                 final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5;
                 final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5;
 
                 int fixed_x = (int) ( x * text_distnace );
                 final int fixed_y = (int) ( y * text_distnace );
-                final String text = mnuRgn.mode.getName();
+                final String text = mnuRgn.power.getName();
 
                 if ( x <= -0.2 ) {
                     fixed_x -= font.getStringWidth( text );
@@ -247,23 +250,25 @@ public class NenEffectSelect extends Screen {
 
     @Override
     public void onClose() {
-        HunterXHunter.LOGGER.info("Setting type to "+(selectedPower+1));
+        HunterXHunter.LOGGER.info("Setting nen type to "+(selectedPower+1));
         INenUser yo = NenUser.getFromPlayer(minecraft.player);
         yo.setType(selectedPower + 1);
         updateServer(minecraft.player, yo);
     }
 
     @Override
-    public boolean mouseClicked(final double mouseX, final double mouseY, final int button)
-    {
+    public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
         this.visibility = 0f;
-        canRaise = false;
         this.minecraft.displayGuiScreen( null );
 
         if ( this.minecraft.currentScreen == null )
         {
             this.minecraft.setGameFocused(true);
         }
+        HunterXHunter.LOGGER.info("Setting nen type to "+(selectedPower+1));
+        INenUser yo = NenUser.getFromPlayer(minecraft.player);
+        yo.setType(selectedPower + 1);
+        updateServer(minecraft.player, yo);
         return true;
     }
 

@@ -1,0 +1,16 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:bread"
+    },
+    "title": "Maxed Out",
+    "description": "Reach the highest Nen level possible",
+    "announce_to_chat": true
+  },
+  "parent": "hunterxhunter:ability_use",
+  "criteria": {
+    "trigger_1": {
+      "trigger": "hunterxhunter:ability_max"
+    }
+  }
+}

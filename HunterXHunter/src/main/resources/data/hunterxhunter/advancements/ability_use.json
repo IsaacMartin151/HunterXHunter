@@ -1,0 +1,16 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:bread"
+    },
+    "title": "Nen User",
+    "description": "Used a Nen Ability",
+    "announce_to_chat": true
+  },
+  "parent": "hunterxhunter:crystal_nen",
+  "criteria": {
+    "trigger_1": {
+      "trigger": "hunterxhunter:ability_use"
+    }
+  }
+}

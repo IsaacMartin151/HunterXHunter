@@ -17,6 +17,7 @@ public class PacketManager {
         INSTANCE.registerMessage(id++, SyncHealthPacket.class, SyncHealthPacket::encode, SyncHealthPacket::decode, SyncHealthPacket::handle);
         INSTANCE.registerMessage(id++, SyncNenPacket.class, SyncNenPacket::encode, SyncNenPacket::decode, SyncNenPacket::handle);
         INSTANCE.registerMessage(id++, SyncBookPacket.class, SyncBookPacket::encode, SyncBookPacket::decode, SyncBookPacket::handle);
+        INSTANCE.registerMessage(id++, HXHEntitySpawn.class, HXHEntitySpawn::encode, HXHEntitySpawn::decode, HXHEntitySpawn::handle);
         INSTANCE.registerMessage(id++, SyncTransformCardPacket.class, SyncTransformCardPacket::encode, SyncTransformCardPacket::decode, SyncTransformCardPacket::handle);
     }
 

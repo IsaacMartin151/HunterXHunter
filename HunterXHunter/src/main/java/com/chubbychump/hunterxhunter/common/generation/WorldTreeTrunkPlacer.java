@@ -70,7 +70,10 @@ public class WorldTreeTrunkPlacer extends AbstractTrunkPlacer {
         }
         int xValMin = (int) ((treeX) /16.0);
         int xValMax = ((treeX + (radius*2 * signX)) /16);
-        int signZ = treeZ/Math.abs(treeZ);
+        int signZ = 0;
+        if (treeZ != 0) {
+            signZ = treeZ / Math.abs(treeZ);
+        }
         int zValMin = (int) ((treeZ) /16.0);
         int zValMax = ((treeZ + (radius*2 * signZ)) /16);
 
