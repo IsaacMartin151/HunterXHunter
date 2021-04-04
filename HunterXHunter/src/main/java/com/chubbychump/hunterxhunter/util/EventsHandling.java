@@ -2,6 +2,7 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
@@ -25,6 +26,7 @@ import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
 import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -33,8 +35,14 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.SettingsScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.ItemEntity;
@@ -43,10 +51,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tags.ITag;
@@ -55,6 +60,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -89,12 +95,17 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
+import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
+import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.isaacCube;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 //import net.minecraft.world.gen.placement.CountRangeConfig;
 
@@ -460,23 +471,138 @@ public class EventsHandling {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderManipulator(TickEvent.RenderTickEvent event) {
+        PlayerEntity player = Minecraft.getInstance().player;
         if (event.renderTickTime % 5 == 0) {
-            Minecraft bruh = Minecraft.getInstance();
-            PlayerEntity player = Minecraft.getInstance().player;
-            if (!bruh.isGamePaused()) {
+            Minecraft bruh2 = Minecraft.getInstance();
+            if (!bruh2.isGamePaused()) {
                 if (player != null && player.isAlive()) {
                     INenUser yo = NenUser.getFromPlayer(player);
                     //event.setCanceled(true);
-                    AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 20, player.getPosY() - 5, player.getPosZ() - 20, player.getPosX() + 20, player.getPosY() + 5, player.getPosZ() + 20);
-                    List<AbstractClientPlayerEntity> viewEntity = Minecraft.getInstance().world.getPlayers();
-                    if (viewEntity.size() > 0) {
-                        Minecraft.getInstance().setRenderViewEntity(viewEntity.get(yo.getManipulatorSelection() % viewEntity.size()));
-                        return;
+                    if (yo.getNenType() == 2) {
+                        AxisAlignedBB box = new AxisAlignedBB(player.getPosX() - 20, player.getPosY() - 5, player.getPosZ() - 20, player.getPosX() + 20, player.getPosY() + 5, player.getPosZ() + 20);
+                        List<AbstractClientPlayerEntity> viewEntity = Minecraft.getInstance().world.getPlayers();
+                        if (viewEntity.size() > 0) {
+                            Minecraft.getInstance().setRenderViewEntity(viewEntity.get(yo.getManipulatorSelection() % viewEntity.size()));
+                            return;
+                        }
                     }
+                    if (yo.getNenType() == 4 && yo.getBoolRiftWalk()) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void renderWorld(RenderWorldLastEvent event) {
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player != null && player.isAlive()) {
+            INenUser yo = NenUser.getFromPlayer(player);
+            if (yo.getNenType() == 4) {
+                if (yo.getBoolRiftWalk()) {
+                    LOGGER.info("Player is in riftwalk");
+                    RenderSystem.enableBlend();
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.disableCull();
+
+                    event.getMatrixStack().push();
+                    Matrix4f oof = event.getMatrixStack().getLast().getMatrix();
+                    ResourceLocation BUBBLES = new ResourceLocation(MOD_ID, "textures/gui/bubbles.png");
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder builder = tessellator.getBuffer();
+                    builder.begin(GL_QUADS, POSITION_COLOR);
+                    Minecraft.getInstance().getTextureManager().bindTexture(BUBBLES);
+                    RenderSystem.bindTexture(Minecraft.getInstance().getTextureManager().getTexture(BUBBLES).getGlTextureId());
+                    float r = .6f;
+                    float g = .0f;
+                    float b = .0f;
+                    float a = .7f;
+
+                    builder.pos(oof, -1f, -1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, -1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, 1f, -1f).color(r, g, b, a).endVertex();
+
+                    builder.pos(oof, -1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, 1f, 1f).color(r, g, b, a).endVertex();
+
+                    builder.pos(oof, 1f, -1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, -1f).color(r, g, b, a).endVertex();
+
+                    builder.pos(oof, -1f, -1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, 1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, 1f, -1f).color(r, g, b, a).endVertex();
+
+                    builder.pos(oof, -1f, 1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, 1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, 1f, -1f).color(r, g, b, a).endVertex();
+
+                    builder.pos(oof, -1f, -1f, -1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,-1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, -1f, 1f).color(r, g, b, a).endVertex();
+                    builder.pos(oof,1f, -1f, -1f).color(r, g, b, a).endVertex();
+
+
+
+                    int[] bruh = yo.getRiftWalk();
+                    BlockPos yee = player.getPosition();
+                    int[] oo = new int[3];
+                    oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
+                    oo[1] = 8 * (yee.getY() - bruh[1]) + bruh[1];
+                    oo[2] = 8 * (yee.getZ() - bruh[2]) + bruh[2];
+                    //LOGGER.info("Setting player position to "+oo[0]+", "+oo[1]+", "+oo[2]);
+                    LOGGER.info("In riftwalk, rendering box where player will end up");
+                    //player.setPosition(oo[0], oo[1], oo[2]);
+                    int x = oo[0];
+                    int y = oo[1];
+                    int z = oo[2];
+
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+
+                    builder.pos(x, y+2, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y+2, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y+2, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+
+                    builder.pos(x+1, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y+2, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y, z).color(1f, 1f, 1f, 1f).endVertex();
+
+                    builder.pos(x, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x+1, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+                    builder.pos(x, y+2, z+1).color(1f, 1f, 1f, 1f).endVertex();
+
+                    tessellator.draw();
+                    event.getMatrixStack().pop();
+                }
+                else {
+                    //ShaderHelper.releaseShader();
 
                 }
             }
-
         }
     }
 
@@ -671,9 +797,24 @@ public class EventsHandling {
             if (yo.getConjurerActivated()) {
                 cost += 2;
             }
+            if (yo.getBoolRiftWalk()) {
+                cost += 0; //TODO: this should be 3/4
+            }
+                // Set nen variable to "riftwalking", render player ghost at emerging location, use shader to grayscale the world
             yo.setCurrentNen(yo.getCurrentNen() - cost);
             if (yo.getCurrentNen() - cost < 0) {
                 yo.setCurrentNen(0);
+                if (yo.getBoolRiftWalk()) {
+                    // TODO: test this
+                    int[] bruh = yo.getRiftWalk();
+                    BlockPos yee = event.player.getPosition();
+                    int[] oo = new int[3];
+                    oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
+                    oo[1] = 8 * (yee.getY() - bruh[1]) + bruh[1];
+                    oo[2] = 8 * (yee.getZ() - bruh[2]) + bruh[2];
+                    LOGGER.info("Setting player position to "+oo[0]+", "+oo[1]+", "+oo[2]);
+                    event.player.setPosition(oo[0], oo[1], oo[2]);
+                }
                 yo.resetNen();
             }
             if (cost > 0) {

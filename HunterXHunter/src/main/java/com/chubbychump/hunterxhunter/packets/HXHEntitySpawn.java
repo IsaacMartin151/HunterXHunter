@@ -4,10 +4,12 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.BaseMagicProjectile;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.EmitterBaseProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -62,8 +64,8 @@ public class HXHEntitySpawn {
                             break;
                         }
                         else {
-                            HunterXHunter.LOGGER.info("Added entity is BaseMagicProjectile");
-                            bruh = new BaseMagicProjectile(serverPlayer.world, serverPlayer);
+                            HunterXHunter.LOGGER.info("Added entity is ManipulatorTpProjectile");
+                            bruh = new ManipulatorTpProjectile(serverPlayer.world, serverPlayer);
                             Vector3d yeet = serverPlayer.getLookVec().normalize().scale(2);
                             bruh.setVelocity(yeet.x, yeet.y, yeet.z);
                             yo.setEntityID(bruh.getEntityId());
@@ -76,27 +78,71 @@ public class HXHEntitySpawn {
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                     case 3:
-                        HunterXHunter.LOGGER.info("Added entity is NoGravityProjectile");
-                        bruh = new NoGravityProjectile(NO_GRAVITY_PROJECTILE.get(), serverPlayer.world);
-                        bruh.setPosition(oof.x, oof.y, oof.z);
+                        HunterXHunter.LOGGER.info("Added entity is EmitterBaseProjectile, variation "+eID);
+                        switch (eID) {
+                            case -1:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 1, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -2:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 2, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -3:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 3, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -4:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 4, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -5:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 5, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -6:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 6, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -7:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 7, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                            case -8:
+                                bruh = new EmitterBaseProjectile(NO_GRAVITY_PROJECTILE.get(), 8, yo.getNenPower(), serverPlayer.world);
+                                bruh.setPosition(oof.x, oof.y, oof.z);
+                                break;
+                        }
+                        break;
+                    case 4:
+                        HunterXHunter.LOGGER.info("Added entity is Transmuter Experience Item");
+                        bruh = new ItemEntity(serverPlayer.world, oof.x, oof.y, oof.z, EXPERIENCE_ITEM.get().getDefaultInstance());
+                        ((ItemEntity) bruh).setNoPickupDelay();
+                        //bruh.setPosition(oof.x, oof.y, oof.z);
+                        break;
+                    case 5:
+                        HunterXHunter.LOGGER.info("Added entity is Transmuter Experience Item");
+                        bruh = new ItemEntity(serverPlayer.world, oof.x, oof.y, oof.z, EXPERIENCE_ITEM.get().getDefaultInstance());
+                        ((ItemEntity) bruh).setNoPickupDelay();
+                        //bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                     case 96:
-                        HunterXHunter.LOGGER.info("Added entity is ConjurerMount");
+                        HunterXHunter.LOGGER.info("Added entity is Shiapouf Clone");
                         bruh = new ShiapoufClone(SHIAPOUF_CLONE_ENTITY.get(), serverPlayer.world);
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                     case 97:
-                        HunterXHunter.LOGGER.info("Added entity is ConjurerMount");
+                        HunterXHunter.LOGGER.info("Added entity is Shiapouf");
                         bruh = new Shiapouf(SHIAPOUF_ENTITY.get(), serverPlayer.world);
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                     case 98:
-                        HunterXHunter.LOGGER.info("Added entity is ConjurerMount");
-                        bruh = new Youpi(YOUPI_ENTITY.get(), serverPlayer.world);
+                        HunterXHunter.LOGGER.info("Added entity is Neferpitou");
+                        bruh = new Neferpitou(NEFERPITOU_ENTITY.get(), serverPlayer.world);
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                     case 99:
-                        HunterXHunter.LOGGER.info("Added entity is ConjurerMount");
+                        HunterXHunter.LOGGER.info("Added entity is Youpi");
                         bruh = new Youpi(YOUPI_ENTITY.get(), serverPlayer.world);
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;

@@ -28,35 +28,40 @@ public class PowerSelectScreen extends Screen {
     public static PowerSelectScreen instance = new PowerSelectScreen();
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private float visibility = 0.0f;
-    public int type = NenUser.getFromPlayer(Minecraft.getInstance().player).getNenType();
+    public int type;
     public int selectedPower = -1;
     public ResourceLocation[] enhancer = new ResourceLocation[4];
     public ResourceLocation[] manipulator = new ResourceLocation[4];
     public ResourceLocation[] transmuter = new ResourceLocation[4];
     public ResourceLocation[] conjurer = new ResourceLocation[4];
-    public ResourceLocation[] emitter = new ResourceLocation[4];
+    public ResourceLocation[] emitter = new ResourceLocation[8];
 
     protected PowerSelectScreen()
     {
         super(new StringTextComponent("PowerMenu"));
         for (final EnhancerPowers list : EnhancerPowers.values()) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "textures/icons/" + list.name().toLowerCase() + ".png");
+            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + list.getName().toLowerCase() + ".png");
+            HunterXHunter.LOGGER.info("list name is "+list.getName().toLowerCase());
             enhancer[list.ordinal()] = sprite;
         }
         for (final ManipulatorPowers list : ManipulatorPowers.values()) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "textures/icons/" + list.name().toLowerCase() + ".png");
+            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + list.getName().toLowerCase() + ".png");
+            HunterXHunter.LOGGER.info("list name is "+list.getName().toLowerCase());
             manipulator[list.ordinal()] = sprite;
         }
         for (final TransmuterPowers list : TransmuterPowers.values()) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "textures/icons/" + list.name().toLowerCase() + ".png");
+            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + list.getName().toLowerCase() + ".png");
+            HunterXHunter.LOGGER.info("list name is "+list.getName().toLowerCase());
             transmuter[list.ordinal()] = sprite;
         }
         for (final ConjurerPowers list : ConjurerPowers.values()) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "textures/icons/" + list.name().toLowerCase() + ".png");
+            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + list.getName().toLowerCase() + ".png");
+            HunterXHunter.LOGGER.info("list name is "+list.getName().toLowerCase());
             conjurer[list.ordinal()] = sprite;
         }
         for (final EmitterPowers list : EmitterPowers.values()) {
-            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "textures/icons/" + list.name().toLowerCase() + ".png");
+            ResourceLocation sprite = new ResourceLocation( "hunterxhunter", "icons/" + list.getName().toLowerCase() + ".png");
+            HunterXHunter.LOGGER.info("list name is "+list.getName().toLowerCase());
             emitter[list.ordinal()] = sprite;
         }
     }
@@ -83,19 +88,19 @@ public class PowerSelectScreen extends Screen {
         ResourceLocation yah = null;
         switch (type) {
             case 1:
-                yah = instance.enhancer[mode.ordinal()];
+                yah = enhancer[mode.ordinal()];
                 break;
             case 2:
-                yah = instance.manipulator[mode.ordinal()];
+                yah = manipulator[mode.ordinal()];
                 break;
             case 3:
-                yah = instance.transmuter[mode.ordinal()];
+                yah = transmuter[mode.ordinal()];
                 break;
             case 4:
-                yah = instance.conjurer[mode.ordinal()];
+                yah = conjurer[mode.ordinal()];
                 break;
             case 5:
-                yah = instance.emitter[mode.ordinal()];
+                yah = emitter[mode.ordinal()];
                 break;
         }
         return yah;
@@ -104,24 +109,25 @@ public class PowerSelectScreen extends Screen {
     @Override
     public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
         matrixStack.push();
+        type = NenUser.getFromPlayer(Minecraft.getInstance().player).getNenType();
         final int start = (int) ( visibility * 98 ) << 24;
         final int end = (int) ( visibility * 128 ) << 24;
 
-        fillGradient(matrixStack, 0, 0, width, height, start, end );
+        fillGradient(matrixStack, 0, 0, width, height, start, end);
 
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
-        RenderSystem.blendFuncSeparate( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0 );
-        RenderSystem.shadeModel( GL11.GL_SMOOTH );
+        RenderSystem.blendFuncSeparate( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder buffer = tessellator.getBuffer();
 
-        buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR );
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         final double vecX = mouseX - width / 2;
         final double vecY = (mouseY - height / 2);
-        double radians = Math.atan2( vecY, vecX );
+        double radians = Math.atan2(vecY, vecX);
 
         final double ring_inner_edge = 20;
         final double ring_outer_edge = 50;
@@ -140,7 +146,7 @@ public class PowerSelectScreen extends Screen {
         final ManipulatorPowers[] manipulator = { ManipulatorPowers.POWER_ONE, ManipulatorPowers.POWER_TWO, ManipulatorPowers.POWER_THREE, ManipulatorPowers.POWER_FOUR };
         final TransmuterPowers[] transmuter = { TransmuterPowers.POWER_ONE, TransmuterPowers.POWER_TWO, TransmuterPowers.POWER_THREE, TransmuterPowers.POWER_FOUR };
         final ConjurerPowers[] conjurer = { ConjurerPowers.POWER_ONE, ConjurerPowers.POWER_TWO, ConjurerPowers.POWER_THREE, ConjurerPowers.POWER_FOUR };
-        final EmitterPowers[] emitter = { EmitterPowers.POWER_ONE, EmitterPowers.POWER_TWO, EmitterPowers.POWER_THREE, EmitterPowers.POWER_FOUR };
+        final EmitterPowers[] emitter = { EmitterPowers.POWER_ONE, EmitterPowers.POWER_TWO, EmitterPowers.POWER_THREE, EmitterPowers.POWER_FOUR, EmitterPowers.POWER_FIVE, EmitterPowers.POWER_SIX, EmitterPowers.POWER_SEVEN, EmitterPowers.POWER_EIGHT };
 
         switch (type) {
             case 1:
@@ -155,17 +161,17 @@ public class PowerSelectScreen extends Screen {
                 break;
             case 3:
                 for (final TransmuterPowers nenTypes : transmuter) {
-                    powers.add( new MenuRegion(nenTypes) );
+                    powers.add(new MenuRegion(nenTypes));
                 }
                 break;
             case 4:
                 for (final ConjurerPowers nenTypes : conjurer) {
-                    powers.add( new MenuRegion(nenTypes) );
+                    powers.add(new MenuRegion(nenTypes));
                 }
                 break;
             case 5:
                 for (final EmitterPowers nenTypes : emitter) {
-                    powers.add( new MenuRegion(nenTypes) );
+                    powers.add(new MenuRegion(nenTypes));
                 }
                 break;
         }
@@ -177,14 +183,14 @@ public class PowerSelectScreen extends Screen {
             final double fragment2 = Math.PI * 0.0025;
             final double perObject = 2.0 * Math.PI / totalModes;
 
-            for ( final MenuRegion mnuRgn : powers ) {
+            for (final MenuRegion mnuRgn : powers) {
                 final double begin_rad = currentMode * perObject - quarterCircle;
                 final double end_rad = ( currentMode + 1 ) * perObject - quarterCircle;
 
-                mnuRgn.x1 = Math.cos( begin_rad );
-                mnuRgn.x2 = Math.cos( end_rad );
-                mnuRgn.y1 = Math.sin( begin_rad );
-                mnuRgn.y2 = Math.sin( end_rad );
+                mnuRgn.x1 = Math.cos(begin_rad);
+                mnuRgn.x2 = Math.cos(end_rad);
+                mnuRgn.y1 = Math.sin(begin_rad);
+                mnuRgn.y2 = Math.sin(end_rad);
 
                 final double x1m1 = Math.cos( begin_rad + fragment ) * ring_inner_edge;
                 final double x2m1 = Math.cos( end_rad - fragment ) * ring_inner_edge;
@@ -230,20 +236,21 @@ public class PowerSelectScreen extends Screen {
 
         //matrixStack.translate( 0.0F, 0.0F, 5.0F );
         RenderSystem.enableTexture();
-        RenderSystem.color4f( 1, 1, 1, 1.0f );
+        RenderSystem.color4f( 1f, 1f, 1f, 1.0f );
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
 
 
-        buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
 
         //Drawing texture icons
         for ( final MenuRegion mnuRgn : powers ) {
+            buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+
             final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
             final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
-            HunterXHunter.LOGGER.info("checking for handler "+getIconForMode(mnuRgn.power));
-            yo.bindTexture(getIconForMode(mnuRgn.power));
-            RenderSystem.bindTexture(yo.getTexture(getIconForMode(mnuRgn.power)).getGlTextureId());
+            ResourceLocation target = getIconForMode(mnuRgn.power);
+            yo.bindTexture(target);
+            RenderSystem.bindTexture(yo.getTexture(target).getGlTextureId());
 
             final double scalex = 15 * 1 * 0.5;
             final double scaley = 15 * 1 * 0.5;
@@ -251,21 +258,18 @@ public class PowerSelectScreen extends Screen {
             final double x2 = x + scalex;
             final double y1 = y - scaley;
             final double y2 = y + scaley;
-
-            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( 0, 0).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( 0, 1 ).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( 1, 1).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( 1, 0).color(1, 1, 1, 1).endVertex();
+            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( 0, 0).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( 0, 1 ).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( 1, 1).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( 1, 0).color(1f, 1f, 1f, 1f).endVertex();
+            tessellator.draw();
         }
-
-        tessellator.draw();
 
         //Drawing strings
         for ( final MenuRegion mnuRgn : powers ) {
             if ( mnuRgn.highlighted ) {
                 final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5;
                 final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5;
-
                 int fixed_x = (int) ( x * text_distnace );
                 final int fixed_y = (int) ( y * text_distnace );
                 final String text = mnuRgn.power.getName();
@@ -315,8 +319,7 @@ public class PowerSelectScreen extends Screen {
     public boolean mouseClicked(final double mouseX, final double mouseY, final int button) {
         this.visibility = 0f;
         this.minecraft.displayGuiScreen( null );
-        if ( this.minecraft.currentScreen == null )
-        {
+        if ( this.minecraft.currentScreen == null ) {
             this.minecraft.setGameFocused(true);
         }
         return true;

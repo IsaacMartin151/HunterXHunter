@@ -3,14 +3,13 @@ package com.chubbychump.hunterxhunter.common.entities.models;// Made with Blockb
 // Paste this class into your mod and generate all required imports
 
 
-import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.EmitterBaseProjectile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
-public class NoGravityProjectileModel<T extends NoGravityProjectile> extends EntityModel<NoGravityProjectile> {
+public class NoGravityProjectileModel<T extends EmitterBaseProjectile> extends EntityModel<EmitterBaseProjectile> {
 	private final ModelRenderer tricombo;
 	private final ModelRenderer cube3_r1;
 	private final ModelRenderer cube2_r1;
@@ -44,7 +43,7 @@ public class NoGravityProjectileModel<T extends NoGravityProjectile> extends Ent
 	}
 
 	@Override
-	public void setRotationAngles(NoGravityProjectile entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+	public void setRotationAngles(EmitterBaseProjectile entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
 		//previously the render function, render code was moved to a method below
 	}
 

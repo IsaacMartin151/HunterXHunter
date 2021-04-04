@@ -1,24 +1,27 @@
 package com.chubbychump.hunterxhunter.common.entities.projectiles;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.ExplosionContext;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,20 +30,28 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class NoGravityProjectile extends DamagingProjectileEntity {
-    private static final DataParameter<Integer> INFO = EntityDataManager.createKey(NoGravityProjectile.class, DataSerializers.VARINT);
+public class EmitterBaseProjectile extends DamagingProjectileEntity {
+    private static final DataParameter<Integer> INFO = EntityDataManager.createKey(EmitterBaseProjectile.class, DataSerializers.VARINT);
     public static boolean inGround = false;
+    private int type = -1;
+    private int power = -1;
 
-    public NoGravityProjectile(EntityType<? extends NoGravityProjectile> type, World p_i50166_2_) {
+    public EmitterBaseProjectile(EntityType<? extends EmitterBaseProjectile> type, World p_i50166_2_) {
         super(type, p_i50166_2_);
     }
 
+    public EmitterBaseProjectile(EntityType<? extends EmitterBaseProjectile> type, int n, int p, World p_i50166_2_) {
+        this(type, p_i50166_2_);
+        this.type = n;
+        this.power = p;
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public NoGravityProjectile(EntityType<? extends NoGravityProjectile> type, double x, double y, double z, double accelX, double accelY, double accelZ, World world) {
+    public EmitterBaseProjectile(EntityType<? extends EmitterBaseProjectile> type, double x, double y, double z, double accelX, double accelY, double accelZ, World world) {
         super(type, x, y, z, accelX, accelY, accelZ, world);
     }
 
-    public NoGravityProjectile(EntityType<? extends NoGravityProjectile> type, LivingEntity p_i50168_2_, double p_i50168_3_, double p_i50168_5_, double p_i50168_7_, World p_i50168_9_) {
+    public EmitterBaseProjectile(EntityType<? extends EmitterBaseProjectile> type, LivingEntity p_i50168_2_, double p_i50168_3_, double p_i50168_5_, double p_i50168_7_, World p_i50168_9_) {
         super(type, p_i50168_2_, p_i50168_3_, p_i50168_5_, p_i50168_7_, p_i50168_9_);
     }
 
@@ -75,6 +86,7 @@ public class NoGravityProjectile extends DamagingProjectileEntity {
         return false;
     }
 
+    @Override
     public void tick() {
         super.tick();
         boolean flag = false;
@@ -187,6 +199,52 @@ public class NoGravityProjectile extends DamagingProjectileEntity {
     @Nullable
     protected EntityRayTraceResult rayTraceEntities(Vector3d startVec, Vector3d endVec) {
         return ProjectileHelper.rayTraceEntities(this.world, this, startVec, endVec, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), this::func_230298_a_);
+    }
+
+    @Override
+    protected void onImpact(RayTraceResult result) {
+        Vector3d yo = result.getHitVec();
+        AreaEffectCloudEntity boom = new AreaEffectCloudEntity(world, yo.x, yo.y, yo.z);
+        switch (this.type) {
+            case 1:
+                boom.addEffect(new EffectInstance(Effects.SLOWNESS, 600, power/4 + 1));
+                boom.setPotion(Potions.SLOWNESS);
+                break;
+            case 2:
+                boom.addEffect(new EffectInstance(Effects.POISON, 600, power/8 + 1));
+                boom.setPotion(Potions.POISON);
+                break;
+            case 3:
+                boom.addEffect(new EffectInstance(Effects.WEAKNESS, 600, power/4 + 1));
+                boom.setPotion(Potions.WEAKNESS);
+                break;
+            case 4:
+                boom.addEffect(new EffectInstance(Effects.SPEED, 600, power/4 + 1));
+                boom.setPotion(Potions.SWIFTNESS);
+                break;
+            case 5:
+                boom.addEffect(new EffectInstance(Effects.REGENERATION, 600, power/8 + 1));
+                boom.setPotion(Potions.REGENERATION);
+                break;
+            case 6:
+                boom.addEffect(new EffectInstance(Effects.STRENGTH, 600, power/4 + 1));
+                boom.setPotion(Potions.STRENGTH);
+                break;
+            case 7:
+                boom.addEffect(new EffectInstance(Effects.JUMP_BOOST, 600, power/5 + 1));
+                boom.setPotion(Potions.LEAPING);
+                break;
+            case 8:
+                world.createExplosion(this, DamageSource.MAGIC, null, yo.x, yo.y, yo.z,power/4 + 2,false, Explosion.Mode.BREAK);
+                this.remove();
+                break;
+        }
+        if (this.type != 8) {
+            boom.setRadius(3);
+            boom.setDuration(60);
+            boom.setGlowing(true);
+            world.addEntity(boom);
+        }
     }
 
     @Nonnull
