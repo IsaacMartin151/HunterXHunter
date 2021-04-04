@@ -50,11 +50,14 @@ public final class ShaderHelper {
     public static final String SHADER_BOOK_VERT = PREFIX_SHADER + "book.vert";
     public static final String LIGHTING_FRAG = PREFIX_SHADER + "lighting.frag";
     public static final String LIGHTING_VERT = PREFIX_SHADER + "lighting.vert";
+    public static final String GRAYSCALE_FRAG = PREFIX_SHADER + "grayscale.frag";
+    public static final String GRAYSCALE_VERT = PREFIX_SHADER + "grayscale.vert";
 
     public enum BotaniaShader {
         FILM_GRAIN(SHADER_PASSTHROUGH_VERT, SHADER_FILM_GRAIN_FRAG),
         DRAGON(SHADER_PATTERN_VERT, SHADER_PATTERN_FRAG),
         BOOK(SHADER_BOOK_VERT, SHADER_BOOK_FRAG),
+        GRAYSCALE(GRAYSCALE_VERT, GRAYSCALE_FRAG),
         LIGHTING(LIGHTING_VERT, LIGHTING_FRAG);
 
         public final String vertexShaderPath;
@@ -117,21 +120,23 @@ public final class ShaderHelper {
         int program = prog.getProgram();
         ShaderLinkHelper.func_227804_a_(program);
 
-        long time = System.currentTimeMillis();
-        double speed = 10.;
-        int timer = (int) (time % 1000);
-        //LOGGER.info("Timer is now " + timer);
-        int bruh = GlStateManager.getUniformLocation(program, "timer");
-        int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID
-        int color1 = GlStateManager.getUniformLocation(program, "uColor1");
-        int color2 = GlStateManager.getUniformLocation(program, "uColor2");
-        int color3 = GlStateManager.getUniformLocation(program, "uColor3");
-        GlStateManager.uniform1i(noisetexture, textureID);
-        GlStateManager.uniform1i(bruh, timer);
-        GlStateManager.uniform1i(color1, nencolor[0]);
-        GlStateManager.uniform1i(color2, nencolor[1]);
-        GlStateManager.uniform1i(color3, nencolor[2]);
-        //GL20.glBindAttribLocation(program, 0, "texCoords");
+        if (prog != PROGRAMS.get(BotaniaShader.GRAYSCALE)) {
+            long time = System.currentTimeMillis();
+            double speed = 10.;
+            int timer = (int) (time % 1000);
+            //LOGGER.info("Timer is now " + timer);
+            int bruh = GlStateManager.getUniformLocation(program, "timer");
+            int noisetexture = GlStateManager.getUniformLocation(program, "noise"); //IntBuffer will not work use the textureID
+            int color1 = GlStateManager.getUniformLocation(program, "uColor1");
+            int color2 = GlStateManager.getUniformLocation(program, "uColor2");
+            int color3 = GlStateManager.getUniformLocation(program, "uColor3");
+            GlStateManager.uniform1i(noisetexture, textureID);
+            GlStateManager.uniform1i(bruh, timer);
+            GlStateManager.uniform1i(color1, nencolor[0]);
+            GlStateManager.uniform1i(color2, nencolor[1]);
+            GlStateManager.uniform1i(color3, nencolor[2]);
+            //GL20.glBindAttribLocation(program, 0, "texCoords");
+        }
 
         if (callback != null) {
             callback.call(program);

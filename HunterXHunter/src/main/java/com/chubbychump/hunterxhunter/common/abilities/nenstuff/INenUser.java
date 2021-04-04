@@ -1,9 +1,7 @@
 package com.chubbychump.hunterxhunter.common.abilities.nenstuff;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -66,6 +64,10 @@ public interface INenUser {
     void toggleRen();
     void setRen(boolean on);
     boolean getRen();
+    void setRiftWalk(int[] i);
+    int[] getRiftWalk();
+    void setBoolRiftWalk(boolean on);
+    boolean getBoolRiftWalk();
     boolean getConjurerActivated();
     void setConjurerActivated(boolean oof);
 

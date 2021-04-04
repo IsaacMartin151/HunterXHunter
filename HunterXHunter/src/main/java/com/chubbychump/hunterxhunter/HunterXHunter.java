@@ -12,43 +12,33 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.BaseMagicProjectile;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
-import com.chubbychump.hunterxhunter.common.tileentities.ShiftyTileEntity;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
@@ -127,6 +117,7 @@ public class HunterXHunter {
     // - Button 2: Fire Projectile
     //Conjurer
     // - Button 1: Select Structure Type/width/height
+    // shield entity?
     // - Button 2: Create Structure
     //Manipulator
     // - Button 1: Move to next person render view
@@ -162,8 +153,6 @@ public class HunterXHunter {
     // - 4. Press button to get one book
 
     //Grenade item
-
-    //Summoner staff - made in new building block created from new ore
 
     //Custom kitchen blocks to cook stuff - Living furnace - uses hostile mob drops as fuel
     //Custom armor types - lizardleg boots, foxbear leggings, carapace chestplate, helmet TBD - set bonus = nen bonus?
@@ -243,12 +232,12 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
 
 
-        BiomeManager.addBiome(BiomeManager.BiomeType.DESERT, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
+        BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.SPARSE);
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.DRY);
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.PLATEAU);
 
-        BiomeManager.addBiome(BiomeManager.BiomeType.ICY, new BiomeManager.BiomeEntry(WORLD_TREE_KEY, 10));
+        BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(WORLD_TREE_KEY, 10));
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.SPOOKY);
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.MAGICAL);
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.OVERWORLD);
@@ -260,9 +249,9 @@ public class HunterXHunter {
         });
     }
 
-    private static class MagicProjectileRendererFactory implements IRenderFactory<BaseMagicProjectile> {
+    private static class MagicProjectileRendererFactory implements IRenderFactory<ManipulatorTpProjectile> {
         @Override
-        public EntityRenderer<? super BaseMagicProjectile> createRenderFor(EntityRendererManager manager) {
+        public EntityRenderer<? super ManipulatorTpProjectile> createRenderFor(EntityRendererManager manager) {
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
             return new SpriteRenderer<>(manager, itemRenderer);
         }

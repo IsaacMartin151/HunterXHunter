@@ -13,9 +13,17 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ToolType;
 
+import java.util.List;
+
+import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
 
 public class NenUser implements INenUser {
@@ -37,53 +45,49 @@ public class NenUser implements INenUser {
     public long lastOpenedBook = 2000;
     protected boolean manipulatorOverlay = false;
     public int manipulatorSelection = 0;
+    private int[] riftwalk = new int[3];
+    private boolean riftwalkon = false;
     public int formationSelection = 0;
     public int p0 = -1;
     private boolean clipping = false;
     public String entityID = null;
 
-    public NenUser() { }
+    public NenUser() {
+        riftwalk[0] = 0;
+        riftwalk[1] = 0;
+        riftwalk[2] = 0;
+    }
 
     public void setType(int nenType) {
         this.type = nenType;
     }
-
     public int getNenType() {
         return type;
     }
-
     public void setClipping(boolean clip) {
         this.clipping = clip;
     }
-
     public boolean getClipping() {
         return clipping;
     }
-
     public boolean openedBook() {
         return openedBook;
     }
-
     public void setOpenedBook(boolean opened) {
         this.openedBook = opened;
     }
-
     public long getLastOpenedBook() {
         return lastOpenedBook;
     }
-
     public void setLastOpenedBook(long last) {
         this.lastOpenedBook = last;
     }
-
     public int getBurnout() {
         return burnout;
     }
-
     public boolean getOverlay() {
         return manipulatorOverlay;
     }
-
     public void setBurnout(int burn) {
         this.burnout = burn;
     }
@@ -99,19 +103,27 @@ public class NenUser implements INenUser {
     public int getPassivePower() {
         return passivePower;
     }
-
     public void setPassivePower(int i) {
         this.passivePower = i;
     }
-
     public int getManipulatorSelection() {
         return manipulatorSelection;
     }
-
     public void setManipulatorSelection(int i) {
         this.manipulatorSelection = i;
     }
-
+    public int[] getRiftWalk() {
+        return riftwalk;
+    }
+    public void setRiftWalk(int[] i) {
+        this.riftwalk = i;
+    }
+    public boolean getBoolRiftWalk() {
+        return riftwalkon;
+    }
+    public void setBoolRiftWalk(boolean i) {
+        this.riftwalkon = i;
+    }
     public void setNenPower(int power) {
         this.nenPower = power;
     }
@@ -137,6 +149,7 @@ public class NenUser implements INenUser {
         zetsu = false;
         nenActivated = false;
         conjurerActivated = false;
+        riftwalkon = false;
         blockDamage = false;
     }
 
@@ -242,7 +255,7 @@ public class NenUser implements INenUser {
     public void enhancer1(PlayerEntity player) {
         switch (passivePower) {
             case 0:
-                HunterXHunter.LOGGER.info("Enhancer jump");
+                HunterXHunter.LOGGER.info("Enhancer look jump");
                 float setTo = getCurrentNen() - 50;
                 if (setTo > 0) {
                     setCurrentNen(setTo);
@@ -262,13 +275,16 @@ public class NenUser implements INenUser {
                 }
                 break;
             case 1:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Reversing motion");
+                player.setMotion(player.getMotion().add(0, .1, 0).inverse());
+                player.velocityChanged = true;
                 break;
             case 2:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Give Regeneration");
+                player.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600));
                 break;
             case 3:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Maybe nothing?");
                 break;
         }
     }
@@ -325,16 +341,30 @@ public class NenUser implements INenUser {
                 }
                 break;
             case 1:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Converting XP into item");
+                if (player.experienceTotal >= 160 && getCurrentNen() >= 100) {
+                    player.experienceTotal -= 160;
+                    setCurrentNen(getCurrentNen() - 100);
+                    PacketManager.sendToServer(new HXHEntitySpawn(4, -1, new CompoundNBT()));
+                }
                 //Dash move
                 break;
             case 2:
-                HunterXHunter.LOGGER.info("Placeholder logging");
-                //Electrical crackle
+                HunterXHunter.LOGGER.info("Dash move");
+                //Dash
+                //player.setVelocity();
                 break;
             case 3:
-                HunterXHunter.LOGGER.info("Placeholder logging");
-                // ???
+                HunterXHunter.LOGGER.info("AOE electrocute");
+                int i = getNenPower();
+                Vector3d radiusLow = player.getPositionVec().subtract(i, i, i);
+                Vector3d radiusHigh = player.getPositionVec().add(i, i, i);
+
+                List<Entity> yah = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, new AxisAlignedBB(radiusLow, radiusHigh));
+                for (Entity ee : yah) {
+                    ee.attackEntityFrom(DamageSource.LIGHTNING_BOLT, 1f);
+                }
+                // Electrocute
         }
     }
 
@@ -345,15 +375,35 @@ public class NenUser implements INenUser {
                 setConjurerActivated(!conjurerActivated);
                 break;
             case 1:
-                HunterXHunter.LOGGER.info("Placeholder logging");
-                //iterate through blocks?
+                if (!riftwalkon && getCurrentNen() > 80) {
+                    HunterXHunter.LOGGER.info("Entering riftwalk");
+                    riftwalkon = true;
+                    int[] ee = new int[3];
+                    ee[0] = (int) player.getPosX();
+                    ee[1] = (int) player.getPosY();
+                    ee[2] = (int) player.getPosZ();
+                    setRiftWalk(ee);
+                }
+                else {
+                    HunterXHunter.LOGGER.info("Exiting riftwalk, setting position");
+                    riftwalkon = false;
+                    int[] bruh = getRiftWalk();
+                    BlockPos yee = player.getPosition();
+                    int[] oo = new int[3];
+                    oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
+                    oo[1] = 8 * (yee.getY() - bruh[1]) + bruh[1];
+                    oo[2] = 8 * (yee.getZ() - bruh[2]) + bruh[2];
+                    LOGGER.info("Setting player position to "+oo[0]+", "+oo[1]+", "+oo[2]);
+                    player.setPosition(oo[0], oo[1], oo[2]);
+                    // TODO: update player location - this doesn't work, it's only on client
+                }
                 break;
             case 2:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Hrmmmm");
                 //iterate through formations?
                 break;
             case 3:
-                HunterXHunter.LOGGER.info("Placeholder logging");
+                HunterXHunter.LOGGER.info("Spawning ConjurerMount");
                 PacketManager.sendToServer(new HXHEntitySpawn(2, -2, new CompoundNBT()));
                 break;
         }
@@ -361,25 +411,38 @@ public class NenUser implements INenUser {
 
     public void emitter1(PlayerEntity player) {
         Vector3d look = player.getLookVec();
+        HunterXHunter.LOGGER.info("Adding emitter projectile");
         switch (passivePower) {
             case 0:
-                HunterXHunter.LOGGER.info("Adding emitter projectile");
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -1, new CompoundNBT()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 1:
-                HunterXHunter.LOGGER.info("Adding emitter projectile");
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -2, new CompoundNBT()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 2:
-                HunterXHunter.LOGGER.info("Adding emitter projectile");
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -3, new CompoundNBT()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 3:
-                HunterXHunter.LOGGER.info("Adding emitter projectile");
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -4, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 4:
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -5, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 5:
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -6, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 6:
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -7, new CompoundNBT()));
+                player.addVelocity(-look.x, -look.y, -look.z);
+                break;
+            case 7:
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -8, new CompoundNBT()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
         }

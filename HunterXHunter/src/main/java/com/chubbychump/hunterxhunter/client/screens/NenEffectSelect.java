@@ -13,6 +13,9 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +68,7 @@ public class NenEffectSelect extends Screen {
     };
 
     public ResourceLocation getIconForMode(final Power mode) {
-        ResourceLocation yah = instance.icons[mode.ordinal()];
+        ResourceLocation yah = icons[mode.ordinal()];
         return yah;
     }
 
@@ -108,7 +111,6 @@ public class NenEffectSelect extends Screen {
 
 
         for (final NenPassiveSelection nenTypes : orderedModes) {
-
             powers.add( new MenuRegion(nenTypes) );
         }
 
@@ -177,15 +179,15 @@ public class NenEffectSelect extends Screen {
         RenderSystem.enableAlphaTest();
 
 
-        buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
 
         //Drawing texture icons
         for ( final MenuRegion mnuRgn : powers ) {
+            buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
             final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
             final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
-
-            yo.bindTexture(getIconForMode(mnuRgn.power));
-            RenderSystem.bindTexture(yo.getTexture(getIconForMode(mnuRgn.power)).getGlTextureId());
+            ResourceLocation target = getIconForMode(mnuRgn.power);
+            yo.bindTexture(target);
+            RenderSystem.bindTexture(yo.getTexture(target).getGlTextureId());
 
             final double scalex = 15 * 1 * 0.5;
             final double scaley = 15 * 1 * 0.5;
@@ -194,16 +196,15 @@ public class NenEffectSelect extends Screen {
             final double y1 = y - scaley;
             final double y2 = y + scaley;
 
-            final float f = 1.0f;
-            final float a = 1.0f;
+            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( 0, 0).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( 0, 1 ).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( 1, 1).color(1f, 1f, 1f, 1f).endVertex();
+            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( 1, 0).color(1f, 1f, 1f, 1f).endVertex();
 
-            buffer.pos( middle_x + x1, middle_y + y1, 0 ).tex( 0, 0).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x1, middle_y + y2, 0 ).tex( 0, 1 ).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y2, 0 ).tex( 1, 1).color(1, 1, 1, 1).endVertex();
-            buffer.pos( middle_x + x2, middle_y + y1, 0 ).tex( 1, 0).color(1, 1, 1, 1).endVertex();
+            tessellator.draw();
         }
 
-        tessellator.draw();
+
 
         //Drawing strings
         for ( final MenuRegion mnuRgn : powers ) {

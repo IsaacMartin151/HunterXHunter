@@ -6,8 +6,8 @@ import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
 import com.chubbychump.hunterxhunter.common.advancements.AbilityUseTrigger;
 import com.chubbychump.hunterxhunter.common.blocks.*;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.BaseMagicProjectile;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.NoGravityProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.EmitterBaseProjectile;
+import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeFeature;
@@ -151,6 +151,13 @@ public class RegistryHandler {
 
 
     //Items
+
+    //Non-Hundred items
+    public static final RegistryObject<Item> EXPERIENCE_ITEM = ITEMS.register("experience_item", ItemBase::new);
+
+
+
+    //Hundred items
         //Crafting
         public static final RegistryObject<Item> BEAR_CLAW = ITEMS.register( "bear_claw", BearClaw::new);
         public static final RegistryObject<Item> EXPLOSIVE_ASHES = ITEMS.register( "explosive_ashes", ExplosiveAshes::new);
@@ -407,7 +414,7 @@ public class RegistryHandler {
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<BaseMagicProjectile>> BASE_MAGIC_PROJECTILE = ENTITY_TYPES.register("base_magic_projectile", () -> EntityType.Builder.<BaseMagicProjectile>create(BaseMagicProjectile::new, EntityClassification.MISC)
+    public static final RegistryObject<EntityType<ManipulatorTpProjectile>> BASE_MAGIC_PROJECTILE = ENTITY_TYPES.register("base_magic_projectile", () -> EntityType.Builder.<ManipulatorTpProjectile>create(ManipulatorTpProjectile::new, EntityClassification.MISC)
             .size(.25f, .25f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
@@ -415,7 +422,7 @@ public class RegistryHandler {
             .func_233608_b_(10)
             .build(""));
 
-    public static final RegistryObject<EntityType<NoGravityProjectile>> NO_GRAVITY_PROJECTILE = ENTITY_TYPES.register("no_gravity_projectile", () -> EntityType.Builder.<NoGravityProjectile>create(NoGravityProjectile::new, EntityClassification.MISC)
+    public static final RegistryObject<EntityType<EmitterBaseProjectile>> NO_GRAVITY_PROJECTILE = ENTITY_TYPES.register("no_gravity_projectile", () -> EntityType.Builder.<EmitterBaseProjectile>create(EmitterBaseProjectile::new, EntityClassification.MISC)
             .size(.25f, .25f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
