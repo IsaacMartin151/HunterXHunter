@@ -11,6 +11,8 @@ import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpPr
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeFeature;
+import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.HXHConfiguredStructures;
+import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeStructure;
 import com.chubbychump.hunterxhunter.common.items.ItemBase;
 import com.chubbychump.hunterxhunter.common.items.StaffBase;
 import com.chubbychump.hunterxhunter.common.items.thehundred.crafting.*;
@@ -27,6 +29,7 @@ import com.chubbychump.hunterxhunter.common.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.common.recipes.VatRecipeSerializer;
 import com.chubbychump.hunterxhunter.common.recipes.VatRecipes;
 import com.chubbychump.hunterxhunter.common.tileentities.*;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.AbstractBlock;
@@ -52,6 +55,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
@@ -62,8 +66,13 @@ import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.carver.WorldCarver;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.structure.IStructurePieceType;
+import net.minecraft.world.gen.feature.structure.IglooPieces;
+import net.minecraft.world.gen.feature.structure.IglooStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacerType;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -71,6 +80,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
@@ -93,8 +107,6 @@ public class RegistryHandler {
     public static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, MOD_ID);
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPES = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
 
-    //TODO: Register shiapouf clone entity
-
     public static void init(IEventBus bus) {
         CONTAINER.register(bus);
         ITEMS.register(bus);
@@ -111,12 +123,49 @@ public class RegistryHandler {
 
         FOLIAGE_PLACER_TYPES.register(bus);
         CARVER.register(bus);
-        BIOMES.register(bus);
-        FEATURES.register(bus);
         STRUCTURES.register(bus);
+        FEATURES.register(bus);
+        BIOMES.register(bus);
 
         registerCriteriaTriggers();
     }
+
+    public static Method GETCODEC_METHOD;
+
+    public static void setupStructures() {
+        StructureSeparationSettings bruh = new StructureSeparationSettings(10, /* average distance apart in chunks between spawn attempts */
+                5 /* minimum distance apart in chunks between spawn attempts */,
+                1234567890);
+        Structure.NAME_STRUCTURE_BIMAP.put(WORLD_TREE_STRUCTURE.get().getRegistryName().toString(), WORLD_TREE_STRUCTURE.get());
+        //Registry.register(Registry.STRUCTURE_FEATURE, name.toLowerCase(Locale.ROOT), structure);
+        //HXHConfiguredStructures.registerStructureFeatures();
+        DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_)
+                .put(WORLD_TREE_STRUCTURE.get(),  bruh/* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */)
+                .build();
+
+        WorldGenRegistries.NOISE_SETTINGS.getEntries().forEach(settings -> {
+            Map<Structure<?>, StructureSeparationSettings> structureMap = settings.getValue().getStructures().func_236195_a_();
+
+            /*
+             * Pre-caution in case a mod makes the structure map immutable like datapacks do.
+             * I take no chances myself. You never know what another mods does...
+             *
+             * structureConfig requires AccessTransformer  (See resources/META-INF/accesstransformer.cfg)
+             */
+            if(structureMap instanceof ImmutableMap){
+                Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(structureMap);
+                tempMap.put(WORLD_TREE_STRUCTURE.get(), bruh);
+                settings.getValue().getStructures().field_236193_d_ = tempMap;
+            }
+            else{
+                structureMap.put(WORLD_TREE_STRUCTURE.get(), bruh);
+            }
+        });
+    }
+
+//    public static IStructurePieceType registerPiece(String name, IStructurePieceType piece) {
+//        return Registry.register(Registry.STRUCTURE_PIECE, name, piece);
+//    }
 
     public static void registerCriteriaTriggers() {
         CriteriaTriggers.register(AbilityUseTrigger.INSTANCE);
@@ -154,7 +203,6 @@ public class RegistryHandler {
 
     //Non-Hundred items
     public static final RegistryObject<Item> EXPERIENCE_ITEM = ITEMS.register("experience_item", ItemBase::new);
-
 
 
     //Hundred items
@@ -321,6 +369,7 @@ public class RegistryHandler {
 
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
+    public static final RegistryObject<Block> CHESS_TABLE_BLOCK = BLOCKS.register("chess_table_block", ChessTable::new);
     public static final RegistryObject<Block> NEN_LIGHT = BLOCKS.register("nenlight", NenLight::new);
     public static final RegistryObject<Block> GREED_ISLAND_PORTAL = BLOCKS.register("twilight_portal", PortalBlock::new);
     public static final RegistryObject<Block> SATURATION_STAND = BLOCKS.register("saturation_stand", SaturationStand::new);
@@ -365,28 +414,28 @@ public class RegistryHandler {
             .build(""));
 
     public static final RegistryObject<EntityType<Youpi>> YOUPI_ENTITY = ENTITY_TYPES.register("youpi", () -> EntityType.Builder.<Youpi>create(Youpi::new, EntityClassification.MONSTER)
-            .size(3f, 3f)
+            .size(3.2f, 6.5f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<Neferpitou>> NEFERPITOU_ENTITY = ENTITY_TYPES.register("neferpitou", () -> EntityType.Builder.<Neferpitou>create(Neferpitou::new, EntityClassification.MONSTER)
-            .size(2f, 3f)
+            .size(1.8f, 3.7f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<Shiapouf>> SHIAPOUF_ENTITY = ENTITY_TYPES.register("shiapouf", () -> EntityType.Builder.<Shiapouf>create(Shiapouf::new, EntityClassification.MONSTER)
-            .size(2f, 3f)
+            .size(2f, 5f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
     public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimera_ant", () -> EntityType.Builder.<ChimeraAnt>create(ChimeraAnt::new, EntityClassification.MONSTER)
-            .size(1.2f, 2f)
+            .size(1.6f, 3.4f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
@@ -400,7 +449,7 @@ public class RegistryHandler {
             .build(""));
 
     public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giant_lizard", () -> EntityType.Builder.<GiantLizard>create(GiantLizard::new, EntityClassification.CREATURE)
-            .size(3f, 2f)
+            .size(1.5f, 2f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
@@ -408,7 +457,7 @@ public class RegistryHandler {
 
 
     public static final RegistryObject<EntityType<ConjurerMount>> CONJURER_MOUNT = ENTITY_TYPES.register("conjurer_mount", () -> EntityType.Builder.<ConjurerMount>create(ConjurerMount::new, EntityClassification.CREATURE)
-            .size(.87f, 4f)
+            .size(2.2f, 3f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
@@ -439,16 +488,22 @@ public class RegistryHandler {
 
 
     //Point Of Interests
-    public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorianpoi", () -> new PointOfInterestType("masadorianpoi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
+    public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorian_poi", () -> new PointOfInterestType("masadorian_poi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
+    public static final RegistryObject<PointOfInterestType> CHESS_MASTER_POI = POINT_OF_INTEREST.register("chess_master_poi", () -> new PointOfInterestType("chess_master_poi", ImmutableSet.copyOf(CHESS_TABLE_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
 
     //Professions
     public static final RegistryObject<VillagerProfession> MASADORIAN = PROFESSIONS.register("masadorian", () -> new VillagerProfession("masadorian", MASADORIAN_POI.get(), VillagerProfession.CARTOGRAPHER.getSpecificItems(),  VillagerProfession.CARTOGRAPHER.getRelatedWorldBlocks(), COOKIECHAN.get()));
+    public static final RegistryObject<VillagerProfession> CHESS_MASTER = PROFESSIONS.register("chess_master", () -> new VillagerProfession("chess_master", CHESS_MASTER_POI.get(), VillagerProfession.CARTOGRAPHER.getSpecificItems(),  VillagerProfession.CARTOGRAPHER.getRelatedWorldBlocks(), COOKIECHAN.get()));
 
     //FoliagePlacer
 
     //Features
     public static final RegistryObject<Feature<BaseWorldTreeFeatureConfig>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeFeatureConfig.CODEC));
     public static final RegistryObject<Feature<OreFeatureConfig>> ORE_AURA = FEATURES.register("aura_stone", () -> new OreFeature(OreFeatureConfig.CODEC));
+
+    //Structures
+    public static final RegistryObject<Structure<NoFeatureConfig>> WORLD_TREE_STRUCTURE = STRUCTURES.register("wttrunk",() -> new WorldTreeStructure(NoFeatureConfig.field_236558_a_));
+    //public static final IStructurePieceType WTTRUNK = RegistryHandler.registerPiece(new ResourceLocation(MOD_ID, "wttrunk").toString(), ComponentTrunk::new);
 
     //Carver
     public static final RegistryObject<WorldCarver<ProbabilityConfig>> SPIDER_EAGLE_CARVER = CARVER.register("spider_eagle_carver", () -> new SpiderEagleCarver(ProbabilityConfig.CODEC, 256));
@@ -465,7 +520,7 @@ public class RegistryHandler {
             temperature(0.8F).
             downfall(0.8F).
             withGenerationSettings(new BiomeGenerationSettings.Builder().
-                    withFeature(GenerationStage.Decoration.VEGETAL_DECORATION.ordinal(), () -> Features.SPRING_OPEN).
+                    //withFeature(GenerationStage.Decoration.VEGETAL_DECORATION.ordinal(), () -> Features.SPRING_OPEN).
                     withSurfaceBuilder(() -> SurfaceBuilder.DEFAULT.func_242929_a(SurfaceBuilder.GRASS_DIRT_SAND_CONFIG)).build()).
             withMobSpawnSettings(MobSpawnInfo.EMPTY).
             setEffects((new BiomeAmbience.Builder()).

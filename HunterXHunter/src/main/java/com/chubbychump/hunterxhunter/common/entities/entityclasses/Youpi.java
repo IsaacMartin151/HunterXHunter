@@ -73,6 +73,7 @@ public class Youpi extends MonsterEntity implements IChargeableMob, IRangedAttac
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
     }
 
+    @Override
     protected void registerData() {
         super.registerData();
         this.dataManager.register(FIRST_HEAD_TARGET, 0);
@@ -112,7 +113,7 @@ public class Youpi extends MonsterEntity implements IChargeableMob, IRangedAttac
     }
 
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return 3.74F;
+        return 6.5F;
     }
 
     protected void jump() {

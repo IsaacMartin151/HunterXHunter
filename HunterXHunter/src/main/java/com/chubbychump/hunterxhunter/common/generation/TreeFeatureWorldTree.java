@@ -10,6 +10,7 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.IWorldGenerationBaseReader;
 import net.minecraft.world.gen.IWorldGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.TreeFeature;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
 

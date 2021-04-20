@@ -1,10 +1,15 @@
 package com.chubbychump.hunterxhunter.common.entities.models;
 
+import com.chubbychump.hunterxhunter.HunterXHunter;
+import com.chubbychump.hunterxhunter.client.rendering.KeyFrame;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.ChimeraAnt;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PhantomModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.monster.PhantomEntity;
 
 public class ChimeraAntModel<T extends ChimeraAnt> extends EntityModel<ChimeraAnt> {
     private final ModelRenderer head;
@@ -25,6 +30,19 @@ public class ChimeraAntModel<T extends ChimeraAnt> extends EntityModel<ChimeraAn
     private final ModelRenderer legs;
     private final ModelRenderer leg2_r1;
     private final ModelRenderer leg1_r1;
+    private final float PI = (float) Math.PI;
+    private final float CYCLE_FREQUENCY = 2f;
+    protected float[][] animationCycle = new float[][]
+            {
+                    {   0F    , 0F     , 0F },
+                    {   PI/18F, PI/16f , 0F },
+                    {   PI/9F , PI/8f  , 0F },
+                    {   PI/18F, PI/16f , 0F },
+                    {   0F    , 0f     , 0F },
+                    {  -PI/18F, -PI/16f, 0F },
+                    {  -PI/9F , -PI/8f , 0F },
+                    {  -PI/18F, -PI/16f, 0F },
+            };
 
     public ChimeraAntModel() {
         textureWidth = 128;
@@ -118,7 +136,6 @@ public class ChimeraAntModel<T extends ChimeraAnt> extends EntityModel<ChimeraAn
         legs = new ModelRenderer(this);
         legs.setRotationPoint(0.0F, 24.0F, 0.0F);
 
-
         leg2_r1 = new ModelRenderer(this);
         leg2_r1.setRotationPoint(-1.0F, 0.0F, 2.0F);
         legs.addChild(leg2_r1);
@@ -130,18 +147,46 @@ public class ChimeraAntModel<T extends ChimeraAnt> extends EntityModel<ChimeraAn
         legs.addChild(leg1_r1);
         setRotationAngle(leg1_r1, 0.0F, -0.1309F, -0.1745F);
         leg1_r1.setTextureOffset(25, 14).addBox(-1.0F, -7.0F, 0.0F, 2.0F, 7.0F, 3.0F, 0.0F, false);
+
     }
 
     @Override
     public void setRotationAngles(ChimeraAnt entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
         //previously the render function, render code was moved to a method below
+        // TODO: body rotation 15 to -15 in the y direction
+        //entity.rotationPitch = 0;
+        if (moved(entity)) {
+            //HunterXHunter.LOGGER.info("Entity moved, total distance moved is "+entity.getDistanceMoved());
+            entity.cycleIndex = (int) (entity.getDistanceMoved() / 5 * CYCLE_FREQUENCY) % 8;
+            //HunterXHunter.LOGGER.info("cycle index is "+entity.cycleIndex);
+        }
+        else {
+            entity.cycleIndex = 0;
+        }
+        //HunterXHunter.LOGGER.info("angles are: leg1 "+animationCycle[entity.cycleIndex][0]+", "+animationCycle[entity.cycleIndex][1]);
+        leg1_r1.rotateAngleX = animationCycle[entity.cycleIndex][0];
+        body.rotateAngleY = animationCycle[entity.cycleIndex][1];
+        leg2_r1.rotateAngleX = -animationCycle[entity.cycleIndex][0];
+    }
+
+    public boolean moved(ChimeraAnt entity) {
+        if (entity.getDistanceMoved() != entity.distanceAnimation ) {
+            entity.distanceAnimation = entity.getDistanceMoved();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+        matrixStack.push();
+        matrixStack.translate(0, -1.6, 0);
+        matrixStack.scale(2, 2, 2);
+
         head.render(matrixStack, buffer, packedLight, packedOverlay);
         body.render(matrixStack, buffer, packedLight, packedOverlay);
         legs.render(matrixStack, buffer, packedLight, packedOverlay);
+        matrixStack.pop();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

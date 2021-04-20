@@ -82,7 +82,6 @@ public class Neferpitou extends MonsterEntity implements IChargeableMob, IRanged
         this.setHealth(this.getMaxHealth());
         this.getNavigator().setCanSwim(true);
         this.experienceValue = 50;
-        this.setCustomName(ITextComponent.getTextComponentOrEmpty("Neferpitou"));
     }
 
     protected void registerGoals() {
