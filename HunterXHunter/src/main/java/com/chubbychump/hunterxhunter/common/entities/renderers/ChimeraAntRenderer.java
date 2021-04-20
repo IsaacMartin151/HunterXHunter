@@ -29,9 +29,7 @@ public class ChimeraAntRenderer extends MobRenderer<ChimeraAnt, ChimeraAntModel<
     }
 
     protected void preRenderCallback(ChimeraAnt entitylivingbaseIn, MatrixStack matrixStackIn, float partialTickTime) {
-        float f = 1.0F + 0.15F;
-        matrixStackIn.scale(f, f, f);
-        matrixStackIn.translate(0.0D, 1.3125D, 0.1875D);
+
     }
 
     protected void applyRotations(ChimeraAnt entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {

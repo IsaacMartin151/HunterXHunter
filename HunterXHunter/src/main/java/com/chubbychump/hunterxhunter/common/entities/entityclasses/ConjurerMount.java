@@ -47,7 +47,7 @@ public class ConjurerMount extends AnimalEntity implements IRideable, IEquipable
 
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return 5f;
+        return 3.2f;
     }
 
     @Override

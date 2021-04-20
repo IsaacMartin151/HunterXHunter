@@ -106,7 +106,12 @@ public class YoupiModel<T extends Youpi> extends EntityModel<Youpi> {
 
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+        matrixStack.push();
+        matrixStack.translate(0, -1.7, 0);
+        matrixStack.scale(2, 2, 2);
+
         upperBodyPart1.render(matrixStack, buffer, packedLight, packedOverlay);
+        matrixStack.pop();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

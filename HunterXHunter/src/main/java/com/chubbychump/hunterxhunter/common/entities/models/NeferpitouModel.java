@@ -103,8 +103,13 @@ public class NeferpitouModel<T extends Neferpitou> extends EntityModel<Neferpito
 
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+        matrixStack.push();
+        matrixStack.translate(0, -1.6, 0);
+        matrixStack.scale(2, 2, 2);
+
         upperBodyPart1.render(matrixStack, buffer, packedLight, packedOverlay);
         head.render(matrixStack, buffer, packedLight, packedOverlay);
+        matrixStack.pop();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {

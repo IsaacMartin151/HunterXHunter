@@ -14,6 +14,7 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
 import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
+import com.chubbychump.hunterxhunter.common.generation.structures.HXHConfiguredStructures;
 import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
@@ -67,6 +68,13 @@ public class HunterXHunter {
     public static final String MOD_ID = "hunterxhunter";
     public static IProxy proxy = new IProxy() {};
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
+
+    //TODO: Chess board - Crafting table plus 4 bonemeal plus 4 inksac
+    //TODO: Villager character that beats your ass if you lose at chess, takes an entry fee
+    //TODO: Custom animation, Grows in size and oneshots if lose, get "Fine Gold" if win
+    //TODO: Chess board block can be profession block? Trade to get the entry fee item, or maybe just a card of certain rarity?
+
+    //TODO:
 
     //Phantom Troupe final boss battle for last item - use theme music
 
@@ -162,9 +170,10 @@ public class HunterXHunter {
     public HunterXHunter() {
         DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
         proxy.registerHandlers();        // Register the setup method for modloading
+        RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -205,7 +214,7 @@ public class HunterXHunter {
         GlobalEntityTypeAttributes.put(CHIMERA_ANT_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.5F)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).3F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
@@ -232,6 +241,18 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
 
 
+        //RegistryHandler.setupStructures();
+
+        //BrewingRecipeRegistry.addRecipe(new BloodLustRecipe());
+
+//        event.enqueueWork(() -> {
+//            RegistryHandler.setupStructures();
+//            HXHConfiguredStructures.registerConfiguredStructures();
+//        });
+
+        RegistryHandler.setupStructures();
+        HXHConfiguredStructures.registerConfiguredStructures();
+
         BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.SPARSE);
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.DRY);
@@ -241,12 +262,6 @@ public class HunterXHunter {
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.SPOOKY);
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.MAGICAL);
         BiomeDictionary.addTypes(WORLD_TREE_KEY, BiomeDictionary.Type.OVERWORLD);
-
-        BrewingRecipeRegistry.addRecipe(new BloodLustRecipe());
-
-        DeferredWorkQueue.runLater(() -> {
-            //PostGeneration.applyBiomeFeatures();
-        });
     }
 
     private static class MagicProjectileRendererFactory implements IRenderFactory<ManipulatorTpProjectile> {

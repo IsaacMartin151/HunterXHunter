@@ -28,6 +28,7 @@ import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -62,21 +63,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
-import net.minecraft.world.gen.feature.FeatureSpread;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
-import net.minecraft.world.gen.feature.TwoLayerFeature;
+import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.foliageplacer.DarkOakFoliagePlacer;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -86,13 +92,17 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
@@ -102,6 +112,7 @@ import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFuncti
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
+import static com.chubbychump.hunterxhunter.common.generation.structures.HXHConfiguredStructures.CONFIGURED_WORLD_TREE;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
@@ -112,8 +123,44 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 //@SuppressWarnings("ALL")
 @Mod.EventBusSubscriber
 public class EventsHandling {
+
+    @SubscribeEvent
+    public void addDimensionalSpacing(final WorldEvent.Load event) {
+        if(event.getWorld() instanceof ServerWorld){
+            ServerWorld serverWorld = (ServerWorld)event.getWorld();
+
+            /*
+             * Skip Terraforged's chunk generator as they are a special case of a mod locking down their chunkgenerator.
+             * They will handle your structure spacing for your if you add to WorldGenRegistries.NOISE_GENERATOR_SETTINGS in your structure's registration.
+             * This here is done with reflection as this tutorial is not about setting up and using Mixins.
+             * If you are using mixins, you can call the codec method with an invoker mixin instead of using reflection.
+             */
+            try {
+                if(GETCODEC_METHOD == null) GETCODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "codec");
+                ResourceLocation cgRL = Registry.CHUNK_GENERATOR_CODEC.getKey((Codec<? extends ChunkGenerator>) GETCODEC_METHOD.invoke(serverWorld.getChunkProvider().generator));
+                if(cgRL != null && cgRL.getNamespace().equals("terraforged")) return;
+            }
+            catch(Exception e){
+                LOGGER.error("Structure stuff didn't work");
+            }
+
+            /*
+             * putIfAbsent so people can override the spacing with dimension datapacks themselves if they wish to customize spacing more precisely per dimension.
+             * Requires AccessTransformer  (see resources/META-INF/accesstransformer.cfg)
+             *
+             * NOTE: if you add per-dimension spacing configs, you can't use putIfAbsent as WorldGenRegistries.NOISE_GENERATOR_SETTINGS in FMLCommonSetupEvent
+             * already added your default structure spacing to some dimensions. You would need to override the spacing with .put(...)
+             * And if you want to do dimension blacklisting, you need to remove the spacing entry entirely from the map below to prevent generation safely.
+             */
+            Map<Structure<?>, StructureSeparationSettings> tempMap = serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_;
+            tempMap.putIfAbsent(WORLD_TREE_STRUCTURE.get(), DimensionStructuresSettings.field_236191_b_.get(WORLD_TREE_STRUCTURE.get()));
+            serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
+        }
+    }
+
     @SubscribeEvent
     public static void biomeGeneration(BiomeLoadingEvent event) {
+        event.getGeneration().getStructures().add(() -> CONFIGURED_WORLD_TREE);
         event.getGeneration().getFeatures(GenerationStage.Decoration.UNDERGROUND_ORES).add(() -> ORE_AURA.get().withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, AURA_STONE.get().getDefaultState(), 4)));
         if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
             LOGGER.info("adding feature to world tree biome");
@@ -188,6 +235,13 @@ public class EventsHandling {
             event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "greedisland"), new GreedIslandProvider());
             LOGGER.info("Attached capability to player with ID# "+event.getObject().getUniqueID());
         }
+    }
+
+    @SubscribeEvent
+    public static void registerStructures(RegistryEvent.Register<Structure<?>> event)
+    {
+        //RegistryHandler.setupStructures();
+//        Registry.registerConfiguredStructures();
     }
 
     @SubscribeEvent

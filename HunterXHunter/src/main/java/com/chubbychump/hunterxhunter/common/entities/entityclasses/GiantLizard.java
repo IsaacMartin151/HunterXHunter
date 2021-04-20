@@ -64,8 +64,7 @@ public class GiantLizard extends AnimalEntity {
         super(p_i50247_1_, p_i50247_2_);
         this.jumpController = new GiantLizard.JumpHelperController(this);
         this.moveController = new GiantLizard.MoveHelperController(this);
-        this.setMovementSpeed(0.0D);
-        this.setCustomName(ITextComponent.getTextComponentOrEmpty("Giant Lizard"));
+        this.setMovementSpeed(0.1D);
     }
 
     protected void registerGoals() {
