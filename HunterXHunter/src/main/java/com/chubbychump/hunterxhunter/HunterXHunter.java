@@ -14,8 +14,6 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
 import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
-import com.chubbychump.hunterxhunter.common.generation.structures.HXHConfiguredStructures;
-import com.chubbychump.hunterxhunter.common.potions.BloodLustRecipe;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
@@ -40,10 +38,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -240,18 +236,10 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).5F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
 
-
-        //RegistryHandler.setupStructures();
-
         //BrewingRecipeRegistry.addRecipe(new BloodLustRecipe());
 
-//        event.enqueueWork(() -> {
-//            RegistryHandler.setupStructures();
-//            HXHConfiguredStructures.registerConfiguredStructures();
-//        });
-
         RegistryHandler.setupStructures();
-        HXHConfiguredStructures.registerConfiguredStructures();
+        RegistryHandler.registerConfiguredStructures();
 
         BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(SPIDER_EAGLE_KEY, 10));
         BiomeDictionary.addTypes(SPIDER_EAGLE_KEY, BiomeDictionary.Type.SPARSE);
