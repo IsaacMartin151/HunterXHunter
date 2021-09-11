@@ -112,7 +112,6 @@ import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFuncti
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
 import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
-import static com.chubbychump.hunterxhunter.common.generation.structures.HXHConfiguredStructures.CONFIGURED_WORLD_TREE;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
@@ -160,16 +159,22 @@ public class EventsHandling {
 
     @SubscribeEvent
     public static void biomeGeneration(BiomeLoadingEvent event) {
-        event.getGeneration().getStructures().add(() -> CONFIGURED_WORLD_TREE);
+        //event.getGeneration().getStructures().add(() -> CONFIGURED_WORLD_TREE);
         event.getGeneration().getFeatures(GenerationStage.Decoration.UNDERGROUND_ORES).add(() -> ORE_AURA.get().withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, AURA_STONE.get().getDefaultState(), 4)));
+
+//        if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
+//            LOGGER.info("adding feature to world tree biome");
+//            event.getGeneration().getFeatures(GenerationStage.Decoration.VEGETAL_DECORATION).add(WORLD_TREE.get().withConfiguration(new BaseWorldTreeFeatureConfig.Builder(
+//                    new SimpleBlockStateProvider(Blocks.OAK_LOG.getDefaultState()),
+//                    new SimpleBlockStateProvider(Blocks.OAK_LEAVES.getDefaultState()),
+//                    new DarkOakFoliagePlacer(FeatureSpread.func_242252_a(0), FeatureSpread.func_242252_a(0)),
+//                    new WorldTreeTrunkPlacer(31, 23, 23),
+//                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
+//        }
+
         if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
             LOGGER.info("adding feature to world tree biome");
-            event.getGeneration().getFeatures(GenerationStage.Decoration.VEGETAL_DECORATION).add(WORLD_TREE.get().withConfiguration(new BaseWorldTreeFeatureConfig.Builder(
-                    new SimpleBlockStateProvider(Blocks.OAK_LOG.getDefaultState()),
-                    new SimpleBlockStateProvider(Blocks.OAK_LEAVES.getDefaultState()),
-                    new DarkOakFoliagePlacer(FeatureSpread.func_242252_a(0), FeatureSpread.func_242252_a(0)),
-                    new WorldTreeTrunkPlacer(31, 23, 23),
-                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
+            event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> WORLD_TREE_FEATURE_CONFIG);
         }
 
         if (event.getName().toString().equals(SPIDER_EAGLE_BIOME.getId().toString())) {
@@ -521,6 +526,16 @@ public class EventsHandling {
             event.setCanceled(true);
         }
      }
+
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void renderPlayer(RenderPlayerEvent event) {
+        if (event.getPlayer().getHeldItemMainhand().getItem() instanceof ) {
+            event.setCanceled(true);
+        }
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

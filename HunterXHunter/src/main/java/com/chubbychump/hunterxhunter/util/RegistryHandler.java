@@ -11,10 +11,13 @@ import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpPr
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeFeature;
-import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.HXHConfiguredStructures;
+import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.ComponentTrunk;
+import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeConfig2;
+import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeFeature2;
 import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeStructure;
 import com.chubbychump.hunterxhunter.common.items.ItemBase;
 import com.chubbychump.hunterxhunter.common.items.StaffBase;
+import com.chubbychump.hunterxhunter.common.items.devtools.Clearing;
 import com.chubbychump.hunterxhunter.common.items.thehundred.crafting.*;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.PotatoSoup;
 import com.chubbychump.hunterxhunter.common.items.thehundred.food.RoastedPorkDish;
@@ -63,14 +66,16 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeAmbience;
 import net.minecraft.world.biome.BiomeGenerationSettings;
 import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.carver.WorldCarver;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.IglooPieces;
-import net.minecraft.world.gen.feature.structure.IglooStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacerType;
+import net.minecraft.world.gen.placement.ChanceConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
@@ -83,7 +88,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
@@ -163,9 +167,15 @@ public class RegistryHandler {
         });
     }
 
-//    public static IStructurePieceType registerPiece(String name, IStructurePieceType piece) {
-//        return Registry.register(Registry.STRUCTURE_PIECE, name, piece);
-//    }
+    public static void registerConfiguredStructures() {
+        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
+        //Registry.register(registry, new ResourceLocation(MOD_ID, "wttrunk"), CONFIGURED_WORLD_TREE);
+        //FlatGenerationSettings.STRUCTURES.put(WORLD_TREE_STRUCTURE.get(), CONFIGURED_WORLD_TREE);
+    }
+
+    public static IStructurePieceType registerPiece(String name, IStructurePieceType piece) {
+        return Registry.register(Registry.STRUCTURE_PIECE, name, piece);
+    }
 
     public static void registerCriteriaTriggers() {
         CriteriaTriggers.register(AbilityUseTrigger.INSTANCE);
@@ -367,6 +377,9 @@ public class RegistryHandler {
     public static final RegistryObject<Item> CARD_99 = ITEMS.register("card_99", ItemBase::new);
     public static final RegistryObject<Item> CARD_100 = ITEMS.register("card_100", ItemBase::new);
 
+    //Dev Tools
+    public static final RegistryObject<Item> CLEARING_TOOL = ITEMS.register("clearing", Clearing::new);
+
     //Blocks
     public static final RegistryObject<Block> RUBY_BLOCK = BLOCKS.register("ruby_block", RubyBlock::new);
     public static final RegistryObject<Block> CHESS_TABLE_BLOCK = BLOCKS.register("chess_table_block", ChessTable::new);
@@ -498,12 +511,23 @@ public class RegistryHandler {
     //FoliagePlacer
 
     //Features
+    public static final Feature<WorldTreeConfig2> WORLD_TREE_FEATURE = new WorldTreeFeature2();
+
+    //Configured Features
+    public static final ConfiguredFeature<?, ?> WORLD_TREE_FEATURE_CONFIG = WORLD_TREE_FEATURE
+            .withConfiguration(new WorldTreeConfig2(23, 4, 65, 0.05))
+            .withPlacement(Placement.CHANCE.configure(new ChanceConfig(20)));
+
+    //Older feature stuff here
     public static final RegistryObject<Feature<BaseWorldTreeFeatureConfig>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeFeatureConfig.CODEC));
     public static final RegistryObject<Feature<OreFeatureConfig>> ORE_AURA = FEATURES.register("aura_stone", () -> new OreFeature(OreFeatureConfig.CODEC));
 
+
+
     //Structures
     public static final RegistryObject<Structure<NoFeatureConfig>> WORLD_TREE_STRUCTURE = STRUCTURES.register("wttrunk",() -> new WorldTreeStructure(NoFeatureConfig.field_236558_a_));
-    //public static final IStructurePieceType WTTRUNK = RegistryHandler.registerPiece(new ResourceLocation(MOD_ID, "wttrunk").toString(), ComponentTrunk::new);
+    //public static final StructureFeature<?, ?> CONFIGURED_WORLD_TREE = WORLD_TREE_STRUCTURE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
+    public static final IStructurePieceType WTTRUNK = RegistryHandler.registerPiece(new ResourceLocation(MOD_ID, "wttrunk").toString(), ComponentTrunk::new);
 
     //Carver
     public static final RegistryObject<WorldCarver<ProbabilityConfig>> SPIDER_EAGLE_CARVER = CARVER.register("spider_eagle_carver", () -> new SpiderEagleCarver(ProbabilityConfig.CODEC, 256));
