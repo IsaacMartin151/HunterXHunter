@@ -25,7 +25,6 @@ public class GravityMinerals extends Feature<WorldTreeConfig2> {
 
             int x = pos.getX();
             int z = pos.getZ();
-            ElderGuardianRenderer
             int y = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
             HunterXHunter.LOGGER.info("Placing tree at x: "+x+", y: "+y+", z: "+z);
             int width = config.getTrunkRadius();
