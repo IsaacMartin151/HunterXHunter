@@ -187,17 +187,23 @@ public class HunterXHunter {
 
         GlobalEntityTypeAttributes.put(AMONG_US_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
         GlobalEntityTypeAttributes.put(OBAMA_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 15.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
         GlobalEntityTypeAttributes.put(MIDDLE_FINGER_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
         GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), MobEntity.func_233666_p_()
@@ -279,14 +285,13 @@ public class HunterXHunter {
         }
     }
 
-    public static void registerPropertyOverride() {
-        ItemModelsProperties.registerProperty(itemVariants, new ResourceLocation("activated"), ItemVariants::getFullnessPropertyOverride);
-        // use lambda function to link the NBT fullness value to a suitable property override value
-    }
+//    public static void registerPropertyOverride() {
+//        ItemModelsProperties.registerProperty(itemVariants, new ResourceLocation("activated"), ItemVariants::getFullnessPropertyOverride);
+//        // use lambda function to link the NBT fullness value to a suitable property override value
+//    }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        event.enqueueWork(HunterXHunter::registerPropertyOverride);
-
+        //event.enqueueWork(HunterXHunter::registerPropertyOverride);
 
         RenderingRegistry.registerEntityRenderingHandler(AMONG_US_ENTITY.get(), AmongUsRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(OBAMA_ENTITY.get(), ObamaRenderer::new);

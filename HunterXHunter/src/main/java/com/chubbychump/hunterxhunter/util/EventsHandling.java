@@ -184,6 +184,7 @@ public class EventsHandling {
 //                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
 //        }
 
+        event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> GRAVITY_MINERALS_FEATURE_CONFIG);
         if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
             LOGGER.info("adding feature to world tree biome");
             event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> WORLD_TREE_FEATURE_CONFIG);
@@ -539,14 +540,19 @@ public class EventsHandling {
         }
      }
 
-    @SubscribeEvent
-    public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
-        itemVariants = new ItemVariants();
-        itemVariants.setRegistryName("hunterxhunter_item_variants_registry_name");
-        itemRegisterEvent.getRegistry().register(itemVariants);
-    }
+     public static void potionAdded(PotionEvent.PotionAddedEvent event) {
+        if (event.getPotionEffect().getPotion() == BLOODLUST_EFFECT.get()) {
+            Minecraft.getInstance().player.playSound(AMOOGUS.get(), 1, 1);
+        }
+     }
 
-    //TODO: Sync item with server. Player is querying server, but server never gets updated
+//    @SubscribeEvent
+//    public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+//        itemVariants = new ItemVariants();
+//        itemVariants.setRegistryName("hunterxhunter_item_variants_registry_name");
+//        itemRegisterEvent.getRegistry().register(itemVariants);
+//    }
+
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent event) {

@@ -11,6 +11,8 @@ import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpPr
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeFeature;
+import com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMinerals;
+import com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig;
 import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.ComponentTrunk;
 import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeConfig2;
 import com.chubbychump.hunterxhunter.common.generation.structures.worldtree.WorldTreeFeature2;
@@ -197,6 +199,10 @@ public class RegistryHandler {
     public static final RegistryObject<Potion> BLOODLUST_POTION = POTION_TYPES.register("bloodlust_potion", () -> new BloodLust(new EffectInstance(BLOODLUST_EFFECT.get())));
 
     //Sounds
+    public static final RegistryObject<SoundEvent> AMONG_US = SOUNDS.register("amongus", () -> new SoundEvent(new ResourceLocation(MOD_ID, "amongus")));
+    public static final RegistryObject<SoundEvent> AMOOGUS = SOUNDS.register("amoogus", () -> new SoundEvent(new ResourceLocation(MOD_ID, "amoogus")));
+    public static final RegistryObject<SoundEvent> ROLE_REVEAL = SOUNDS.register("rolereveal", () -> new SoundEvent(new ResourceLocation(MOD_ID, "rolereveal")));
+    public static final RegistryObject<SoundEvent> VENTING = SOUNDS.register("venting", () -> new SoundEvent(new ResourceLocation(MOD_ID, "venting")));
     public static final RegistryObject<SoundEvent> OSU = SOUNDS.register("osu", () -> new SoundEvent(new ResourceLocation(MOD_ID, "osu")));
     public static final RegistryObject<SoundEvent> COOKIECHAN = SOUNDS.register("cookiechan", () -> new SoundEvent(new ResourceLocation(MOD_ID, "cookiechan")));
     public static final RegistryObject<SoundEvent> WORLD_OF_ADVENTURES = SOUNDS.register("worldofadventures", () -> new SoundEvent(new ResourceLocation(MOD_ID, "worldofadventures")));
@@ -542,11 +548,15 @@ public class RegistryHandler {
 
     //Features
     public static final Feature<WorldTreeConfig2> WORLD_TREE_FEATURE = new WorldTreeFeature2();
+    public static final Feature<GravityMineralsConfig> GRAVITY_MINERALS_FEATURE = new GravityMinerals();
 
     //Configured Features
     public static final ConfiguredFeature<?, ?> WORLD_TREE_FEATURE_CONFIG = WORLD_TREE_FEATURE
             .withConfiguration(new WorldTreeConfig2(23, 4, 65, 0.05))
             .withPlacement(Placement.CHANCE.configure(new ChanceConfig(20)));
+    public static final ConfiguredFeature<?, ?> GRAVITY_MINERALS_FEATURE_CONFIG = GRAVITY_MINERALS_FEATURE
+            .withConfiguration(new GravityMineralsConfig(4, 18, 18))
+            .withPlacement(Placement.CHANCE.configure(new ChanceConfig(10)));
 
     //Older feature stuff here
     public static final RegistryObject<Feature<BaseWorldTreeFeatureConfig>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeFeatureConfig.CODEC));

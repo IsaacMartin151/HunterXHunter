@@ -1,43 +1,35 @@
 package com.chubbychump.hunterxhunter.common.generation.structures.floating;
 
-import com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 
 public class GravityMineralsConfig implements IFeatureConfig {
-        public static final Codec<com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.INT.fieldOf("trunk_radius").forGetter(com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig::getTrunkRadius),
-                Codec.INT.fieldOf("branch_count").forGetter(com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig::getBranchCount),
-                Codec.INT.fieldOf("tree_height").forGetter(com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig::getTreeHeight),
-                Codec.DOUBLE.fieldOf("tall_chance").forGetter(com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig::getTallChance)
-        ).apply(instance, com.chubbychump.hunterxhunter.common.generation.structures.floating.GravityMineralsConfig::new));
+        public static final Codec<GravityMineralsConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("tube_radius").forGetter(GravityMineralsConfig::getTubeRadius),
+                Codec.INT.fieldOf("shape_radius_a").forGetter(GravityMineralsConfig::getShapeRadiusA),
+                Codec.INT.fieldOf("shape_radius_b").forGetter(GravityMineralsConfig::getShapeRadiusB)
+        ).apply(instance, GravityMineralsConfig::new));
 
-        private final int trunkRadius;
-        private final int branchCount;
-        private final int treeHeight;
-        private final double tallChance;
+        private final int tubeRadius;
+        private final int shapeRadiusA;
+        private final int shapeRadiusB;
 
-        public GravityMineralsConfig(int trunkRadius, int branchCount, int treeHeight, double tallChance) {
-            this.trunkRadius = trunkRadius;
-            this.branchCount = branchCount;
-            this.treeHeight = treeHeight;
-            this.tallChance = tallChance;
+        public GravityMineralsConfig(int tubeRadius, int shapeRadiusA, int shapeRadiusB) {
+            this.tubeRadius = tubeRadius;
+            this.shapeRadiusA = shapeRadiusA;
+            this.shapeRadiusB = shapeRadiusB;
         }
 
-        public int getTrunkRadius() {
-            return trunkRadius;
+        public int getTubeRadius() {
+            return tubeRadius;
         }
 
-        public int getBranchCount() {
-            return branchCount;
+        public int getShapeRadiusA() {
+            return shapeRadiusA;
         }
 
-        public int getTreeHeight() {
-            return treeHeight;
-        }
-
-        public double getTallChance() {
-            return tallChance;
+        public int getShapeRadiusB() {
+            return shapeRadiusB;
         }
 }
