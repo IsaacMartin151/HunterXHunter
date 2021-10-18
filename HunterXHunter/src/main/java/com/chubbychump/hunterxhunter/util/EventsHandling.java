@@ -7,6 +7,7 @@ import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
 import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
 import com.chubbychump.hunterxhunter.client.screens.PowerSelectScreen;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.AmongUs;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
@@ -18,8 +19,18 @@ import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvi
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
 import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.MiddleFinger;
+import com.chubbychump.hunterxhunter.common.entities.entityclasses.Obama;
+import com.chubbychump.hunterxhunter.common.entities.renderers.AmongUsRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.MiddleFingerRenderer;
+import com.chubbychump.hunterxhunter.common.entities.renderers.ObamaRenderer;
 import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
 import com.chubbychump.hunterxhunter.common.generation.WorldTreeTrunkPlacer;
+import com.chubbychump.hunterxhunter.common.items.ItemVariants;
+import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.AppearanceToggle;
+import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CAmongUs;
+import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CMiddleFinger;
+import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CObamiumPyramid;
 import com.chubbychump.hunterxhunter.common.items.thehundred.tools.PhantomStaff;
 import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
@@ -40,6 +51,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SettingsScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.GuardianRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -48,6 +60,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -104,8 +117,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
-import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
+import static com.chubbychump.hunterxhunter.HunterXHunter.*;
 import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
 import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.isaacCube;
@@ -172,6 +184,7 @@ public class EventsHandling {
 //                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
 //        }
 
+        event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> GRAVITY_MINERALS_FEATURE_CONFIG);
         if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
             LOGGER.info("adding feature to world tree biome");
             event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> WORLD_TREE_FEATURE_CONFIG);
@@ -527,15 +540,44 @@ public class EventsHandling {
         }
      }
 
+     public static void potionAdded(PotionEvent.PotionAddedEvent event) {
+        if (event.getPotionEffect().getPotion() == BLOODLUST_EFFECT.get()) {
+            Minecraft.getInstance().player.playSound(AMOOGUS.get(), 1, 1);
+        }
+     }
+
+//    @SubscribeEvent
+//    public static void onItemsRegistration(final RegistryEvent.Register<Item> itemRegisterEvent) {
+//        itemVariants = new ItemVariants();
+//        itemVariants.setRegistryName("hunterxhunter_item_variants_registry_name");
+//        itemRegisterEvent.getRegistry().register(itemVariants);
+//    }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent event) {
-        if (event.getPlayer().getHeldItemMainhand().getItem() instanceof ) {
-            event.setCanceled(true);
+        if (event.getPlayer().getHeldItemOffhand().getItem() instanceof AppearanceToggle) {
+            Item held = event.getPlayer().getHeldItemOffhand().getItem();
+            if (held instanceof CAmongUs) {
+                event.setCanceled(true);
+                AmongUsRenderer mongus = new AmongUsRenderer(event.getRenderer().getRenderManager());
+                mongus.render(new AmongUs(AMONG_US_ENTITY.get(), event.getPlayer().getEntityWorld()), event.getPlayer().rotationYaw, event.getPlayer().limbSwingAmount, event.getMatrixStack(), event.getBuffers(), 255);
+                //held.renderNewAppearance();
+            }
+            else if (held instanceof CObamiumPyramid) {
+                event.setCanceled(true);
+                ObamaRenderer bama = new ObamaRenderer(event.getRenderer().getRenderManager());
+                bama.render(new Obama(OBAMA_ENTITY.get(), event.getPlayer().getEntityWorld()), event.getPlayer().rotationYaw, event.getPlayer().limbSwingAmount, event.getMatrixStack(), event.getBuffers(), 255);
+                //held.renderNewAppearance();
+            }
+            else if (held instanceof CMiddleFinger) {
+                event.setCanceled(true);
+                MiddleFingerRenderer mf = new MiddleFingerRenderer(event.getRenderer().getRenderManager());
+                mf.render(new MiddleFinger(MIDDLE_FINGER_ENTITY.get(), event.getPlayer().getEntityWorld()), event.getPlayer().rotationYaw, event.getPlayer().limbSwingAmount, event.getMatrixStack(), event.getBuffers(), 255);
+                //held.renderNewAppearance();
+            }
         }
     }
-
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

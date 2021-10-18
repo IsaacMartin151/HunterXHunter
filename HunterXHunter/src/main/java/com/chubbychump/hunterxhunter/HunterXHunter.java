@@ -14,6 +14,8 @@ import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.common.core.IProxy;
 import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.common.entities.renderers.*;
+import com.chubbychump.hunterxhunter.common.items.ItemVariants;
+import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.AppearanceToggle;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
@@ -34,6 +36,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
@@ -64,6 +67,7 @@ public class HunterXHunter {
     public static final String MOD_ID = "hunterxhunter";
     public static IProxy proxy = new IProxy() {};
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
+    public static ItemVariants itemVariants;
 
     //TODO: Chess board - Crafting table plus 4 bonemeal plus 4 inksac
     //TODO: Villager character that beats your ass if you lose at chess, takes an entry fee
@@ -181,6 +185,27 @@ public class HunterXHunter {
 
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
 
+        GlobalEntityTypeAttributes.put(AMONG_US_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
+                .create());
+
+        GlobalEntityTypeAttributes.put(OBAMA_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 15.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
+                .create());
+
+        GlobalEntityTypeAttributes.put(MIDDLE_FINGER_ENTITY.get(), MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
+                .create());
+
         GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 1.0D)
                 .createMutableAttribute(Attributes.FLYING_SPEED, 1.0D)
@@ -260,7 +285,17 @@ public class HunterXHunter {
         }
     }
 
+//    public static void registerPropertyOverride() {
+//        ItemModelsProperties.registerProperty(itemVariants, new ResourceLocation("activated"), ItemVariants::getFullnessPropertyOverride);
+//        // use lambda function to link the NBT fullness value to a suitable property override value
+//    }
+
     private void doClientStuff(final FMLClientSetupEvent event) {
+        //event.enqueueWork(HunterXHunter::registerPropertyOverride);
+
+        RenderingRegistry.registerEntityRenderingHandler(AMONG_US_ENTITY.get(), AmongUsRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(OBAMA_ENTITY.get(), ObamaRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(MIDDLE_FINGER_ENTITY.get(), MiddleFingerRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SHIAPOUF_ENTITY.get(), ShiapoufRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(YOUPI_ENTITY.get(), YoupiRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(NEFERPITOU_ENTITY.get(), NeferpitouRenderer::new);
