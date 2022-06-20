@@ -1,9 +1,8 @@
 package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
+import com.chubbychump.hunterxhunter.common.advancements.*;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
-import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
-import com.chubbychump.hunterxhunter.common.advancements.AbilityUseTrigger;
 import com.chubbychump.hunterxhunter.common.blocks.*;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
 import com.chubbychump.hunterxhunter.common.entities.projectiles.EmitterBaseProjectile;
@@ -183,6 +182,14 @@ public class RegistryHandler {
     public static void registerCriteriaTriggers() {
         CriteriaTriggers.register(AbilityUseTrigger.INSTANCE);
         CriteriaTriggers.register(AbilityMaxTrigger.INSTANCE);
+        CriteriaTriggers.register(CardCollectorTrigger.INSTANCE);
+        CriteriaTriggers.register(AllCommonTrigger.INSTANCE);
+        CriteriaTriggers.register(AllUncommonTrigger.INSTANCE);
+        CriteriaTriggers.register(AllEpicTrigger.INSTANCE);
+        CriteriaTriggers.register(AllLegendaryTrigger.INSTANCE);
+        CriteriaTriggers.register(HalfwayTrigger.INSTANCE);
+        CriteriaTriggers.register(SingleLegendaryTrigger.INSTANCE);
+        //CriteriaTriggers.register(AbilityMaxTrigger.INSTANCE);
     }
 
     //Particles

@@ -80,6 +80,10 @@ public class HunterXHunter {
 
     //Add Neferpitou animation overlay for BloodLust
 
+    //Custom recipe screen for cooking (Pork chops, wheat, sugar cane)
+    //Transmuter - Kennen E? Look at spot, become ball of lightning and zoom to it
+    //Advancements - pop up on screen, global announcements for Card advancements
+
     //Add custom screen for every type? Kinda an update screen for current nen capacity + abilities
 
     //Create animation for adding card to book

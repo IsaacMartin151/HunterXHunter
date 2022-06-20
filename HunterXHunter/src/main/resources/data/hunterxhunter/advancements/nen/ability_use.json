@@ -7,7 +7,7 @@
     "description": "Used a Nen Ability",
     "announce_to_chat": true
   },
-  "parent": "hunterxhunter:crystal_nen",
+  "parent": "hunterxhunter:nen/crystal_nen",
   "criteria": {
     "trigger_1": {
       "trigger": "hunterxhunter:ability_use"
