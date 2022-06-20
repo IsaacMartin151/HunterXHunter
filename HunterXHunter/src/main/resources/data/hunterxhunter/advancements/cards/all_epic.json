@@ -1,0 +1,17 @@
+{
+  "display": {
+    "icon": {
+      "item": "hunterxhunter:card_81"
+    },
+    "title": "Wisconsin Gaming",
+    "description": "Acquire all epic cards",
+    "frame": "goal",
+    "announce_to_chat": true
+  },
+  "parent": "hunterxhunter:cards/card_collector",
+  "criteria": {
+    "trigger_1": {
+      "trigger": "hunterxhunter:all_epic"
+    }
+  }
+}

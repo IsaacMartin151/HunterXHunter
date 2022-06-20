@@ -5,6 +5,8 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
+import com.chubbychump.hunterxhunter.client.screens.AchievementScreen;
+import com.chubbychump.hunterxhunter.client.screens.AdvancementCustomToast;
 import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
 import com.chubbychump.hunterxhunter.client.screens.PowerSelectScreen;
 import com.chubbychump.hunterxhunter.common.entities.entityclasses.AmongUs;
@@ -49,7 +51,9 @@ import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SettingsScreen;
+import net.minecraft.client.gui.screen.inventory.CraftingScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.toasts.AdvancementToast;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.GuardianRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -101,6 +105,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -184,7 +189,9 @@ public class EventsHandling {
 //                    new TwoLayerFeature(0, 0, 0)).build()).withChance(10).feature);
 //        }
 
-        event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> GRAVITY_MINERALS_FEATURE_CONFIG);
+        //event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> GRAVITY_MINERALS_FEATURE_CONFIG);
+
+
         if (event.getName().toString().equals(WORLD_TREE_BIOME.getId().toString())) {
             LOGGER.info("adding feature to world tree biome");
             event.getGeneration().getFeatures(GenerationStage.Decoration.SURFACE_STRUCTURES).add(() -> WORLD_TREE_FEATURE_CONFIG);
@@ -194,6 +201,15 @@ public class EventsHandling {
             LOGGER.info("adding carver to spider eagle biome");
             event.getGeneration().getCarvers(GenerationStage.Carving.AIR).add(() -> SPIDER_EAGLE_CARVER.get().func_242761_a(new ProbabilityConfig(.9f)));
         }
+    }
+
+    @SubscribeEvent
+    public static void advancement(AdvancementEvent event) {
+        //event.getPlayer().getGameProfile().getProperties().
+        //TODO: get player skin and achievement description and show that to everyone
+        //event.getPlayer().getServer().getPlayerList().getPlayerByUUID(asdf).container.
+        AdvancementCustomToast joe = new AdvancementCustomToast(event.getAdvancement(), event.getPlayer());
+        Minecraft.getInstance().getToastGui().add(joe);
     }
 
     @SubscribeEvent
@@ -253,13 +269,6 @@ public class EventsHandling {
             event.addCapability(new ResourceLocation(HunterXHunter.MOD_ID, "greedisland"), new GreedIslandProvider());
             LOGGER.info("Attached capability to player with ID# "+event.getObject().getUniqueID());
         }
-    }
-
-    @SubscribeEvent
-    public static void registerStructures(RegistryEvent.Register<Structure<?>> event)
-    {
-        //RegistryHandler.setupStructures();
-//        Registry.registerConfiguredStructures();
     }
 
     @SubscribeEvent
@@ -838,9 +847,9 @@ public class EventsHandling {
                     updatePlayer = true;
                 }
                 if (nenPower2.isPressed()) {
-                    if (yo.getNenType() != 0) {
-                        Minecraft.getInstance().displayGuiScreen(PowerSelectScreen.instance);
-                    }
+//                    if (yo.getNenType() != 0) {
+//                        Minecraft.getInstance().displayGuiScreen(PowerSelectScreen.instance);
+//                    }
                 }
                 if (devTesting.isPressed()) {
                     Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);

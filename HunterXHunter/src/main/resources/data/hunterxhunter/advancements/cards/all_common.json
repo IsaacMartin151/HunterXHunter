@@ -1,0 +1,17 @@
+{
+  "display": {
+    "icon": {
+      "item": "hunterxhunter:card_1"
+    },
+    "title": "Commoner",
+    "description": "Acquire all common cards",
+    "frame": "goal",
+    "announce_to_chat": true
+  },
+  "parent": "hunterxhunter:cards/card_collector",
+  "criteria": {
+    "trigger_1": {
+      "trigger": "hunterxhunter:all_common"
+    }
+  }
+}

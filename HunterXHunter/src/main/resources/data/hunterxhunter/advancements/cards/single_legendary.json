@@ -4,13 +4,13 @@
       "item": "minecraft:bread"
     },
     "title": "Maxed Out",
-    "description": "Reach the highest Nen level possible",
+    "description": "Collect your first legendary card",
     "announce_to_chat": true
   },
-  "parent": "hunterxhunter:ability_use",
+  "parent": "hunterxhunter:cards/card_collector",
   "criteria": {
     "trigger_1": {
-      "trigger": "hunterxhunter:ability_max"
+      "trigger": "hunterxhunter:single_legendary"
     }
   }
 }
