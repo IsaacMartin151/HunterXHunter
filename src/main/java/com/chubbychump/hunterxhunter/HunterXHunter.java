@@ -1,22 +1,20 @@
 package com.chubbychump.hunterxhunter;
 
-import com.chubbychump.hunterxhunter.client.core.handler.ClientProxy;
+import com.chubbychump.hunterxhunter.client.core.handler.ClientInit;
 import com.chubbychump.hunterxhunter.client.gui.ContainerScreenGreedIsland;
 import com.chubbychump.hunterxhunter.client.rendering.ShiftyTERenderer;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookStorage;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthStorage;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenStorage;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.core.IProxy;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
-import com.chubbychump.hunterxhunter.common.entities.renderers.*;
-import com.chubbychump.hunterxhunter.common.items.ItemVariants;
-import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.AppearanceToggle;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
+import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
+import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookStorage;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthStorage;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenStorage;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
+import com.chubbychump.hunterxhunter.server.entities.renderers.*;
+import com.chubbychump.hunterxhunter.server.items.ItemVariants;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
 import com.chubbychump.hunterxhunter.util.VillagerUtil;
 import net.minecraft.client.Minecraft;
@@ -35,15 +33,13 @@ import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -58,14 +54,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
 @Mod("hunterxhunter")
 public class HunterXHunter {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "hunterxhunter";
-    public static IProxy proxy = new IProxy() {};
     private static final UUID MODIFIER_ID = UUID.fromString("81f27f52-c8bb-403a-a1a4-b356d2f7a0f0");
     public static ItemVariants itemVariants;
 
@@ -172,16 +167,17 @@ public class HunterXHunter {
 
 
     public HunterXHunter() {
-        DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> proxy = new ClientProxy());
-        proxy.registerHandlers();        // Register the setup method for modloading
+        ClientInit clientInit = new ClientInit();
+
+        clientInit.initClient();
         RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupServer);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
+    private void setupServer(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
         CapabilityManager.INSTANCE.register(INenUser.class, new NenStorage(), () -> new NenUser());
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
@@ -294,7 +290,7 @@ public class HunterXHunter {
 //        // use lambda function to link the NBT fullness value to a suitable property override value
 //    }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
+    private void setupClient(final FMLClientSetupEvent event) {
         //event.enqueueWork(HunterXHunter::registerPropertyOverride);
 
         RenderingRegistry.registerEntityRenderingHandler(AMONG_US_ENTITY.get(), AmongUsRenderer::new);

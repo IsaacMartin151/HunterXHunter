@@ -1,12 +1,9 @@
 package com.chubbychump.hunterxhunter.client.screens;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -14,20 +11,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
-
-import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
 @OnlyIn(Dist.CLIENT)
 public class AchievementScreen extends Screen {

@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.packets;
 
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.CameraEntity;
 import com.chubbychump.hunterxhunter.client.screens.CameraScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-import static com.chubbychump.hunterxhunter.common.items.CardFunctions.getCorrespondingStack;
+import static com.chubbychump.hunterxhunter.server.items.CardFunctions.getCorrespondingStack;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.CAMERA_ENTITY;
 
 public class SyncTransformCardPacket {

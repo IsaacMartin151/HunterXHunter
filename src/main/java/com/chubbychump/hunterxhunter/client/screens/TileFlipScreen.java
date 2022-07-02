@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.client.screens;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -23,8 +23,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Random;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;

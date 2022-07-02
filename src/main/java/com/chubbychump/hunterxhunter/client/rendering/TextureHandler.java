@@ -1,21 +1,12 @@
 package com.chubbychump.hunterxhunter.client.rendering;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-import org.bytedeco.opencv.opencv_core.IplImage;
-import sun.awt.image.PixelConverter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
 
 public class TextureHandler {
     private final TextureManager textureManager;

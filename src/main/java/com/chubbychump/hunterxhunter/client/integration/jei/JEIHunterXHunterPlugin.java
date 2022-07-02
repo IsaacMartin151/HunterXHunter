@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.client.integration.jei;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.recipes.VatRecipes;
+import com.chubbychump.hunterxhunter.server.recipes.VatRecipes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;

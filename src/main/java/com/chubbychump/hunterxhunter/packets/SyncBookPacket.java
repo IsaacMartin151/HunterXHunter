@@ -2,16 +2,9 @@ package com.chubbychump.hunterxhunter.packets;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
@@ -21,12 +14,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.function.Supplier;
 
-import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.OPEN_BOOK;
+import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 
 public class SyncBookPacket {
 

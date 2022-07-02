@@ -1,27 +1,22 @@
 package com.chubbychump.hunterxhunter.client.rendering;
 
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.tileentities.ShiftyTileEntity;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.tileentities.ShiftyTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.OptionalDouble;
 
 @OnlyIn(Dist.CLIENT)
 public class ShiftyTERenderer extends TileEntityRenderer<ShiftyTileEntity> {
@@ -47,7 +42,7 @@ public class ShiftyTERenderer extends TileEntityRenderer<ShiftyTileEntity> {
      */
     @Override
     public void render(ShiftyTileEntity tileEntityMBE21, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderBuffers, int combinedLight, int combinedOverlay) {
-        if (NenUser.getFromPlayer(Minecraft.getInstance().player).getGyo()) {
+        if (NenUser.getFromPlayer(Minecraft.getInstance().player).isGyo()) {
             renderWireframe(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay);
             //case QUADS: RenderQuads.renderCubeUsingQuads(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;
             //case BLOCKQUADS: RenderModelHourglass.renderUsingModel(tileEntityMBE21, partialTicks, matrixStack, renderBuffers, combinedLight, combinedOverlay); break;

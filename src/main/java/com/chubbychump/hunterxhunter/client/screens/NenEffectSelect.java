@@ -3,8 +3,8 @@ package com.chubbychump.hunterxhunter.client.screens;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.gui.Power;
 import com.chubbychump.hunterxhunter.client.gui.select.*;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -13,9 +13,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 
 @OnlyIn(Dist.CLIENT)
 public class NenEffectSelect extends Screen {
@@ -253,7 +250,7 @@ public class NenEffectSelect extends Screen {
     public void onClose() {
         HunterXHunter.LOGGER.info("Setting nen type to "+(selectedPower+1));
         INenUser yo = NenUser.getFromPlayer(minecraft.player);
-        yo.setType(selectedPower + 1);
+        yo.setNenType(selectedPower + 1);
         updateServer(minecraft.player, yo);
     }
 
@@ -268,7 +265,7 @@ public class NenEffectSelect extends Screen {
         }
         HunterXHunter.LOGGER.info("Setting nen type to "+(selectedPower+1));
         INenUser yo = NenUser.getFromPlayer(minecraft.player);
-        yo.setType(selectedPower + 1);
+        yo.setNenType(selectedPower + 1);
         updateServer(minecraft.player, yo);
         return true;
     }

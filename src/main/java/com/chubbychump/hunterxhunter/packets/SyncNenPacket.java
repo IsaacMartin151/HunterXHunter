@@ -1,21 +1,15 @@
 package com.chubbychump.hunterxhunter.packets;
 
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.advancements.AbilityMaxTrigger;
-import com.chubbychump.hunterxhunter.common.advancements.AbilityUseTrigger;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.advancements.AbilityMaxTrigger;
+import com.chubbychump.hunterxhunter.server.advancements.AbilityUseTrigger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;

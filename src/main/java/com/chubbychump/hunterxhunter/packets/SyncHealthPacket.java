@@ -1,8 +1,8 @@
 package com.chubbychump.hunterxhunter.packets;
 
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

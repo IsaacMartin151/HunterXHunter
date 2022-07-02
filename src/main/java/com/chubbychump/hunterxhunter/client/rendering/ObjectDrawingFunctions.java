@@ -1,38 +1,30 @@
 package com.chubbychump.hunterxhunter.client.rendering;
 
-import static com.chubbychump.hunterxhunter.client.rendering.AddVertices.addvertices;
-import static net.minecraft.util.math.MathHelper.cos;
-import static net.minecraft.util.math.MathHelper.sin;
-import static org.lwjgl.opengl.GL11.*;
-
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper.BotaniaShader;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.*;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.*;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import sun.jvm.hotspot.debugger.cdbg.LoadObject;
 
-
-
-import java.awt.image.BufferedImage;
+import static com.chubbychump.hunterxhunter.client.rendering.AddVertices.addvertices;
+import static net.minecraft.util.math.MathHelper.cos;
+import static net.minecraft.util.math.MathHelper.sin;
+import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
 public class ObjectDrawingFunctions {

@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.client.integration.jei;
 
-import com.chubbychump.hunterxhunter.common.recipes.IVatRecipe;
+import com.chubbychump.hunterxhunter.server.recipes.IVatRecipe;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mezz.jei.api.constants.VanillaTypes;

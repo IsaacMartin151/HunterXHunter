@@ -2,44 +2,37 @@ package com.chubbychump.hunterxhunter.util;
 
 import com.chubbychump.hunterxhunter.Config;
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.core.helper.ShaderHelper;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterDeathScreen;
 import com.chubbychump.hunterxhunter.client.gui.HunterXHunterMainMenu;
-import com.chubbychump.hunterxhunter.client.screens.AchievementScreen;
 import com.chubbychump.hunterxhunter.client.screens.AdvancementCustomToast;
 import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
-import com.chubbychump.hunterxhunter.client.screens.PowerSelectScreen;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.AmongUs;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.CameraEntity;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.AmongUs;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.CameraEntity;
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler;
-import com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.IMoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.common.abilities.heartstuff.MoreHealthProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.MiddleFinger;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.Obama;
-import com.chubbychump.hunterxhunter.common.entities.renderers.AmongUsRenderer;
-import com.chubbychump.hunterxhunter.common.entities.renderers.MiddleFingerRenderer;
-import com.chubbychump.hunterxhunter.common.entities.renderers.ObamaRenderer;
-import com.chubbychump.hunterxhunter.common.generation.BaseWorldTreeFeatureConfig;
-import com.chubbychump.hunterxhunter.common.generation.WorldTreeTrunkPlacer;
-import com.chubbychump.hunterxhunter.common.items.ItemVariants;
-import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.AppearanceToggle;
-import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CAmongUs;
-import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CMiddleFinger;
-import com.chubbychump.hunterxhunter.common.items.thehundred.cosmetic.CObamiumPyramid;
-import com.chubbychump.hunterxhunter.common.items.thehundred.tools.PhantomStaff;
-import com.chubbychump.hunterxhunter.common.tileentities.TileEntityNenLight;
+import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
+import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.GreedIslandProvider;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
+import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.MiddleFinger;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.Obama;
+import com.chubbychump.hunterxhunter.server.entities.renderers.AmongUsRenderer;
+import com.chubbychump.hunterxhunter.server.entities.renderers.MiddleFingerRenderer;
+import com.chubbychump.hunterxhunter.server.entities.renderers.ObamaRenderer;
+import com.chubbychump.hunterxhunter.server.items.thehundred.cosmetic.AppearanceToggle;
+import com.chubbychump.hunterxhunter.server.items.thehundred.cosmetic.CAmongUs;
+import com.chubbychump.hunterxhunter.server.items.thehundred.cosmetic.CMiddleFinger;
+import com.chubbychump.hunterxhunter.server.items.thehundred.cosmetic.CObamiumPyramid;
+import com.chubbychump.hunterxhunter.server.items.thehundred.tools.PhantomStaff;
+import com.chubbychump.hunterxhunter.server.tileentities.TileEntityNenLight;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncBookPacket;
 import com.chubbychump.hunterxhunter.packets.SyncTransformCardPacket;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
@@ -49,22 +42,12 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.SettingsScreen;
-import net.minecraft.client.gui.screen.inventory.CraftingScreen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.gui.toasts.AdvancementToast;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.GuardianRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.GuardianEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -85,12 +68,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.foliageplacer.DarkOakFoliagePlacer;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
@@ -99,7 +79,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -107,31 +86,26 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.*;
-import static com.chubbychump.hunterxhunter.client.core.handler.ClientProxy.*;
+import static com.chubbychump.hunterxhunter.client.core.handler.ClientInit.*;
 import static com.chubbychump.hunterxhunter.client.gui.HUDHandler.drawSimpleManaHUD;
-import static com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions.isaacCube;
-import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
-import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
-import static com.chubbychump.hunterxhunter.common.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
+import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDRED;
+import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler.THEONEHUNDREDCARDS;
+import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR;
-import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR_TEX;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 
 //import net.minecraft.world.gen.placement.CountRangeConfig;
@@ -398,7 +372,7 @@ public class EventsHandling {
                     PlayerEntity bruh = (PlayerEntity) event.getEntity();
                     INenUser yo = NenUser.getFromPlayer(bruh);
                     if (yo.getNenType() == 1) {
-                        if (yo.blockDamage()) {
+                        if (yo.isBlockDamage()) {
                             //bruh.getEntityWorld().playSound(bruh.getPosX(), bruh.getPosY(), bruh.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (event.getEntity().world.rand.nextFloat() - event.getEntity().world.rand.nextFloat()) * 0.2F) * 0.7F, false);
                         }
                     }
@@ -418,7 +392,7 @@ public class EventsHandling {
         if(event.getSource() == DamageSource.FALL) {
             if (event.getEntity() instanceof PlayerEntity) {
                 INenUser yo = NenUser.getFromPlayer(player);
-                if (yo.blockDamage()) {
+                if (yo.isBlockDamage()) {
                     event.setCanceled(true);
                     player.setInvulnerable(true);
 
@@ -606,7 +580,7 @@ public class EventsHandling {
                             return;
                         }
                     }
-                    if (yo.getNenType() == 4 && yo.getBoolRiftWalk()) {
+                    if (yo.getNenType() == 4 && yo.isRiftwalk()) {
 
                     }
                 }
@@ -621,7 +595,7 @@ public class EventsHandling {
         if (player != null && player.isAlive()) {
             INenUser yo = NenUser.getFromPlayer(player);
             if (yo.getNenType() == 4) {
-                if (yo.getBoolRiftWalk()) {
+                if (yo.isRiftwalk()) {
                     LOGGER.info("Player is in riftwalk");
                     RenderSystem.enableBlend();
                     RenderSystem.disableDepthTest();
@@ -672,7 +646,7 @@ public class EventsHandling {
 
 
 
-                    int[] bruh = yo.getRiftWalk();
+                    int[] bruh = yo.getRiftwalkPos();
                     BlockPos yee = player.getPosition();
                     int[] oo = new int[3];
                     oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
@@ -736,11 +710,11 @@ public class EventsHandling {
                 INenUser yo = NenUser.getFromPlayer(player);
                 if (event.getEntity() instanceof PlayerEntity) {
                     INenUser ee = NenUser.getFromPlayer((PlayerEntity) event.getEntity());
-                    if (ee.openedBook()) {
+                    if (ee.isOpenedBook()) {
                         ObjectDrawingFunctions.BookRender(event.getMatrixStack(), Util.milliTime() - ee.getLastOpenedBook(), (PlayerEntity) event.getEntity());
                     }
                 }
-                boolean erm = yo.getGyo();
+                boolean erm = yo.isGyo();
                 if (erm && yo.getCurrentNen() > 0) {
                     showMobs(event.getMatrixStack(), event.getBuffers(), event.getEntity());
                 }
@@ -905,28 +879,28 @@ public class EventsHandling {
                 yo.setBurnout(yo.getBurnout() - 1);
             }
             int cost = 0;
-            if (yo.getNenActivated()) {
+            if (yo.isNenActivated()) {
                 cost += 1;
             }
-            if (yo.getGyo()) {
+            if (yo.isGyo()) {
                 cost += 1;
             }
-            if (yo.getEn()) {
+            if (yo.isEn()) {
                 cost += 1;
             }
-            if (yo.getConjurerActivated()) {
+            if (yo.isConjurerActivated()) {
                 cost += 2;
             }
-            if (yo.getBoolRiftWalk()) {
+            if (yo.isRiftwalk()) {
                 cost += 0; //TODO: this should be 3/4
             }
                 // Set nen variable to "riftwalking", render player ghost at emerging location, use shader to grayscale the world
             yo.setCurrentNen(yo.getCurrentNen() - cost);
             if (yo.getCurrentNen() - cost < 0) {
                 yo.setCurrentNen(0);
-                if (yo.getBoolRiftWalk()) {
+                if (yo.isRiftwalk()) {
                     // TODO: test this
-                    int[] bruh = yo.getRiftWalk();
+                    int[] bruh = yo.getRiftwalkPos();
                     BlockPos yee = event.player.getPosition();
                     int[] oo = new int[3];
                     oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
@@ -997,7 +971,7 @@ public class EventsHandling {
     private static void processLightPlacementForEntities(World theWorld) {
         for (PlayerEntity player : Collections.unmodifiableList(theWorld.getPlayers())) {
             INenUser yo = NenUser.getFromPlayer(player);
-            if (yo.getNenActivated() && yo.getCurrentNen() > 0) {
+            if (yo.isNenActivated() && yo.getCurrentNen() > 0) {
                 BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX()), MathHelper.floor(player.getPosY() - 0.1D - player.getYOffset()), MathHelper.floor(player.getPosZ())).up();
                 Block blockAtLocation = theWorld.getBlockState(blockLocation).getBlock();
                 Block lightBlockToPlace = NEN_LIGHT.get();
@@ -1005,7 +979,7 @@ public class EventsHandling {
                     placeLightSourceBlock(player, blockLocation, lightBlockToPlace);
                 }
             }
-            if (yo.getConjurerActivated() && yo.getCurrentNen() > 0) {
+            if (yo.isConjurerActivated() && yo.getCurrentNen() > 0) {
                 Block conjurerBlock = CONJURER_BLOCK.get();
                 for (int i = 0; i < 9; i++) {
                     BlockPos blockLocation = new BlockPos(MathHelper.floor(player.getPosX() + (i%3) - 1), MathHelper.floor(player.getPosY() - 2.4D - player.getYOffset()), MathHelper.floor(player.getPosZ()) + (i/3 - 1)).up();

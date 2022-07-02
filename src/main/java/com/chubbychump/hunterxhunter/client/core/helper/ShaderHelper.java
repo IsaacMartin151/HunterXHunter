@@ -1,14 +1,9 @@
 package com.chubbychump.hunterxhunter.client.core.helper;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-
 import com.chubbychump.hunterxhunter.client.core.handler.ConfigHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.sun.javafx.geom.Vec3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.shader.IShaderManager;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.client.shader.ShaderLoader;
@@ -16,29 +11,19 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
-
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL21;
 import org.lwjgl.system.MemoryUtil;
 
 import javax.annotation.Nullable;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
-import static org.lwjgl.opengl.GL11.*;
 
 public final class ShaderHelper {
     public static final String PREFIX_SHADER = "shader/";

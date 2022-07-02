@@ -1,11 +1,9 @@
 package com.chubbychump.hunterxhunter.client.gui;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -17,8 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 
 @OnlyIn(Dist.CLIENT)
 public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandContainer> {

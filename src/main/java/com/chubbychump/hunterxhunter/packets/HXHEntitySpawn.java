@@ -1,14 +1,13 @@
 package com.chubbychump.hunterxhunter.packets;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
-import com.chubbychump.hunterxhunter.common.entities.entityclasses.*;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.ManipulatorTpProjectile;
-import com.chubbychump.hunterxhunter.common.entities.projectiles.EmitterBaseProjectile;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.chubbychump.hunterxhunter.server.entities.entityclasses.*;
+import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
+import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

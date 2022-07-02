@@ -1,16 +1,12 @@
 package com.chubbychump.hunterxhunter.client.screens;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 
 @OnlyIn(Dist.CLIENT)
 public class CameraScreen extends Screen {

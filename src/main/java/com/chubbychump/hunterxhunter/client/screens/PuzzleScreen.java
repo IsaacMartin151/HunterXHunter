@@ -1,8 +1,7 @@
 package com.chubbychump.hunterxhunter.client.screens;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
-import com.chubbychump.hunterxhunter.common.abilities.nenstuff.INenUser;
+import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -15,18 +14,16 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenProvider.NENUSER;
-import static com.chubbychump.hunterxhunter.common.abilities.nenstuff.NenUser.updateServer;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser.updateServer;
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 import static org.lwjgl.opengl.GL11.*;
 

@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.world;
 
-import com.chubbychump.hunterxhunter.common.blocks.PortalBlock;
+import com.chubbychump.hunterxhunter.server.blocks.PortalBlock;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
