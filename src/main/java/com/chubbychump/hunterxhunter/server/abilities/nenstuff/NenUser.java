@@ -8,19 +8,22 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ToolType;
 
 import java.util.List;
@@ -64,12 +67,12 @@ public class NenUser implements INenUser {
 
     }
 
-    public static void updateClient(ServerPlayerEntity player, INenUser cap) {
-        PacketManager.sendTo(player, new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
+    public static void updateClient(ServerPlayer player, INenUser cap) {
+        PacketManager.sendTo(player, new SyncNenPacket(player.getId(), (CompoundTag) NENUSER.writeNBT(cap, null)));
     }
 
-    public static void updateServer(PlayerEntity player, INenUser cap) {
-        PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
+    public static void updateServer(Player player, INenUser cap) {
+        PacketManager.sendToServer(new SyncNenPacket(player.getId(), (CompoundTag) NENUSER.writeNBT(cap, null)));
     }
 
     public int[] getRiftwalkPos() {
@@ -137,16 +140,16 @@ public class NenUser implements INenUser {
         //TODO: carry over boolean states?
     }
 
-    public static INenUser getFromPlayer(PlayerEntity player) {
+    public static INenUser getFromPlayer(Player player) {
         return player.getCapability(NENUSER, null).orElseThrow(() -> new IllegalArgumentException("NenUser must not be empty!"));
     }
 
     public int getMaxCurrentNen() {
         return 100 + nenPower * 16;
     }
-    public void nenpower1(PlayerEntity player) { }
+    public void nenpower1(Player player) { }
 
-    public void enhancer1(PlayerEntity player) {
+    public void enhancer1(Player player) {
         switch (passivePower) {
             case 0:
                 HunterXHunter.LOGGER.info("Enhancer look jump");
@@ -183,7 +186,7 @@ public class NenUser implements INenUser {
         }
     }
 
-    public void manipulator1(PlayerEntity player) {
+    public void manipulator1(Player player) {
         switch (passivePower) {
             case 0:
                 HunterXHunter.LOGGER.info("Iterating through spectated player");
@@ -193,10 +196,10 @@ public class NenUser implements INenUser {
                 HunterXHunter.LOGGER.info("Adding tp entity/swapping with it");
                 Entity bruh = player.world.getEntityByID(p0);
                 if (bruh == null) {
-                    PacketManager.sendToServer(new HXHEntitySpawn(1, -2, new CompoundNBT()));
+                    PacketManager.sendToServer(new HXHEntitySpawn(1, -2, new CompoundTag()));
                 }
                 else {
-                    PacketManager.sendToServer(new HXHEntitySpawn(1, -3, new CompoundNBT()));
+                    PacketManager.sendToServer(new HXHEntitySpawn(1, -3, new CompoundTag()));
                 }
                 break;
             case 2:
@@ -209,7 +212,7 @@ public class NenUser implements INenUser {
         }
     }
 
-    public void transmuter1(PlayerEntity player) {
+    public void transmuter1(Player player) {
         switch (passivePower) {
             case 0:
                 HunterXHunter.LOGGER.info("Attempting to enchant held item");
@@ -239,7 +242,7 @@ public class NenUser implements INenUser {
                 if (player.experienceTotal >= 160 && getCurrentNen() >= 100) {
                     player.experienceTotal -= 160;
                     setCurrentNen(getCurrentNen() - 100);
-                    PacketManager.sendToServer(new HXHEntitySpawn(4, -1, new CompoundNBT()));
+                    PacketManager.sendToServer(new HXHEntitySpawn(4, -1, new CompoundTag()));
                 }
                 //Dash move
                 break;
@@ -262,7 +265,7 @@ public class NenUser implements INenUser {
         }
     }
 
-    public void conjurer1(PlayerEntity player) {
+    public void conjurer1(Player player) {
         switch (passivePower) {
             case 0:
                 HunterXHunter.LOGGER.info("Toggling ConjurerActivated");
@@ -298,45 +301,45 @@ public class NenUser implements INenUser {
                 break;
             case 3:
                 HunterXHunter.LOGGER.info("Spawning ConjurerMount");
-                PacketManager.sendToServer(new HXHEntitySpawn(2, -2, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(2, -2, new CompoundTag()));
                 break;
         }
     }
 
-    public void emitter1(PlayerEntity player) {
+    public void emitter1(Player player) {
         Vector3d look = player.getLookVec();
         HunterXHunter.LOGGER.info("Adding emitter projectile");
         switch (passivePower) {
             case 0:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -1, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -1, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 1:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -2, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -2, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 2:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -3, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -3, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 3:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -4, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -4, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 4:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -5, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -5, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 5:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -6, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -6, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 6:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -7, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -7, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
             case 7:
-                PacketManager.sendToServer(new HXHEntitySpawn(3, -8, new CompoundNBT()));
+                PacketManager.sendToServer(new HXHEntitySpawn(3, -8, new CompoundTag()));
                 player.addVelocity(-look.x, -look.y, -look.z);
                 break;
         }

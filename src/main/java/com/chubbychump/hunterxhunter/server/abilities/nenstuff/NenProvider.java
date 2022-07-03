@@ -1,13 +1,14 @@
 package com.chubbychump.hunterxhunter.server.abilities.nenstuff;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class NenProvider implements ICapabilitySerializable<CompoundNBT> {
+public class NenProvider implements ICapabilitySerializable<CompoundTag> {
 
     @CapabilityInject(INenUser.class)
     public static final Capability<INenUser> NENUSER = null;
@@ -19,12 +20,12 @@ public class NenProvider implements ICapabilitySerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT) NENUSER.getStorage().writeNBT(NENUSER, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null);
+    public CompoundTag serializeNBT() {
+        return (CompoundTag) NENUSER.getStorage().writeNBT(NENUSER, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null);
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         NENUSER.getStorage().readNBT(NENUSER, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null, nbt);
     }
 }

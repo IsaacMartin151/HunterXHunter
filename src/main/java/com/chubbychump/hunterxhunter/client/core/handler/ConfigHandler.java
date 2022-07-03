@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.client.core.handler;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -129,8 +129,6 @@ public final class ConfigHandler {
         public final ForgeConfigSpec.BooleanValue gogSpawnWithLexicon;
         public final ForgeConfigSpec.IntValue gogIslandScaleMultiplier;
 
-        public final ForgeConfigSpec.ConfigValue<List<? extends String>> orechidPriorityMods;
-
         public final ForgeConfigSpec.BooleanValue worldgenEnabled;
 
         public Common(ForgeConfigSpec.Builder builder) {
@@ -191,11 +189,6 @@ public final class ConfigHandler {
                             "By default, the scale is 8, putting each island on points separated by 2048 blocks.\n" +
                             "Values below 4 (1024 block spacing) are not recommended due to Nether portal collisions.")
                     .defineInRange("gardenOfGlass.islandScaleMultiplier", 8, 1, 512);
-            orechidPriorityMods = builder
-                    .comment("List of modids to prioritize when choosing a random ore from the tag.\n" +
-                            "By default, the chosen ore is randomly picked from all ores in the ore's tag.\n" +
-                            "Ores from mods present on this list will be picked over mods listed lower or not listed at all.")
-                    .defineList("orechidPriorityMods", Collections.emptyList(), s -> s instanceof String && ResourceLocation.tryCreate(s + ":test") != null);
             worldgenEnabled = builder
                     .comment("Set this to false to disable mystical flower and mushroom worldgen. More fine-tuned customization should be done with datapacks.")
                     .define("worldgen", true);

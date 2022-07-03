@@ -8,20 +8,15 @@ import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.*;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.property.Properties;
 
 import javax.annotation.Nullable;
 
@@ -31,11 +26,11 @@ import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvide
 
 public class Crystal_Nen extends Item {
     public Crystal_Nen() {
-        super(new Properties().maxStackSize(64).rarity(Rarity.RARE).group(HunterXHunter.TAB));
+        super(new Properties().stacksTo(64).rarity(Rarity.RARE).tab(HunterXHunter.TAB));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void openGui(PlayerEntity player) {
+    private void openGui(Player player) {
         INenUser yo = player.getCapability(NENUSER).orElseThrow(null);
         if (yo.getNenPower() == 0) {
             yo.increaseNenPower();

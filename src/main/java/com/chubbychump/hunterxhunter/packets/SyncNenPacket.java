@@ -6,25 +6,25 @@ import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.server.advancements.AbilityMaxTrigger;
 import com.chubbychump.hunterxhunter.server.advancements.AbilityUseTrigger;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 
 public class SyncNenPacket {
 
-    private final CompoundNBT nbt;
+    private final CompoundTag nbt;
 
-    public SyncNenPacket(int entityId, CompoundNBT nbt) {
+    public SyncNenPacket(int entityId, CompoundTag nbt) {
         // Add entity id
         nbt.putInt("entityid2", entityId);
         this.nbt = nbt;
     }
 
-    private SyncNenPacket(CompoundNBT nbt) {
+    private SyncNenPacket(CompoundTag nbt) {
         this.nbt = nbt;
     }
 
@@ -38,9 +38,9 @@ public class SyncNenPacket {
 
     public static void handle(SyncNenPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer == null) {
-                PlayerEntity player = (PlayerEntity) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid2"));
+                Player player = (Player) Minecraft.getInstance().level.getEntity(msg.nbt.getInt("entityid2"));
                 INenUser cap = NenUser.getFromPlayer(player);
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
             }

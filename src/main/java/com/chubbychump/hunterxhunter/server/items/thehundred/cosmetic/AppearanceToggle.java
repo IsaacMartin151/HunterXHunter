@@ -1,29 +1,31 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.cosmetic;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+
 
 public class AppearanceToggle extends Item {
 
     private boolean isOn = false;
 
     public AppearanceToggle() {
-        super(new Item.Properties().group(HunterXHunter.TAB).rarity(Rarity.EPIC).maxStackSize(1));
+        super(new Item.Properties().tab(HunterXHunter.TAB).rarity(Rarity.EPIC).stacksTo(1));
         isOn = false;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
         HunterXHunter.LOGGER.info("Toggled on");
         isOn = !isOn;
-        return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+        return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide());
     }
 
     public boolean isOn() {

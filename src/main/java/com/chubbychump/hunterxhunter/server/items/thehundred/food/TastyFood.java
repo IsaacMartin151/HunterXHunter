@@ -1,16 +1,18 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.food;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 
-import static net.minecraft.item.Rarity.COMMON;
+import static net.minecraft.world.item.Rarity.COMMON;
+
 
 public class TastyFood extends Item {
     public TastyFood() {
-        super(new Item.Properties().maxStackSize(64).group(HunterXHunter.TAB).rarity(COMMON).food(new Food.Builder()
-                .saturation(0.8F).hunger(8).effect(new EffectInstance(Effects.REGENERATION, 100, 1), .2F).build()));
+        super(new Item.Properties().stacksTo(64).tab(HunterXHunter.TAB).rarity(COMMON).food(new FoodProperties.Builder()
+                .saturationMod(0.8F).nutrition(8).effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 100, 1), .2F).build()));
     }
 }

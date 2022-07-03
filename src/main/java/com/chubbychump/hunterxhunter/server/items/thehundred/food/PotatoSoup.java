@@ -1,14 +1,15 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.food;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 
-import static net.minecraft.item.Rarity.COMMON;
+import static net.minecraft.world.item.Rarity.COMMON;
+
 
 public class PotatoSoup extends Item {
     public PotatoSoup() {
-        super(new Item.Properties().maxStackSize(64).group(HunterXHunter.TAB).rarity(COMMON).food(new Food.Builder()
-                .saturation(1.0F).hunger(1).build()));
+        super(new Item.Properties().stacksTo(64).tab(HunterXHunter.TAB).rarity(COMMON).food(new FoodProperties.Builder()
+                .saturationMod(1.0F).nutrition(1).build()));
     }
 }

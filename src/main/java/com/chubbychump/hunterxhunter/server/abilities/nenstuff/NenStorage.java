@@ -1,8 +1,8 @@
 package com.chubbychump.hunterxhunter.server.abilities.nenstuff;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -11,7 +11,7 @@ import net.minecraftforge.common.capabilities.Capability;
 public class NenStorage implements Capability.IStorage<INenUser> {
     @Override
     public INBT writeNBT(Capability<INenUser> capability, INenUser instance, Direction side) {
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         tag.putInt("type", instance.getNenType());
         tag.putBoolean("conjurer", instance.isConjurerActivated());
         tag.putBoolean("book", instance.isOpenedBook());
@@ -31,7 +31,7 @@ public class NenStorage implements Capability.IStorage<INenUser> {
 
     @Override
     public void readNBT(Capability<INenUser> capability, INenUser instance, Direction side, INBT nbt) {
-        CompoundNBT tag = (CompoundNBT) nbt;
+        CompoundTag tag = (CompoundTag) nbt;
         instance.setNenType(tag.getInt("type"));
         instance.setConjurerActivated(tag.getBoolean("conjurer"));
         instance.setOpenedBook(tag.getBoolean("book"));
