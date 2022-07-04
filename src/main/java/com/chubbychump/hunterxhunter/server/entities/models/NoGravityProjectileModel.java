@@ -3,7 +3,6 @@ package com.chubbychump.hunterxhunter.server.entities.models;// Made with Blockb
 // Paste this class into your mod and generate all required imports
 
 
-import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;

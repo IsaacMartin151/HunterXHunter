@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -24,7 +24,7 @@ public class PhantomStaff extends StaffBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         HunterXHunter.LOGGER.info("Toggled clipping");
         clipping = !clipping;

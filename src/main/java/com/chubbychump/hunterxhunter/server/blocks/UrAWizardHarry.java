@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.blocks;
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -19,7 +19,7 @@ public class UrAWizardHarry extends AbstractButtonBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, Player player, Hand handIn, BlockRayTraceResult hit) {
         player.addVelocity(3.0, 3.0, 3.0);
         player.playSound(URAWIZARD.get(), 1, 1);
         if (state.get(POWERED)) {

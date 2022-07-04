@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.server.tileentities;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -26,9 +26,9 @@ public class SaturationStandTileEntity extends TileEntity implements ITickableTi
     private void addEffectsToPlayers() {
         if (!this.world.isRemote) {
             AxisAlignedBB axisalignedbb = (new AxisAlignedBB(this.pos)).grow(50).expand(0.0D, (double)this.world.getHeight(), 0.0D);
-            List<PlayerEntity> list = this.world.getEntitiesWithinAABB(PlayerEntity.class, axisalignedbb);
+            List<Player> list = this.world.getEntitiesWithinAABB(Player.class, axisalignedbb);
 
-            for(PlayerEntity playerentity : list) {
+            for(Player playerentity : list) {
                 playerentity.addPotionEffect(new EffectInstance(Effects.SATURATION, 20, 1, true, true));
             }
         }

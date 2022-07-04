@@ -1,11 +1,12 @@
 package com.chubbychump.hunterxhunter.server.entities.entityclasses;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 
-public class Obama extends CreeperEntity {
-    public Obama(EntityType<? extends CreeperEntity> p_i50213_1_, World p_i50213_2_) {
+public class Obama extends Monster {
+    public Obama(EntityType<? extends Monster> p_i50213_1_, Level p_i50213_2_) {
         super(p_i50213_1_, p_i50213_2_);
     }
 }

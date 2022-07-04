@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.packets;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -33,7 +33,7 @@ public class PacketManager {
      * Sends a packet from the server to a player.
      * Must be called server side.
      */
-    public static void sendTo(ServerPlayerEntity player, Object msg) {
+    public static void sendTo(ServerPlayer player, Object msg) {
         INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 

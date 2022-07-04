@@ -7,8 +7,8 @@ import com.chubbychump.hunterxhunter.packets.SyncHealthPacket;
 import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.entity.ai.attributes.Attributes;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SEntityPropertiesPacket;
 import net.minecraft.world.server.ServerWorld;
@@ -98,7 +98,7 @@ public class MoreHealth implements IMoreHealth {
     }
 
     @Override
-    public void synchronise(PlayerEntity player) {
+    public void synchronise(Player player) {
         if (!player.getEntityWorld().isRemote) {
             ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
             SEntityPropertiesPacket packet = new SEntityPropertiesPacket(player.getEntityId(), Collections.singleton(attribute));
@@ -110,11 +110,11 @@ public class MoreHealth implements IMoreHealth {
         return Config.defHealth.get() - (float) Attributes.MAX_HEALTH.getDefaultValue();
     }
 
-    public static IMoreHealth getFromPlayer(PlayerEntity player) {
+    public static IMoreHealth getFromPlayer(Player player) {
         return player.getCapability(CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
     }
 
-    public static void updateClient(ServerPlayerEntity player, IMoreHealth cap) {
+    public static void updateClient(ServerPlayer player, IMoreHealth cap) {
         PacketManager.sendTo(player, new SyncHealthPacket(player.getEntityId(), (CompoundNBT) CAPABILITY.writeNBT(cap, null)));
     }
 

@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.Items;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +31,7 @@ public class SuperCobweb extends Block implements net.minecraftforge.common.IFor
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, Player player) {
         worldIn.playEvent(player, 2001, pos, getStateId(state));
         if (player.getHeldItemMainhand().getItem() == Items.SHEARS) {
             worldIn.addEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), SUPER_COBWEB_ITEM.get().getDefaultInstance()));

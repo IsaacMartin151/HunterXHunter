@@ -1,36 +1,38 @@
 package com.chubbychump.hunterxhunter.server.entities.projectiles;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+
 
 import javax.annotation.Nonnull;
 
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.BASE_MAGIC_PROJECTILE;
 
-public class ManipulatorTpProjectile extends ProjectileItemEntity {
-    public ManipulatorTpProjectile(EntityType<? extends ManipulatorTpProjectile> p_i50153_1_, World world) {
+public class ManipulatorTpProjectile extends Projectile {
+    public ManipulatorTpProjectile(EntityType<? extends ManipulatorTpProjectile> p_i50153_1_, Level world) {
         super(p_i50153_1_, world);
     }
 
-    public ManipulatorTpProjectile(World worldIn, LivingEntity throwerIn) {
+    public ManipulatorTpProjectile(Level worldIn, LivingEntity throwerIn) {
         super(BASE_MAGIC_PROJECTILE.get(), throwerIn, worldIn);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ManipulatorTpProjectile(World worldIn, double x, double y, double z) {
+    public ManipulatorTpProjectile(Level worldIn, double x, double y, double z) {
         super(BASE_MAGIC_PROJECTILE.get(), x, y, z, worldIn);
     }
 
@@ -38,28 +40,29 @@ public class ManipulatorTpProjectile extends ProjectileItemEntity {
         return Items.ENDER_PEARL;
     }
 
-    /**
-     * Called when the arrow hits an entity
-     */
-    protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
-        super.onEntityHit(p_213868_1_);
-        p_213868_1_.getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 0.0F);
+    @Override
+    protected void onHitEntity(EntityHitResult ehr) {
+        super.onHitEntity(ehr);
+        ehr.getEntity().hurt(DamageSource.indirectMagic(this, this.getOwner()), 0.0F);
     }
 
-    /**
-     * Called when this EntityFireball hits a block or entity.
-     */
-    protected void onImpact(RayTraceResult result) {
-        super.onImpact(result);
+    @Override
+    protected void onHit(HitResult result) {
+        super.onHit(result);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+
     }
 
     /**
      * Called to update the entity's position/logic.
      */
     public void tick() {
-        Entity entity = this.func_234616_v_();
-        if (entity instanceof PlayerEntity && !entity.isAlive()) {
-            this.remove();
+        Entity entity = this.getOwner();
+        if (entity instanceof Player && !entity.isAlive()) {
+            this.remove(RemovalReason.UNLOADED_WITH_PLAYER);
         } else {
             super.tick();
         }
@@ -68,7 +71,7 @@ public class ManipulatorTpProjectile extends ProjectileItemEntity {
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

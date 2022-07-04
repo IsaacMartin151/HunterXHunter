@@ -174,34 +174,34 @@ public class HunterXHunter {
 
         VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
 
-        GlobalEntityTypeAttributes.put(AMONG_US_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(AMONG_US_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(OBAMA_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(OBAMA_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 15.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(MIDDLE_FINGER_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(MIDDLE_FINGER_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 1.0D)
                 .createMutableAttribute(Attributes.FLYING_SPEED, 1.0D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(YOUPI_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(YOUPI_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.8F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 100.0D)
@@ -209,43 +209,43 @@ public class HunterXHunter {
                 .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(NEFERPITOU_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(NEFERPITOU_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.6F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(SHIAPOUF_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(SHIAPOUF_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.0F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(CHIMERA_ANT_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(CHIMERA_ANT_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).3F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
                 .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(FOXBEAR_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(FOXBEAR_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D)
                 .createMutableAttribute(Attributes.ARMOR, 3.0D).create());
 
-        GlobalEntityTypeAttributes.put(GIANT_LIZARD_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(GIANT_LIZARD_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 16.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D).create());
 
-        GlobalEntityTypeAttributes.put(CONJURER_MOUNT.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(CONJURER_MOUNT.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).9F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
 
-        GlobalEntityTypeAttributes.put(CAMERA_ENTITY.get(), MobEntity.func_233666_p_()
+        GlobalEntityTypeAttributes.put(CAMERA_ENTITY.get(), Mob.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).5F)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
@@ -315,14 +315,14 @@ public class HunterXHunter {
         }
     };
 
-    public static void applyHealthModifier(PlayerEntity player, double amount) {
+    public static void applyHealthModifier(Player player, double amount) {
         AttributeModifier modifier = new AttributeModifier(MODIFIER_ID, "levelHearts.healthModifier", amount, AttributeModifier.Operation.ADDITION);
         ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
         attribute.removeModifier(modifier);
         attribute.applyPersistentModifier(modifier); //Maybe 769?
     }
 
-    public static void recalcPlayerHealth(PlayerEntity player, int level) {
+    public static void recalcPlayerHealth(Player player, int level) {
         // Capability, Config Files, & Local Variables
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
         ArrayList<Integer> ramp = Config.levelRamp.get();
@@ -353,7 +353,7 @@ public class HunterXHunter {
         }
 
         if (changed) {
-            MoreHealth.updateClient((ServerPlayerEntity) player, cap);
+            MoreHealth.updateClient((ServerPlayer) player, cap);
             player.setHealth(player.getMaxHealth());
         }
     }

@@ -3,8 +3,8 @@ package com.chubbychump.hunterxhunter.packets;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.CameraEntity;
 import com.chubbychump.hunterxhunter.client.screens.CameraScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -39,12 +39,12 @@ public class SyncTransformCardPacket {
 
     public static void handle(SyncTransformCardPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer != null) {
                 ItemStack held = serverPlayer.getHeldItemMainhand();
                 ItemStack corresponding = getCorrespondingStack(held);
                 corresponding.setCount(held.getCount());
-                CameraEntity bruh = new CameraEntity(CAMERA_ENTITY.get(), serverPlayer.world, (PlayerEntity) serverPlayer.world.getEntityByID(msg.nbt.getInt("entityid4")), corresponding);
+                CameraEntity bruh = new CameraEntity(CAMERA_ENTITY.get(), serverPlayer.world, (Player) serverPlayer.world.getEntityByID(msg.nbt.getInt("entityid4")), corresponding);
                 held.shrink(held.getCount());
                 bruh.setPosition(serverPlayer.getPosX(), serverPlayer.getPosY(), serverPlayer.getPosZ());
                 serverPlayer.getEntityWorld().addEntity(bruh);

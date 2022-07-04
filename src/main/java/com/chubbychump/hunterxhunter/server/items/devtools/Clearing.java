@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.items.devtools;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -23,7 +23,7 @@ public class Clearing extends Item {
     public Clearing() { super(new Item.Properties().group(HunterXHunter.TAB)); }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         BlockPos playerpos = playerIn.getPosition();
         for (int i = playerpos.getX() - 50; i < playerpos.getX() + 51; i++) {
             for (int j = playerpos.getY() - 50; i < playerpos.getY() + 51; j++) {

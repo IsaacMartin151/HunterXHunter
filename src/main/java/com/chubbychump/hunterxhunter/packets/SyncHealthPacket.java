@@ -4,7 +4,7 @@ import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -36,7 +36,7 @@ public class SyncHealthPacket {
     public static void handle(SyncHealthPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             // Fetch Capability
-            PlayerEntity player = (PlayerEntity) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid"));
+            Player player = (Player) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid"));
             IMoreHealth cap = MoreHealth.getFromPlayer(player);
 
             // Read NBT Data into Capability

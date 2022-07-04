@@ -4,32 +4,33 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.*;
-import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
+import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 
 public class HXHEntitySpawn {
-    private final CompoundNBT nbt;
+    private final CompoundTag nbt;
 
-    public HXHEntitySpawn(int eNumber, int eID, CompoundNBT nbt) {
+    public HXHEntitySpawn(int eNumber, int eID, CompoundTag nbt) {
         // Add entity id
         nbt.putInt("entity_number", eNumber);
         nbt.putInt("eID", eID);
         this.nbt = nbt;
     }
 
-    private HXHEntitySpawn(CompoundNBT nbt) {
+    private HXHEntitySpawn(CompoundTag nbt) {
         this.nbt = nbt;
     }
 
@@ -43,38 +44,38 @@ public class HXHEntitySpawn {
 
     public static void handle(HXHEntitySpawn msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             int eNumber = msg.nbt.getInt("entity_number");
             int eID = msg.nbt.getInt("eID");
             if (serverPlayer != null) {
                 Entity bruh = null;
                 INenUser yo = NenUser.getFromPlayer(serverPlayer);
-                Vector3d oof = serverPlayer.getPositionVec();
+                Vec3 oof = serverPlayer.getEyePosition();
                 switch(eNumber) {
                     case 1:
                         if (eID == -3) {
-                            Entity ee = serverPlayer.world.getEntityByID(yo.getEntityID());
+                            Entity ee = serverPlayer.level.getEntity(yo.getEntityID());
                             if (ee != null) {
-                                serverPlayer.setPositionAndUpdate(ee.getPosX(), ee.getPosY(), ee.getPosZ());
+                                serverPlayer.setPos(ee.getX(), ee.getY(), ee.getZ());
                                 serverPlayer.fallDistance = 0;
-                                ee.remove();
+                                ee.remove(Entity.RemovalReason.DISCARDED);
                                 yo.setEntityID(-1);
                             }
                             break;
                         }
                         else {
                             HunterXHunter.LOGGER.info("Added entity is ManipulatorTpProjectile");
-                            bruh = new ManipulatorTpProjectile(serverPlayer.world, serverPlayer);
-                            Vector3d yeet = serverPlayer.getLookVec().normalize().scale(2);
-                            bruh.setVelocity(yeet.x, yeet.y, yeet.z);
-                            yo.setEntityID(bruh.getEntityId());
+                            bruh = new ManipulatorTpProjectile(serverPlayer.level, serverPlayer);
+                            Vec3 yeet = serverPlayer.getLookAngle().normalize().scale(2);
+                            bruh.lerpMotion(yeet.x, yeet.y, yeet.z);
+                            yo.setEntityID(bruh.getId());
                             NenUser.updateClient(serverPlayer, yo);
                             break;
                         }
                     case 2:
                         HunterXHunter.LOGGER.info("Added entity is ConjurerMount");
-                        bruh = new ConjurerMount(CONJURER_MOUNT.get(), serverPlayer.world);
-                        bruh.setPosition(oof.x, oof.y, oof.z);
+                        bruh = new ConjurerMount(CONJURER_MOUNT.get(), serverPlayer.level);
+                        bruh.setPos(oof.x, oof.y, oof.z);
                         break;
                     case 3:
                         HunterXHunter.LOGGER.info("Added entity is EmitterBaseProjectile, variation "+eID);

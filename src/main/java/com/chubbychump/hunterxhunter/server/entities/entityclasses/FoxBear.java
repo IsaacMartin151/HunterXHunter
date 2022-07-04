@@ -1,19 +1,19 @@
 package com.chubbychump.hunterxhunter.server.entities.entityclasses;
 
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.passive.PolarBearEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.animal.PolarBear;
+import net.minecraft.world.level.Level;
 
-public class FoxBear extends PolarBearEntity {
-    public FoxBear(EntityType<? extends FoxBear> type, World worldIn) {
-        super(type, worldIn);
-        this.setCustomName(ITextComponent.getTextComponentOrEmpty("Foxbear"));
+public class FoxBear extends PolarBear {
+    public FoxBear(EntityType<? extends FoxBear> type, Level LevelIn) {
+        super(type, LevelIn);
+        this.setCustomName(Component.literal("Foxbear"));
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return 2.5F;
     }
 

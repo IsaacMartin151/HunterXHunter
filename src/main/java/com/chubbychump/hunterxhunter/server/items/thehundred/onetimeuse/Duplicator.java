@@ -2,7 +2,7 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.onetimeuse;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -29,7 +29,7 @@ public class Duplicator extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, Player player, @Nonnull Hand hand) {
         PlayerInventory yeet = player.inventory;
         ItemStack yo = yeet.getCurrentItem();
         if (player.inventory.addItemStackToInventory(new ItemStack(player.getItemStackFromSlot(EquipmentSlotType.OFFHAND).getItem(), 1))) {

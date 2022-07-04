@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.server.abilities.nenstuff.types;
 
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 
 public class Transmuter extends NenUser {
     public Transmuter() {
@@ -20,7 +20,7 @@ public class Transmuter extends NenUser {
     }
 
     @Override
-    public void nenpower1(PlayerEntity player) {
+    public void nenpower1(Player player) {
         if (player.getHeldItemMainhand().getItem().isDamageable()) {
             int yeet = player.getHeldItemMainhand().getDamage();
             player.getHeldItemMainhand().setDamage(0);

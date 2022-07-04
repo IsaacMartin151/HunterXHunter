@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -355,7 +355,7 @@ public class ObjectDrawingFunctions {
         endRenderCommon();
     }
 
-    public static void BookRender(MatrixStack stack, long difference, PlayerEntity player) {
+    public static void BookRender(MatrixStack stack, long difference, Player player) {
         RenderSystem.disableBlend();
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();

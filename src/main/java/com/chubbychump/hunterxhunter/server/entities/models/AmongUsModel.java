@@ -4,22 +4,20 @@ package com.chubbychump.hunterxhunter.server.entities.models;// Made with Blockb
 
 
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.AmongUs;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 
 public class AmongUsModel<T extends AmongUs> extends EntityModel<AmongUs> {
-	private final ModelRenderer body;
-	private final ModelRenderer head;
-	private final ModelRenderer leg0;
-	private final ModelRenderer leg1;
+	private final ModelBlockRenderer body;
+	private final ModelBlockRenderer head;
+	private final ModelBlockRenderer leg0;
+	private final ModelBlockRenderer leg1;
 
 	public AmongUsModel() {
-		textureWidth = 64;
+		texWidth = 64;
 		textureHeight = 32;
 
-		body = new ModelRenderer(this);
+		body = new ModelBlockRenderer(this);
 		body.setRotationPoint(0.0F, 24.0F, 0.0F);
 		body.setTextureOffset(32, 12).addBox(-4.0F, -17.0F, -4.0F, 8.0F, 12.0F, 8.0F, 0.0F, false);
 		body.setTextureOffset(56, 0).addBox(-1.5F, -15.0F, 4.0F, 3.0F, 8.0F, 2.0F, 0.0F, false);

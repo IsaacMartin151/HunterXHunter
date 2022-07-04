@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -42,7 +42,7 @@ public class TFTeleporter implements ITeleporter {
         boolean isFrame = true;
         BlockPos blockpos = null;
         ColumnPos columnpos = new ColumnPos(pos);
-        if (!(entity instanceof PlayerEntity) && this.columnMap.containsKey(columnpos)) {
+        if (!(entity instanceof Player) && this.columnMap.containsKey(columnpos)) {
             return null;
         } else {
             TFTeleporter.PortalPosition position = this.destinationCoordinateCache.get(columnpos);

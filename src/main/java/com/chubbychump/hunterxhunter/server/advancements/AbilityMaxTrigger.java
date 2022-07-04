@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,7 +30,7 @@ public class AbilityMaxTrigger extends AbstractCriterionTrigger<AbilityMaxTrigge
         return new Instance(playerPred);
     }
 
-    public void trigger(ServerPlayerEntity player) {
+    public void trigger(ServerPlayer player) {
         triggerListeners(player, instance -> instance.test());
     }
 

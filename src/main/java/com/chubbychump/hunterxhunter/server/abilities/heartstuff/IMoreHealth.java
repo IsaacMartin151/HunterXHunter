@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.server.abilities.heartstuff;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 
 public interface IMoreHealth {
     byte getVersion();
@@ -16,6 +16,6 @@ public interface IMoreHealth {
     void setHeartContainers(byte amount);
     void addHeartContainer();
     void copy(IMoreHealth other);
-    void synchronise(PlayerEntity player);
+    void synchronise(Player player);
 
 }

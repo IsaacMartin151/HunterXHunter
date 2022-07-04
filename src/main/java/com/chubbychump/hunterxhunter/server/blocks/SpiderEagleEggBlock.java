@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +45,7 @@ public class SpiderEagleEggBlock extends Block {
     private void tryTrample(World worldIn, BlockPos pos, Entity trampler, int chances) {
         if (this.canTrample(worldIn, trampler)) {
             if (!worldIn.isRemote && worldIn.rand.nextInt(chances) == 0) {
-                worldIn.playSound((PlayerEntity)null, pos, SoundEvents.ENTITY_TURTLE_EGG_BREAK, SoundCategory.BLOCKS, 0.7F, 0.9F + worldIn.rand.nextFloat() * 0.2F);
+                worldIn.playSound((Player)null, pos, SoundEvents.ENTITY_TURTLE_EGG_BREAK, SoundCategory.BLOCKS, 0.7F, 0.9F + worldIn.rand.nextFloat() * 0.2F);
                 worldIn.destroyBlock(pos, false);
             }
 
@@ -57,7 +57,7 @@ public class SpiderEagleEggBlock extends Block {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
-                return trampler instanceof PlayerEntity || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
+                return trampler instanceof Player || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
             }
         } else {
             return false;

@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.IVanishable;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -33,7 +33,7 @@ public class GonFishingPole extends Item implements IVanishable {
      * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
      * {@link #onItemUse}.
      */
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (playerIn.fishingBobber != null) {
             if (!worldIn.isRemote) {
@@ -43,9 +43,9 @@ public class GonFishingPole extends Item implements IVanishable {
                 });
             }
 
-            worldIn.playSound((PlayerEntity)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_FISHING_BOBBER_RETRIEVE, SoundCategory.NEUTRAL, 1.0F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+            worldIn.playSound((Player)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_FISHING_BOBBER_RETRIEVE, SoundCategory.NEUTRAL, 1.0F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
         } else {
-            worldIn.playSound((PlayerEntity)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_FISHING_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+            worldIn.playSound((Player)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_FISHING_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
             if (!worldIn.isRemote) {
                 int k = 5;
                 int j = 5;

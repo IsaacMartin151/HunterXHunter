@@ -4,7 +4,7 @@ import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
@@ -25,7 +25,7 @@ public class FoxbearStaff extends StaffBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote) {
             RayTraceResult raytraceresult = new EntityRayTraceResult(playerIn);

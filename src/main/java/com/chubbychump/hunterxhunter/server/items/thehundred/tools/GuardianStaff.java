@@ -2,7 +2,7 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -23,7 +23,7 @@ public class GuardianStaff extends StaffBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote) {
             itemstack.damageItem(1, playerIn, (player) -> {

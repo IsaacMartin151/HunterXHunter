@@ -2,7 +2,7 @@ package com.chubbychump.hunterxhunter.client.rendering;
 
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.Mob;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
@@ -33,7 +33,7 @@ public class HXHModelHelper {
         modelrenderer1.rotateAngleX = MathHelper.lerp(f2, modelrenderer1.rotateAngleX, (-(float)Math.PI / 2F));
     }
 
-    public static <T extends MobEntity> void func_239103_a_(ModelRenderer rightArm, ModelRenderer leftArm, T entity, float swingProgress, float ageInTicks) {
+    public static <T extends Mob> void func_239103_a_(ModelRenderer rightArm, ModelRenderer leftArm, T entity, float swingProgress, float ageInTicks) {
         float f = MathHelper.sin(swingProgress * (float)Math.PI);
         float f1 = MathHelper.sin((1.0F - (1.0F - swingProgress) * (1.0F - swingProgress)) * (float)Math.PI);
         rightArm.rotateAngleZ = 0.0F;

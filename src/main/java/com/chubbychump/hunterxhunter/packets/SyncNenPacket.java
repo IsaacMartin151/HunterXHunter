@@ -23,7 +23,6 @@ public class SyncNenPacket {
         nbt.putInt("entityid2", entityId);
         this.nbt = nbt;
     }
-
     private SyncNenPacket(CompoundTag nbt) {
         this.nbt = nbt;
     }
@@ -45,7 +44,7 @@ public class SyncNenPacket {
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
             }
             else {
-                //PlayerEntity player = serverPlayer.server.getPlayerList().getPlayerByUUID(serverPlayer.getUniqueID());
+                //Player player = serverPlayer.server.getPlayerList().getPlayerByUUID(serverPlayer.getUniqueID());
                 INenUser cap = NenUser.getFromPlayer(serverPlayer);
                 NenProvider.NENUSER.readNBT(cap, null, msg.nbt);
                 if (cap.getNenPower() > 0) {

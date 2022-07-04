@@ -2,8 +2,8 @@ package com.chubbychump.hunterxhunter.server.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.nbt.CompoundNBT;
 
 import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
@@ -60,7 +60,7 @@ public interface INenUser {
     int getFailCounter();
     void setFailCounter(int failCounter);
     void copy(INenUser other);
-    void nenpower1(PlayerEntity player);
+    void nenpower1(Player player);
     int getMaxCurrentNen();
     long getLastOpenedBook();
     void setLastOpenedBook(long lastOpenedBook);
@@ -72,21 +72,21 @@ public interface INenUser {
     void setEntityID(int e);
     int getEntityID();
 
-    void enhancer1(PlayerEntity player);
-    void manipulator1(PlayerEntity player);
-    void transmuter1(PlayerEntity player);
-    void conjurer1(PlayerEntity player);
-    void emitter1(PlayerEntity player);
+    void enhancer1(Player player);
+    void manipulator1(Player player);
+    void transmuter1(Player player);
+    void conjurer1(Player player);
+    void emitter1(Player player);
 
-    static INenUser getFromPlayer(PlayerEntity player) {
+    static INenUser getFromPlayer(Player player) {
         return player.getCapability(NENUSER, null).orElseThrow(() -> new IllegalArgumentException("NenUser must not be empty!"));
     }
 
-    static void updateClient(ServerPlayerEntity player, NenUser cap) {
+    static void updateClient(ServerPlayer player, NenUser cap) {
         PacketManager.sendTo(player, new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
     }
 
-    static void updateServer(PlayerEntity player, NenUser cap) {
+    static void updateServer(Player player, NenUser cap) {
         PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
     }
 }

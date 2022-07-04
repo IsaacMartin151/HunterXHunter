@@ -10,7 +10,7 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
@@ -23,10 +23,10 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class AdvancementCustomToast implements IToast {
     private final Advancement advancement;
-    private PlayerEntity achv;
+    private Player achv;
     private boolean hasPlayedSound;
 
-    public AdvancementCustomToast(Advancement adv, PlayerEntity achiever) {
+    public AdvancementCustomToast(Advancement adv, Player achiever) {
         this.advancement = adv;
         this.achv = achiever;
     }

@@ -2,7 +2,7 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -23,7 +23,7 @@ public class GhastStaff extends StaffBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote) {
             itemstack.damageItem(1, playerIn, (player) -> {
@@ -34,7 +34,7 @@ public class GhastStaff extends StaffBase {
             fireballentity.explosionPower = 2;
             fireballentity.setPosition(playerIn.getPosX() + yo.x, playerIn.getPosYHeight(0.5D) + yo.y, playerIn.getPosZ() + yo.z);
             worldIn.addEntity(fireballentity);
-            worldIn.playEvent((PlayerEntity)null, 1016, playerIn.getPosition(), 0);
+            worldIn.playEvent((Player)null, 1016, playerIn.getPosition(), 0);
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }

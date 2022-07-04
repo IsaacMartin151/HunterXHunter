@@ -2,20 +2,20 @@ package com.chubbychump.hunterxhunter.client.screens;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
-import com.mojang.blaze3d.matrix.MatrixStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,7 +34,7 @@ public class PuzzleScreen extends Screen {
     private static TextureManager yo = Minecraft.getInstance().getTextureManager();
     private int timer = 60;
     private int initialtimer;
-    private long timing = Util.milliTime();
+    private long timing = Util.getMillis();
     private boolean success = false;
     private boolean failed = false;
     private int[] array = new int[15];
@@ -44,7 +44,7 @@ public class PuzzleScreen extends Screen {
     public ResourceLocation BUBBLES = new ResourceLocation(MOD_ID, "textures/gui/bubbles.png");
 
     public PuzzleScreen(int q) {
-        super(new StringTextComponent("Puzzle"));
+        super(CommonComponents.EMPTY);
         //this.width = 1000;
         //this.height = 500;
         ResourceLocation sprite0 = new ResourceLocation( MOD_ID, "puzzles/gon.png");
@@ -90,9 +90,8 @@ public class PuzzleScreen extends Screen {
 
     @Override
     public void init() {
-        modButton = this.addButton(new Button(width/2 - 50, height/2 - 10, 100, 20, ITextComponent.getTextComponentOrEmpty("Confirm"), button -> {
-            this.minecraft.displayGuiScreen(null);
-            this.minecraft.setGameFocused(true);
+        modButton = this.addWidget(new Button(width/2 - 50, height/2 - 10, 100, 20, Component.literal("Confirm"), button -> {
+            this.minecraft.popGuiLayer();
         }));
         modButton.visible = false;
         modButton.active = false;
@@ -134,58 +133,58 @@ public class PuzzleScreen extends Screen {
             float obruhy = (float) (outerR * Math.sin(2*p*i/5+p/2) + height/2);
             float bruh = (float) (innerR * Math.cos(2 * p * i/5 + p/2 + p/5) + width/2);
             float bruhy = (float) (innerR * Math.sin(2*p*i/5+p/2 + p/5) + height/2);
-            buffer.pos(matrix, oobruh, oobruhy, 0).color(1f, 1f, 1f, 1f).tex(0, 0).endVertex();
-            buffer.pos(matrix, obruh, obruhy, 0).color(1f, 1f, 1f, 1f).tex(.5f, 1).endVertex();
-            buffer.pos(matrix, bruh, bruhy, 0).color(1f, 1f, 1f, 1f).tex(1, 0).endVertex();
+            buffer.vertex(matrix, oobruh, oobruhy, 0).color(1f, 1f, 1f, 1f).uv(0, 0).endVertex();
+            buffer.vertex(matrix, obruh, obruhy, 0).color(1f, 1f, 1f, 1f).uv(.5f, 1).endVertex();
+            buffer.vertex(matrix, bruh, bruhy, 0).color(1f, 1f, 1f, 1f).uv(1, 0).endVertex();
 
         }
     }
 
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         //HunterXHunter.LOGGER.info("width, height: "+this.width+", "+this.height);
-        matrixStack.push();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        matrixStack.pushPose();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
 
         RenderSystem.enableTexture();
         RenderSystem.enableBlend();
 
         if (success == true || failed == true) {
             RenderSystem.disableCull();
-            matrixStack.push();
+            matrixStack.pushPose();
 
             matrixStack.translate(this.width/2, this.height/2, 0);
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees((Util.milliTime() / 60) % 360));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees((Util.getMillis() / 60) % 360));
             matrixStack.translate(-this.width/2, -this.height/2, 0);
-            buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR_TEX);
-            yo.bindTexture(BUBBLES);
-            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getGlTextureId());
-            drawTriangles(buffer, matrixStack.getLast().getMatrix());
-            tessellator.draw();
-            matrixStack.pop();
+            buffer.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_TEX);
+            yo.bindForSetup(BUBBLES);
+            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getId());
+            drawTriangles(buffer, matrixStack.last().pose());
+            tessellator.end();
+            matrixStack.popPose();
 
             if (success) {
-                font.drawStringWithShadow(matrixStack, "Success! Nen power increased", width/2 - 75, height/2 - 20, 0xffff80ff);
+                font.draw(matrixStack, "Success! Nen power increased", width/2 - 75, height/2 - 20, 0xffff80ff);
             }
             else {
-                font.drawStringWithShadow(matrixStack, "Fail. Better luck next time", width/2 - 60, height/2 - 20, 0xff8080ff);
+                font.draw(matrixStack, "Fail. Better luck next time", width/2 - 60, height/2 - 20, 0xff8080ff);
             }
             super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         }
         else {
-            timer = initialtimer - (int) (Util.milliTime()/1000 - timing/1000);
+            timer = initialtimer - (int) (Util.getMillis()/1000 - timing/1000);
             if (timer < 0) {
                 failed = true;
                 modButton.visible = true;
                 modButton.active = true;
             }
 
-            buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            yo.bindTexture(icons[bruh]);
-            RenderSystem.bindTexture(yo.getTexture(icons[bruh]).getGlTextureId());
+            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            yo.bindForSetup(icons[bruh]);
+            RenderSystem.bindTexture(yo.getTexture(icons[bruh]).getId());
             int upperleftX = 0;
             int upperleftY = 0;
             int Pxl = width / 7;
@@ -200,33 +199,33 @@ public class PuzzleScreen extends Screen {
                     float v1 = upperleftY * 200 / 600f;
                     float v2 = (upperleftY + 1) * 200 / 600f;
 
-                    buffer.pos(width / 7 + (i % 5) * Pxl, k * Pxl, 0).tex(u1, v1).color(1f, 1f, 1f, 1f).endVertex();
-                    buffer.pos(width / 7 + (i % 5) * Pxl, (k + 1) * Pxl, 0).tex(u1, v2).color(1f, 1f, 1f, 1f).endVertex();
-                    buffer.pos(width / 7 + ((i % 5) + 1) * Pxl, (k + 1) * Pxl, 0).tex(u2, v2).color(1f, 1f, 1f, 1f).endVertex();
-                    buffer.pos(width / 7 + ((i % 5) + 1) * Pxl, k * Pxl, 0).tex(u2, v1).color(1f, 1f, 1f, 1f).endVertex();
+                    buffer.vertex(width / 7 + (i % 5) * Pxl, k * Pxl, 0).uv(u1, v1).color(1f, 1f, 1f, 1f).endVertex();
+                    buffer.vertex(width / 7 + (i % 5) * Pxl, (k + 1) * Pxl, 0).uv(u1, v2).color(1f, 1f, 1f, 1f).endVertex();
+                    buffer.vertex(width / 7 + ((i % 5) + 1) * Pxl, (k + 1) * Pxl, 0).uv(u2, v2).color(1f, 1f, 1f, 1f).endVertex();
+                    buffer.vertex(width / 7 + ((i % 5) + 1) * Pxl, k * Pxl, 0).uv(u2, v1).color(1f, 1f, 1f, 1f).endVertex();
                 }
             }
 
-            tessellator.draw();
+            tessellator.end();
 
             for (int i = 0; i < 15; i++) {
                 if (array[i] != -1) {
                     int k = (int) Math.floor(i / 5);
                     int oof = getArrayIndex(width / 7 + (i % 5) * Pxl + 1, k * Pxl + 1);
                     String yeet = "" + array[oof];
-                    font.drawStringWithShadow(matrixStack, yeet, width / 7 + (i % 5) * Pxl, k * Pxl, 0xffffffff);
+                    font.draw(matrixStack, yeet, width / 7 + (i % 5) * Pxl, k * Pxl, 0xffffffff);
                 }
             }
             String timerstring = "" + timer;
             if (timer >= 20) {
-                font.drawStringWithShadow(matrixStack, timerstring, 0, 0, 0x0000ff00);
+                font.draw(matrixStack, timerstring, 0, 0, 0x0000ff00);
             } else if (timer < 10) {
-                font.drawStringWithShadow(matrixStack, timerstring, 0, 0, 0xffff00ff);
+                font.draw(matrixStack, timerstring, 0, 0, 0xffff00ff);
             } else if (timer < 20) {
-                font.drawStringWithShadow(matrixStack, timerstring, 0, 0, 0x000000ff);
+                font.draw(matrixStack, timerstring, 0, 0, 0x000000ff);
             }
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void printArray() {
@@ -319,7 +318,7 @@ public class PuzzleScreen extends Screen {
                 Minecraft.getInstance().player.playSound(WORLD_OF_ADVENTURES.get(), 1f, .5f);
             }
         }
-        Minecraft.getInstance().getSoundHandler().stop(LOUNGE_MUSIC.getId(), null);
+        Minecraft.getInstance().getSoundManager().stop(LOUNGE_MUSIC.getId(), null);
         updateServer(minecraft.player, yo);
     }
 

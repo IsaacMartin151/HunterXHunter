@@ -1,7 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b488309-37b5-4b0e-a6d9-21d05a5ea23d" name="Default Changelist" comment="" />
+    <list default="true" id="7b488309-37b5-4b0e-a6d9-21d05a5ea23d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/ChimeraAnt.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/ChimeraAnt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/ChimeraAntModel.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/ChimeraAntModel.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/ConjurerEntityModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/ConjurerEntityModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/Foxbear.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/Foxbear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/NoGravityProjectile.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/NoGravityProjectile.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/benfinegold.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/benfinegold.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/conjurermount.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/conjurermount.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/custom_model.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/custom_model.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/foxbear.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/foxbear.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/giantlizard.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/giantlizard.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/giantlizard.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/giantlizard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/neferpitou.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/neferpitou.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/neferpitou.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/neferpitou.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/shiapouf.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/shiapouf.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/shiapouf.java" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/shiapouf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HunterXHunter/ModifiedEntityModels/witherBoss.bbmodel" beforeDir="false" afterPath="$PROJECT_DIR$/ModifiedEntityModels/witherBoss.bbmodel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/createMcpToSrg/output.tsrg" beforeDir="false" afterPath="$PROJECT_DIR$/build/createMcpToSrg/output.tsrg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/downloadMcpConfig/output.zip" beforeDir="false" afterPath="$PROJECT_DIR$/build/downloadMcpConfig/output.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/extractSrg/output.srg" beforeDir="false" afterPath="$PROJECT_DIR$/build/extractSrg/output.srg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/HunterXHunter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/HunterXHunter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/gui/GreedIslandContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/gui/GreedIslandContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/rendering/HXHModelHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/rendering/HXHModelHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/rendering/ObjectDrawingFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/rendering/ObjectDrawingFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/screens/AdvancementCustomToast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/screens/AdvancementCustomToast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/screens/PuzzleScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/client/screens/PuzzleScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/HXHEntitySpawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/HXHEntitySpawn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/PacketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/PacketManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncBookPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncBookPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncHealthPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncHealthPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncNenPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncNenPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncTransformCardPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/packets/SyncTransformCardPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/heartstuff/IMoreHealth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/heartstuff/IMoreHealth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/heartstuff/MoreHealth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/heartstuff/MoreHealth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/INenUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/INenUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/NenUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/NenUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/types/Transmuter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/abilities/nenstuff/types/Transmuter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AbilityMaxTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AbilityMaxTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AbilityUseTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AbilityUseTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllCommonTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllCommonTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllEpicTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllEpicTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllLegendaryTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllLegendaryTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllUncommonTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/AllUncommonTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/CardCollectorTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/CardCollectorTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/HalfwayTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/HalfwayTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/SingleLegendaryTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/advancements/SingleLegendaryTrigger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/SpiderEagleEggBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/SpiderEagleEggBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/SuperCobweb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/SuperCobweb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/UrAWizardHarry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/blocks/UrAWizardHarry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/controllers/CameraLookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/controllers/CameraLookController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/AmongUs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/AmongUs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Bomber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Bomber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/CameraEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/CameraEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ChimeraAnt.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ChimeraAnt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ConjurerMount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ConjurerMount.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/FoxBear.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/FoxBear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/GiantLizard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/GiantLizard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/MiddleFinger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/MiddleFinger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Neferpitou.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Neferpitou.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Obama.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Obama.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Shiapouf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Shiapouf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ShiapoufClone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/ShiapoufClone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Twerker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Twerker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Youpi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/entityclasses/Youpi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/goals/CameraLookGoal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/goals/LungeGoal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/goals/LungeGoal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/AmongUsModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/AmongUsModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ChimeraAntModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ChimeraAntModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ConjurerMountModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ConjurerMountModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/FoxBearModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/FoxBearModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/GiantLizardModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/GiantLizardModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/MiddleFingerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/MiddleFingerModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/NeferpitouModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/NeferpitouModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/NoGravityProjectileModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/NoGravityProjectileModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ObamaModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ObamaModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ShiapoufCloneModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ShiapoufCloneModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ShiapoufModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/ShiapoufModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/YoupiModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/models/YoupiModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/projectiles/EmitterBaseProjectile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/projectiles/EmitterBaseProjectile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/projectiles/ManipulatorTpProjectile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/projectiles/ManipulatorTpProjectile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/renderers/NoGravityProjectileRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/entities/renderers/NoGravityProjectileRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/BaseWorldTreeFeatureConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/SpiderEagleCarver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/SpiderEagleCarver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/TreeFeatureWorldTree.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/WorldTreeFeature.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/WorldTreeTrunkPlacer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/floating/GravityMinerals.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/floating/GravityMinerals.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/floating/GravityMineralsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/floating/GravityMineralsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/ComponentBranch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/ComponentTrunk.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/HXHConfiguredStructures.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/HXHStructurePieces.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/WorldTreeBaseComponent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/WorldTreeConfig2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/WorldTreeDecorator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/WorldTreeFeature2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/generation/structures/worldtree/WorldTreeStructure.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/devtools/Clearing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/devtools/Clearing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/onetimeuse/Crystal_Nen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/onetimeuse/Crystal_Nen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/onetimeuse/Duplicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/onetimeuse/Duplicator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/BatStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/BatStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/BlazeStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/BlazeStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/ChimeraAntStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/ChimeraAntStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/CreeperStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/CreeperStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/FoxbearStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/FoxbearStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GhastStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GhastStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GonFishingPole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GonFishingPole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GuardianStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/GuardianStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/PhantomStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/PhantomStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/SelfDestructButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/SelfDestructButton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/VillagerStaff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/items/thehundred/tools/VillagerStaff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/tileentities/SaturationStandTileEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/tileentities/SaturationStandTileEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/tileentities/VatTileEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/server/tileentities/VatTileEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/util/EventsHandling.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/util/EventsHandling.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/util/RegistryHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/util/RegistryHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/world/TFTeleporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chubbychump/hunterxhunter/world/TFTeleporter.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -12,18 +138,73 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HunterXHunter" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HunterXHunter" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1kM7cOnHMuWoRR7dImrzQXqqEv1" />
   <component name="ProjectViewState">
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="show.unlinked.gradle.project.popup" value="true" />
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Isaac/Desktop/Code/JustEnoughItems/build.gradle.kts&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Isaac\Desktop\Code\HunterXHunter" />
+    </key>
   </component>
+  <component name="RunManager" selected="Application.runClient">
+    <list>
+      <item itemvalue="Application.runClient" />
+      <item itemvalue="Application.runData" />
+      <item itemvalue="Application.runServer" />
+      <item itemvalue="Gradle.HunterXHunter [runClient]" />
+      <item itemvalue="Gradle.HunterXHunter [runServer]" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -36,5 +217,16 @@
       <updated>1605498684538</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

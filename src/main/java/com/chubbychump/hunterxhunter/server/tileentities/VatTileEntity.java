@@ -7,7 +7,7 @@ import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -377,7 +377,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
     /**
      * Don't rename this method to canInteractWith due to conflicts with Container
      */
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean isUsableByPlayer(Player player) {
         return false;
     }
 
@@ -413,7 +413,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
         return null;
     }
 
-    public void onCrafting(PlayerEntity player) {
+    public void onCrafting(Player player) {
     }
 
     public void fillStackedContents(RecipeItemHelper helper) {

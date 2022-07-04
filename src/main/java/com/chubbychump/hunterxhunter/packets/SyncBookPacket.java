@@ -5,7 +5,7 @@ import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
 import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,9 +43,9 @@ public class SyncBookPacket {
 
     public static void handle(SyncBookPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer == null) {
-                //PlayerEntity player = (PlayerEntity) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid3"));
+                //Player player = (Player) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid3"));
                 //ItemStackHandler cap = NenUser.getFromPlayer(player);
             }
             else {

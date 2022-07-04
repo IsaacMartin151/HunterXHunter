@@ -2,11 +2,11 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 
 import com.chubbychump.hunterxhunter.client.rendering.ObjectDrawingFunctions;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,24 +14,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NoGravityProjectileRenderer extends EntityRenderer<EmitterBaseProjectile> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/projectile.png");
 
-    public NoGravityProjectileRenderer(EntityRendererManager renderManagerIn) {
+    public NoGravityProjectileRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
-        //this.addLayer(new PhantomEyesLayer<>(this));
+
     }
 
-    /**
-     * Returns the location of an entity's texture.
-     */
-    public ResourceLocation getEntityTexture(EmitterBaseProjectile entity) {
+    @Override
+    public ResourceLocation getTextureLocation(EmitterBaseProjectile p_114482_) {
         return TEXTURE;
     }
-
-    public void render(EmitterBaseProjectile entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        ObjectDrawingFunctions.ProjectileRender(matrixStackIn, entityIn.ticksExisted, entityIn);
-        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
-
-
-
-
 }

@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.client.gui;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -132,7 +132,7 @@ public class GreedIslandContainer extends Container {
 
     // Called on the server side only.
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean canInteractWith(@Nonnull Player player) {
         return true;
     }
 
@@ -146,7 +146,7 @@ public class GreedIslandContainer extends Container {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int sourceSlotIndex) {
+    public ItemStack transferStackInSlot(Player player, int sourceSlotIndex) {
         Slot sourceSlot = inventorySlots.get(sourceSlotIndex);
         if (sourceSlot == null || !sourceSlot.getHasStack()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getStack();

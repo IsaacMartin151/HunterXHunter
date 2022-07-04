@@ -4,27 +4,21 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.packets.HXHEntitySpawn;
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
+import com.mojang.math.Vector3d;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -159,26 +153,27 @@ public class NenUser implements INenUser {
                     setBurnout(60);
                     setBlockDamage(true);
                     if (player.isOnGround()) {
-                        player.addVelocity(0, 2, 0);
-                        player.velocityChanged = true;
+                        player.push(0, 2, 0);
+                        player.hurtMarked = true;
                     } else {
-                        player.setMotion(0, 0, 0);
-                        Vector3d stare = player.getLookVec();
+                        player.lerpMotion(0, 0, 0);
+                        Vec3 stare = player.getLookAngle();
                         stare.normalize();
                         Vector3d move = new Vector3d(stare.x * 3, .2, stare.z * 3);
-                        player.addVelocity(move.x, move.y, move.z);
-                        player.velocityChanged = true;
+                        player.push(move.x, move.y, move.z);
+                        player.hurtMarked = true;
                     }
                 }
                 break;
             case 1:
                 HunterXHunter.LOGGER.info("Reversing motion");
-                player.setMotion(player.getMotion().add(0, .1, 0).inverse());
-                player.velocityChanged = true;
+                Vec3 movement = player.getDeltaMovement().add(0, .1, 0).reverse();
+                player.lerpMotion(movement.x, movement.y, movement.z);
+                player.hurtMarked = true;
                 break;
             case 2:
                 HunterXHunter.LOGGER.info("Give Regeneration");
-                player.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600));
                 break;
             case 3:
                 HunterXHunter.LOGGER.info("Maybe nothing?");
@@ -194,7 +189,7 @@ public class NenUser implements INenUser {
                 break;
             case 1:
                 HunterXHunter.LOGGER.info("Adding tp entity/swapping with it");
-                Entity bruh = player.world.getEntityByID(p0);
+                Entity bruh = player.level.getEntity(p0);
                 if (bruh == null) {
                     PacketManager.sendToServer(new HXHEntitySpawn(1, -2, new CompoundTag()));
                 }
@@ -219,28 +214,28 @@ public class NenUser implements INenUser {
                 float setTo = getCurrentNen() - 50 - getNenPower() * 10;
                 if (setTo > 0) {
                     //Repair item durability
-                    ItemStack held = player.getHeldItemMainhand();
+                    ItemStack held = player.getMainHandItem();
                     if (held.isEnchantable()) {
                         setCurrentNen(setTo);
                         setBurnout(60);
-                        if (held.getToolTypes().contains(ToolType.PICKAXE) || held.getToolTypes().contains(ToolType.AXE) || held.getToolTypes().contains(ToolType.SHOVEL)) {
-                            held.addEnchantment(Enchantments.EFFICIENCY, 1 + getNenPower() * 2 / 4);
+                        if (held.getItem() instanceof DiggerItem) {
+                            held.enchant(Enchantments.BLOCK_EFFICIENCY, 1 + getNenPower() * 2 / 4);
                         } else if (held.getItem() instanceof ArmorItem) {
-                            held.addEnchantment(Enchantments.PROTECTION, 1 + getNenPower() * 2 / 4);
+                            held.enchant(Enchantments.ALL_DAMAGE_PROTECTION, 1 + getNenPower() * 2 / 4);
                         } else if (held.getItem() instanceof SwordItem) {
-                            held.addEnchantment(Enchantments.SHARPNESS, 1 + getNenPower() * 2 / 4);
+                            held.enchant(Enchantments.SHARPNESS, 1 + getNenPower() * 2 / 4);
                         } else if (held.getItem() instanceof BowItem) {
-                            held.addEnchantment(Enchantments.POWER, 1 + getNenPower() * 2 / 6);
+                            held.enchant(Enchantments.POWER_ARROWS, 1 + getNenPower() * 2 / 6);
                         } else {
-                            held.addEnchantment(Enchantments.UNBREAKING, 1 + (getNenPower()) / 4);
+                            held.enchant(Enchantments.UNBREAKING, 1 + (getNenPower()) / 4);
                         }
                     }
                 }
                 break;
             case 1:
                 HunterXHunter.LOGGER.info("Converting XP into item");
-                if (player.experienceTotal >= 160 && getCurrentNen() >= 100) {
-                    player.experienceTotal -= 160;
+                if (player.totalExperience >= 160 && getCurrentNen() >= 100) {
+                    player.totalExperience -= 160;
                     setCurrentNen(getCurrentNen() - 100);
                     PacketManager.sendToServer(new HXHEntitySpawn(4, -1, new CompoundTag()));
                 }
@@ -254,12 +249,12 @@ public class NenUser implements INenUser {
             case 3:
                 HunterXHunter.LOGGER.info("AOE electrocute");
                 int i = getNenPower();
-                Vector3d radiusLow = player.getPositionVec().subtract(i, i, i);
-                Vector3d radiusHigh = player.getPositionVec().add(i, i, i);
+                Vec3 radiusLow = player.getEyePosition().subtract(i, i, i);
+                Vec3 radiusHigh = player.getEyePosition().add(i, i, i);
 
-                List<Entity> yah = player.getEntityWorld().getEntitiesWithinAABBExcludingEntity(player, new AxisAlignedBB(radiusLow, radiusHigh));
+                List<Entity> yah = player.getLevel().getEntities(player, new AABB(radiusLow, radiusHigh));
                 for (Entity ee : yah) {
-                    ee.attackEntityFrom(DamageSource.LIGHTNING_BOLT, 1f);
+                    ee.hurt(DamageSource.LIGHTNING_BOLT, 1f);
                 }
                 // Electrocute
         }
@@ -276,22 +271,22 @@ public class NenUser implements INenUser {
                     HunterXHunter.LOGGER.info("Entering riftwalk");
                     riftwalk = true;
                     int[] ee = new int[3];
-                    ee[0] = (int) player.getPosX();
-                    ee[1] = (int) player.getPosY();
-                    ee[2] = (int) player.getPosZ();
+                    ee[0] = (int) player.getX();
+                    ee[1] = (int) player.getY();
+                    ee[2] = (int) player.getZ();
                     setRiftwalkPos(ee);
                 }
                 else {
                     HunterXHunter.LOGGER.info("Exiting riftwalk, setting position");
                     riftwalk = false;
                     int[] bruh = getRiftwalkPos();
-                    BlockPos yee = player.getPosition();
+                    BlockPos yee = player.getOnPos();
                     int[] oo = new int[3];
                     oo[0] = 8 * (yee.getX() - bruh[0]) + bruh[0];
                     oo[1] = 8 * (yee.getY() - bruh[1]) + bruh[1];
                     oo[2] = 8 * (yee.getZ() - bruh[2]) + bruh[2];
                     LOGGER.info("Setting player position to "+oo[0]+", "+oo[1]+", "+oo[2]);
-                    player.setPosition(oo[0], oo[1], oo[2]);
+                    player.setPos(oo[0], oo[1], oo[2]);
                     // TODO: update player location - this doesn't work, it's only on client
                 }
                 break;
@@ -307,40 +302,40 @@ public class NenUser implements INenUser {
     }
 
     public void emitter1(Player player) {
-        Vector3d look = player.getLookVec();
+        Vec3 look = player.getLookAngle();
         HunterXHunter.LOGGER.info("Adding emitter projectile");
         switch (passivePower) {
             case 0:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -1, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 1:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -2, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 2:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -3, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 3:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -4, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 4:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -5, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 5:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -6, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 6:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -7, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
             case 7:
                 PacketManager.sendToServer(new HXHEntitySpawn(3, -8, new CompoundTag()));
-                player.addVelocity(-look.x, -look.y, -look.z);
+                player.push(-look.x, -look.y, -look.z);
                 break;
         }
     }

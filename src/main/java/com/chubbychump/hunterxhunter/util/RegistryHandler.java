@@ -7,15 +7,12 @@ import com.chubbychump.hunterxhunter.server.blocks.*;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.*;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
-import com.chubbychump.hunterxhunter.server.generation.BaseWorldTreeFeatureConfig;
+import com.chubbychump.hunterxhunter.server.generation.BaseWorldTreeConfiguration;
 import com.chubbychump.hunterxhunter.server.generation.SpiderEagleCarver;
-import com.chubbychump.hunterxhunter.server.generation.WorldTreeFeature;
 import com.chubbychump.hunterxhunter.server.generation.structures.floating.GravityMinerals;
 import com.chubbychump.hunterxhunter.server.generation.structures.floating.GravityMineralsConfig;
-import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.ComponentTrunk;
 import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.WorldTreeConfig2;
 import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.WorldTreeFeature2;
-import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.WorldTreeStructure;
 import com.chubbychump.hunterxhunter.server.items.ItemBase;
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import com.chubbychump.hunterxhunter.server.items.devtools.Clearing;
@@ -34,7 +31,6 @@ import com.chubbychump.hunterxhunter.server.potions.BloodLustEffect;
 import com.chubbychump.hunterxhunter.server.recipes.VatRecipeSerializer;
 import com.chubbychump.hunterxhunter.server.recipes.VatRecipes;
 import com.chubbychump.hunterxhunter.server.tileentities.*;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.advancements.CriteriaTriggers;
 
@@ -45,6 +41,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.inventory.MenuType;
@@ -56,13 +53,14 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.OreFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -72,15 +70,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
 public class RegistryHandler {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, MOD_ID);
     public static final DeferredRegister<FoliagePlacerType<?>> FOLIAGE_PLACER_TYPES = DeferredRegister.create(ForgeRegistries.FOLIAGE_PLACER_TYPES, MOD_ID);
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, MOD_ID);
@@ -93,7 +89,6 @@ public class RegistryHandler {
     public static final DeferredRegister<Potion> POTION_TYPES = DeferredRegister.create(ForgeRegistries.POTIONS, MOD_ID);
     public static final DeferredRegister<MobEffect> POTIONS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MOD_ID);
     public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, MOD_ID);
-    public static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_MODIFIERS_BUILTIN, MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
 
     public static void init(IEventBus bus) {
@@ -112,7 +107,6 @@ public class RegistryHandler {
 
         FOLIAGE_PLACER_TYPES.register(bus);
         CARVER.register(bus);
-        STRUCTURES.register(bus);
         FEATURES.register(bus);
         BIOMES.register(bus);
 
@@ -120,47 +114,6 @@ public class RegistryHandler {
     }
 
     public static Method GETCODEC_METHOD;
-
-    public static void setupStructures() {
-        StructureSeparationSettings bruh = new StructureSeparationSettings(10, /* average distance apart in chunks between spawn attempts */
-                5 /* minimum distance apart in chunks between spawn attempts */,
-                1234567890);
-        Structure.NAME_STRUCTURE_BIMAP.put(WORLD_TREE_STRUCTURE.get().getRegistryName().toString(), WORLD_TREE_STRUCTURE.get());
-        //Registry.register(Registry.STRUCTURE_FEATURE, name.toLowerCase(Locale.ROOT), structure);
-        //HXHConfiguredStructures.registerStructureFeatures();
-        DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder().putAll(DimensionStructuresSettings.field_236191_b_)
-                .put(WORLD_TREE_STRUCTURE.get(),  bruh/* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */)
-                .build();
-
-        WorldGenRegistries.NOISE_SETTINGS.getEntries().forEach(settings -> {
-            Map<Structure<?>, StructureSeparationSettings> structureMap = settings.getValue().getStructures().func_236195_a_();
-
-            /*
-             * Pre-caution in case a mod makes the structure map immutable like datapacks do.
-             * I take no chances myself. You never know what another mods does...
-             *
-             * structureConfig requires AccessTransformer  (See resources/META-INF/accesstransformer.cfg)
-             */
-            if(structureMap instanceof ImmutableMap){
-                Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(structureMap);
-                tempMap.put(WORLD_TREE_STRUCTURE.get(), bruh);
-                settings.getValue().getStructures().field_236193_d_ = tempMap;
-            }
-            else{
-                structureMap.put(WORLD_TREE_STRUCTURE.get(), bruh);
-            }
-        });
-    }
-
-    public static void registerConfiguredStructures() {
-        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
-        //Registry.register(registry, new ResourceLocation(MOD_ID, "wttrunk"), CONFIGURED_WORLD_TREE);
-        //FlatGenerationSettings.STRUCTURES.put(WORLD_TREE_STRUCTURE.get(), CONFIGURED_WORLD_TREE);
-    }
-
-    public static IStructurePieceType registerPiece(String name, IStructurePieceType piece) {
-        return Registry.register(Registry.STRUCTURE_PIECE, name, piece);
-    }
 
     public static void registerCriteriaTriggers() {
         CriteriaTriggers.register(AbilityUseTrigger.INSTANCE);
@@ -393,11 +346,11 @@ public class RegistryHandler {
     public static final RegistryObject<Block> SATURATION_STAND = BLOCKS.register("saturation_stand", SaturationStand::new);
     public static final RegistryObject<Block> VAT = BLOCKS.register("vat", Vat::new);
     public static final RegistryObject<Block> CONJURER_BLOCK = BLOCKS.register("conjurer_block", ConjurerBlock::new);
-    public static final RegistryObject<Block> SUPER_COBWEB = BLOCKS.register("super_cobweb", () -> new SuperCobweb(AbstractBlock.Properties.create(Material.WEB).doesNotBlockMovement().setRequiresTool().hardnessAndResistance(4.0F).variableOpacity().notSolid()));
+    public static final RegistryObject<Block> SUPER_COBWEB = BLOCKS.register("super_cobweb", () -> new SuperCobweb(AbstractBlock.Properties.of(Material.WEB).doesNotBlockMovement().setRequiresTool().hardnessAndResistance(4.0F).variableOpacity().notSolid()));
     public static final RegistryObject<Block> AURA_STONE = BLOCKS.register("aura_stone", AuraStone::new);
     public static final RegistryObject<Block> UR_A_WIZARD = BLOCKS.register("ur_a_wizard", UrAWizardHarry::new);
     public static final RegistryObject<Block> SHIFTY_BLOCK = BLOCKS.register("shifty_block", ShiftyBlock::new);
-    public static final RegistryObject<Block> SPIDER_EAGLE_EGG_BLOCK = BLOCKS.register("spider_eagle_egg_block", () -> new SpiderEagleEggBlock(AbstractBlock.Properties.create(Material.DRAGON_EGG, MaterialColor.SAND).hardnessAndResistance(0.5F).sound(SoundType.METAL).notSolid()));
+    public static final RegistryObject<Block> SPIDER_EAGLE_EGG_BLOCK = BLOCKS.register("spider_eagle_egg_block", () -> new SpiderEagleEggBlock(AbstractBlock.Properties.of(Material.DRAGON_EGG, MaterialColor.SAND).hardnessAndResistance(0.5F).sound(SoundType.METAL).notSolid()));
 
     //Block Items
     public static final RegistryObject<Item> RUBY_BLOCK_ITEM = ITEMS.register("ruby_block", () -> new BlockItemBase(RUBY_BLOCK.get()));
@@ -414,80 +367,80 @@ public class RegistryHandler {
     public static final RegistryObject<VatRecipeSerializer> VAT_RECIPE_SERIALIZER = RECIPES.register("vat", () -> new VatRecipeSerializer(VatRecipes::new));
 
     //Tile Entities
-    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.create(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
-    public static final RegistryObject<TileEntityType<ShiftyTileEntity>> SHIFTY_TILE_ENTITY = TILE_ENTITY_TYPES.register("shifty_tile_entity", () -> TileEntityType.Builder.create(ShiftyTileEntity::new, SHIFTY_BLOCK.get()).build(null));
-    public static final RegistryObject<TileEntityType<TileEntityConjurerBlock>> CONJURER_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("conjurer_tile_entity", () -> TileEntityType.Builder.create(TileEntityConjurerBlock::new, CONJURER_BLOCK.get()).build(null));
-    public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.create(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
-    public static final RegistryObject<TileEntityType<VatTileEntity>> VAT_TILE_ENTITY = TILE_ENTITY_TYPES.register("vat_tile_entity", () -> TileEntityType.Builder.create(() -> new VatTileEntity(), VAT.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityNenLight>> NEN_LIGHT_TILE_ENTITY = TILE_ENTITY_TYPES.register("nen_light_tile_entity", () -> TileEntityType.Builder.of(TileEntityNenLight::new, NEN_LIGHT.get()).build(null));
+    public static final RegistryObject<TileEntityType<ShiftyTileEntity>> SHIFTY_TILE_ENTITY = TILE_ENTITY_TYPES.register("shifty_tile_entity", () -> TileEntityType.Builder.of(ShiftyTileEntity::new, SHIFTY_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<TileEntityConjurerBlock>> CONJURER_BLOCK_TILE_ENTITY = TILE_ENTITY_TYPES.register("conjurer_tile_entity", () -> TileEntityType.Builder.of(TileEntityConjurerBlock::new, CONJURER_BLOCK.get()).build(null));
+    public static final RegistryObject<TileEntityType<SaturationStandTileEntity>> SATURATION_STAND_TILE_ENTITY = TILE_ENTITY_TYPES.register("saturation_stand", () -> TileEntityType.Builder.of(SaturationStandTileEntity::new, SATURATION_STAND.get()).build(null));
+    public static final RegistryObject<TileEntityType<VatTileEntity>> VAT_TILE_ENTITY = TILE_ENTITY_TYPES.register("vat_tile_entity", () -> TileEntityType.Builder.of(() -> new VatTileEntity(), VAT.get()).build(null));
 
     //Containers
-    public static final RegistryObject<ContainerType<GreedIslandContainer>> GREED_ISLAND_CONTAINER = CONTAINER.register("greedislandbook", () -> IForgeContainerType.create(GreedIslandContainer::createContainerClientSide));
+    public static final RegistryObject<ContainerType<GreedIslandContainer>> GREED_ISLAND_CONTAINER = CONTAINER.register("greedislandbook", () -> IForgeContainerType.of(GreedIslandContainer::ofContainerClientSide));
 
     //Entities
-    public static final RegistryObject<EntityType<Obama>> OBAMA_ENTITY = ENTITY_TYPES.register("obama", () -> EntityType.Builder.<Obama>create(Obama::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<Obama>> OBAMA_ENTITY = ENTITY_TYPES.register("obama", () -> EntityType.Builder.<Obama>of(Obama::new, MobCategory.MONSTER)
             .size(.5f, .5f)
             .setTrackingRange(20)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<AmongUs>> AMONG_US_ENTITY = ENTITY_TYPES.register("among_us", () -> EntityType.Builder.<AmongUs>create(AmongUs::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<AmongUs>> AMONG_US_ENTITY = ENTITY_TYPES.register("among_us", () -> EntityType.Builder.<AmongUs>of(AmongUs::new, MobCategory.MONSTER)
             .size(.5f, .5f)
             .setTrackingRange(20)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<MiddleFinger>> MIDDLE_FINGER_ENTITY = ENTITY_TYPES.register("middle_finger", () -> EntityType.Builder.<MiddleFinger>create(MiddleFinger::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<MiddleFinger>> MIDDLE_FINGER_ENTITY = ENTITY_TYPES.register("middle_finger", () -> EntityType.Builder.<MiddleFinger>of(MiddleFinger::new, MobCategory.MONSTER)
             .size(5.5f, 5.5f)
             .setTrackingRange(20)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapouf_clone", () -> EntityType.Builder.<ShiapoufClone>create(ShiapoufClone::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapouf_clone", () -> EntityType.Builder.<ShiapoufClone>of(ShiapoufClone::new, MobCategory.MONSTER)
             .size(.5f, .5f)
             .setTrackingRange(20)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<Youpi>> YOUPI_ENTITY = ENTITY_TYPES.register("youpi", () -> EntityType.Builder.<Youpi>create(Youpi::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<Youpi>> YOUPI_ENTITY = ENTITY_TYPES.register("youpi", () -> EntityType.Builder.<Youpi>of(Youpi::new, MobCategory.MONSTER)
             .size(3.2f, 6.5f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<Neferpitou>> NEFERPITOU_ENTITY = ENTITY_TYPES.register("neferpitou", () -> EntityType.Builder.<Neferpitou>create(Neferpitou::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<Neferpitou>> NEFERPITOU_ENTITY = ENTITY_TYPES.register("neferpitou", () -> EntityType.Builder.<Neferpitou>of(Neferpitou::new, MobCategory.MONSTER)
             .size(1.8f, 3.7f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<Shiapouf>> SHIAPOUF_ENTITY = ENTITY_TYPES.register("shiapouf", () -> EntityType.Builder.<Shiapouf>create(Shiapouf::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<Shiapouf>> SHIAPOUF_ENTITY = ENTITY_TYPES.register("shiapouf", () -> EntityType.Builder.<Shiapouf>of(Shiapouf::new, MobCategory.MONSTER)
             .size(2f, 5f)
             .setTrackingRange(128)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimera_ant", () -> EntityType.Builder.<ChimeraAnt>create(ChimeraAnt::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<ChimeraAnt>> CHIMERA_ANT_ENTITY = ENTITY_TYPES.register("chimera_ant", () -> EntityType.Builder.<ChimeraAnt>of(ChimeraAnt::new, MobCategory.MONSTER)
             .size(1.6f, 3.4f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<FoxBear>> FOXBEAR_ENTITY = ENTITY_TYPES.register("foxbear", () -> EntityType.Builder.<FoxBear>create(FoxBear::new, EntityClassification.MONSTER)
+    public static final RegistryObject<EntityType<FoxBear>> FOXBEAR_ENTITY = ENTITY_TYPES.register("foxbear", () -> EntityType.Builder.<FoxBear>of(FoxBear::new, MobCategory.MONSTER)
             .size(2f, 2.2f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giant_lizard", () -> EntityType.Builder.<GiantLizard>create(GiantLizard::new, EntityClassification.CREATURE)
+    public static final RegistryObject<EntityType<GiantLizard>> GIANT_LIZARD_ENTITY = ENTITY_TYPES.register("giant_lizard", () -> EntityType.Builder.<GiantLizard>of(GiantLizard::new, MobCategory.CREATURE)
             .size(1.5f, 2f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
@@ -495,31 +448,31 @@ public class RegistryHandler {
             .build(""));
 
 
-    public static final RegistryObject<EntityType<ConjurerMount>> CONJURER_MOUNT = ENTITY_TYPES.register("conjurer_mount", () -> EntityType.Builder.<ConjurerMount>create(ConjurerMount::new, EntityClassification.CREATURE)
-            .size(2.2f, 3f)
+    public static final RegistryObject<EntityType<ConjurerMount>> CONJURER_MOUNT = ENTITY_TYPES.register("conjurer_mount", () -> EntityType.Builder.<ConjurerMount>of(ConjurerMount::new, MobCategory.CREATURE)
+            .sized(2.2f, 3f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<ManipulatorTpProjectile>> BASE_MAGIC_PROJECTILE = ENTITY_TYPES.register("base_magic_projectile", () -> EntityType.Builder.<ManipulatorTpProjectile>create(ManipulatorTpProjectile::new, EntityClassification.MISC)
-            .size(.25f, .25f)
+    public static final RegistryObject<EntityType<ManipulatorTpProjectile>> BASE_MAGIC_PROJECTILE = ENTITY_TYPES.register("base_magic_projectile", () -> EntityType.Builder.<ManipulatorTpProjectile>of(ManipulatorTpProjectile::new, MobCategory.MISC)
+            .sized(.25f, .25f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
-            .func_233608_b_(10)
+            .updateInterval(10)
             .build(""));
 
-    public static final RegistryObject<EntityType<EmitterBaseProjectile>> NO_GRAVITY_PROJECTILE = ENTITY_TYPES.register("no_gravity_projectile", () -> EntityType.Builder.<EmitterBaseProjectile>create(EmitterBaseProjectile::new, EntityClassification.MISC)
-            .size(.25f, .25f)
+    public static final RegistryObject<EntityType<EmitterBaseProjectile>> NO_GRAVITY_PROJECTILE = ENTITY_TYPES.register("no_gravity_projectile", () -> EntityType.Builder.<EmitterBaseProjectile>of(EmitterBaseProjectile::new, MobCategory.MISC)
+            .sized(.25f, .25f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
-            .func_233608_b_(10)
+            .updateInterval(10)
             .build(""));
 
-    public static final RegistryObject<EntityType<CameraEntity>> CAMERA_ENTITY = ENTITY_TYPES.register("invisible_camera_entity", () -> EntityType.Builder.<CameraEntity>create(CameraEntity::new, EntityClassification.CREATURE)
-            .size(.25f, .25f)
+    public static final RegistryObject<EntityType<CameraEntity>> CAMERA_ENTITY = ENTITY_TYPES.register("invisible_camera_entity", () -> EntityType.Builder.<CameraEntity>of(CameraEntity::new, MobCategory.CREATURE)
+            .sized(.25f, .25f)
             .setTrackingRange(15)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
@@ -527,8 +480,8 @@ public class RegistryHandler {
 
 
     //Point Of Interests
-    public static final RegistryObject<PointOfInterestType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorian_poi", () -> new PointOfInterestType("masadorian_poi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
-    public static final RegistryObject<PointOfInterestType> CHESS_MASTER_POI = POINT_OF_INTEREST.register("chess_master_poi", () -> new PointOfInterestType("chess_master_poi", ImmutableSet.copyOf(CHESS_TABLE_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
+    public static final RegistryObject<PoiType> MASADORIAN_POI = POINT_OF_INTEREST.register("masadorian_poi", () -> new PoiType("masadorian_poi", ImmutableSet.copyOf(RUBY_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
+    public static final RegistryObject<PoiType> CHESS_MASTER_POI = POINT_OF_INTEREST.register("chess_master_poi", () -> new PoiType("chess_master_poi", ImmutableSet.copyOf(CHESS_TABLE_BLOCK.get().getStateContainer().getValidStates()), 1, 1));
 
     //Professions
     public static final RegistryObject<VillagerProfession> MASADORIAN = PROFESSIONS.register("masadorian", () -> new VillagerProfession("masadorian", MASADORIAN_POI.get(), VillagerProfession.CARTOGRAPHER.getSpecificItems(),  VillagerProfession.CARTOGRAPHER.getRelatedWorldBlocks(), COOKIECHAN.get()));
@@ -549,18 +502,11 @@ public class RegistryHandler {
             .withPlacement(Placement.CHANCE.configure(new ChanceConfig(10)));
 
     //Older feature stuff here
-    public static final RegistryObject<Feature<BaseWorldTreeFeatureConfig>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeFeatureConfig.CODEC));
+    public static final RegistryObject<Feature<BaseWorldTreeConfiguration>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeConfiguration.CODEC));
     public static final RegistryObject<Feature<OreFeatureConfig>> ORE_AURA = FEATURES.register("aura_stone", () -> new OreFeature(OreFeatureConfig.CODEC));
 
-
-
-    //Structures
-    public static final RegistryObject<Structure<NoFeatureConfig>> WORLD_TREE_STRUCTURE = STRUCTURES.register("wttrunk",() -> new WorldTreeStructure(NoFeatureConfig.field_236558_a_));
-    //public static final StructureFeature<?, ?> CONFIGURED_WORLD_TREE = WORLD_TREE_STRUCTURE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
-    public static final IStructurePieceType WTTRUNK = RegistryHandler.registerPiece(new ResourceLocation(MOD_ID, "wttrunk").toString(), ComponentTrunk::new);
-
     //Carver
-    public static final RegistryObject<WorldCarver<ProbabilityConfig>> SPIDER_EAGLE_CARVER = CARVER.register("spider_eagle_carver", () -> new SpiderEagleCarver(ProbabilityConfig.CODEC, 256));
+    public static final RegistryObject<WorldCarver<ProbabilityFeatureConfiguration>> SPIDER_EAGLE_CARVER = CARVER.register("spider_eagle_carver", () -> new SpiderEagleCarver(ProbabilityFeatureConfiguration.CODEC, 256));
 
     //Biomes
     public static final RegistryKey<Biome> WORLD_TREE_KEY = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, new ResourceLocation(MOD_ID, "world_tree_biome"));

@@ -7,15 +7,25 @@ import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.property.Properties;
 
 import javax.annotation.Nullable;
@@ -37,18 +47,18 @@ public class Crystal_Nen extends Item {
             NenUser.updateServer(player, yo);
         }
         else {
-            Minecraft.getInstance().displayGuiScreen(new PuzzleScreen(60 - (2 * yo.getNenPower())));
+            Minecraft.getInstance().pushGuiLayer(new PuzzleScreen(60 - (2 * yo.getNenPower())));
         }
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         // Setup return results
-        ItemStack stack = player.getHeldItem(hand);
-        ActionResult<ItemStack> result = new ActionResult<>(ActionResultType.PASS, stack);
+        ItemStack stack = player.getItemInHand(hand);
+        InteractionResultHolder<ItemStack> result = new InteractionResultHolder<>(InteractionResult.PASS, stack);
         HunterXHunter.LOGGER.info("Right clicked crystal nen");
         // Ensure server-side only & the player's not in creative or spectator
-        if (world.isRemote) {
+        if (world.isClientSide) {
             openGui(player);
             return result;
         }
@@ -59,7 +69,7 @@ public class Crystal_Nen extends Item {
         IMoreHealth cap = MoreHealth.getFromPlayer(player);
         INenUser yo = NenUser.getFromPlayer(player);
         if (yo.getNenPower() != 0) {
-            player.getServer().sendMessage(new TranslationTextComponent("Facing a trial. Duration: " + (120 - (2 * yo.getNenPower()))).setStyle(Style.EMPTY.setColor(Color.fromInt(32896)).setItalic(true)), Util.DUMMY_UUID);
+            player.getServer().sendSystemMessage(Component.literal("Facing a trial. Duration: " + (120 - (2 * yo.getNenPower()))).setStyle(Style.EMPTY.withColor(32896).withItalic(true)));
         }
 
         int Type = yo.getNenType();
@@ -73,7 +83,7 @@ public class Crystal_Nen extends Item {
             player.setHealth(player.getMaxHealth());
         } else {
             cap.addHeartContainer();
-            MoreHealth.updateClient((ServerPlayerEntity) player, cap);
+            MoreHealth.updateClient((ServerPlayer) player, cap);
             if (Type == 1) {
                 HunterXHunter.applyHealthModifier(player, cap.getEnhancerModifier());
             }
@@ -84,17 +94,14 @@ public class Crystal_Nen extends Item {
 
         }
 
-        //yo.increaseNenPower(player);
-        //NenUser.updateClient((ServerPlayerEntity) player, yo);
-
         // Remove item and mark as success
         stack.setCount(stack.getCount() - 1);
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("Used to increase one's Aura"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.literal("Used to increase one's Aura"));
     }
 }

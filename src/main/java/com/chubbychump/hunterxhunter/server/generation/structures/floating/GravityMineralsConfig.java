@@ -2,9 +2,9 @@ package com.chubbychump.hunterxhunter.server.generation.structures.floating;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class GravityMineralsConfig implements IFeatureConfig {
+public class GravityMineralsConfig implements FeatureConfiguration {
         public static final Codec<GravityMineralsConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("tube_radius").forGetter(GravityMineralsConfig::getTubeRadius),
                 Codec.INT.fieldOf("shape_radius_a").forGetter(GravityMineralsConfig::getShapeRadiusA),
