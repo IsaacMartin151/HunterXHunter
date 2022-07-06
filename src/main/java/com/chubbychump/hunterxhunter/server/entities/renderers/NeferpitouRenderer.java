@@ -4,7 +4,7 @@ import com.chubbychump.hunterxhunter.server.entities.entityclasses.Neferpitou;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.Youpi;
 import com.chubbychump.hunterxhunter.server.entities.models.NeferpitouModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NeferpitouRenderer extends MobRenderer<Neferpitou, NeferpitouModel<Neferpitou>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/bossbattle/neferpitou.png");
 
-    public NeferpitouRenderer(EntityRendererManager renderManagerIn) {
+    public NeferpitouRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new NeferpitouModel(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
@@ -23,7 +23,7 @@ public class NeferpitouRenderer extends MobRenderer<Neferpitou, NeferpitouModel<
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(Neferpitou entity) {
+    public ResourceLocation getTexture(Neferpitou entity) {
         return TEXTURE;
     }
 

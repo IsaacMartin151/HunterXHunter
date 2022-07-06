@@ -41,7 +41,7 @@ public class SyncTransformCardPacket {
         ctx.get().enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer != null) {
-                ItemStack held = serverPlayer.getHeldItemMainhand();
+                ItemStack held = serverPlayer.getMainHandItemMainhand();
                 ItemStack corresponding = getCorrespondingStack(held);
                 corresponding.setCount(held.getCount());
                 CameraEntity bruh = new CameraEntity(CAMERA_ENTITY.get(), serverPlayer.world, (Player) serverPlayer.world.getEntityByID(msg.nbt.getInt("entityid4")), corresponding);

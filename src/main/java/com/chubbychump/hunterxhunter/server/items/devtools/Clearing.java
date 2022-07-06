@@ -6,8 +6,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.Player;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.InteractionResultHolder;
+import net.minecraft.util.InteractionResultHolderType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -23,7 +23,7 @@ public class Clearing extends Item {
     public Clearing() { super(new Item.Properties().group(HunterXHunter.TAB)); }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         BlockPos playerpos = playerIn.getPosition();
         for (int i = playerpos.getX() - 50; i < playerpos.getX() + 51; i++) {
             for (int j = playerpos.getY() - 50; i < playerpos.getY() + 51; j++) {
@@ -34,13 +34,13 @@ public class Clearing extends Item {
             }
         }
 
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+        ItemStack itemstack = playerIn.getMainHandItem(handIn);
+        return new InteractionResultHolder<>(InteractionResultHolderType.SUCCESS, itemstack);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("Clears a 100x100 area around the player"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.literal("Clears a 100x100 area around the player"));
     }
 }

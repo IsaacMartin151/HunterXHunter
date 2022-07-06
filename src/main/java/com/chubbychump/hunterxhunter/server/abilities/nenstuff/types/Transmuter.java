@@ -21,9 +21,9 @@ public class Transmuter extends NenUser {
 
     @Override
     public void nenpower1(Player player) {
-        if (player.getHeldItemMainhand().getItem().isDamageable()) {
-            int yeet = player.getHeldItemMainhand().getDamage();
-            player.getHeldItemMainhand().setDamage(0);
+        if (player.getMainHandItemMainhand().getItem().isDamageable()) {
+            int yeet = player.getMainHandItemMainhand().getDamage();
+            player.getMainHandItemMainhand().setDamage(0);
         }
     }
 }

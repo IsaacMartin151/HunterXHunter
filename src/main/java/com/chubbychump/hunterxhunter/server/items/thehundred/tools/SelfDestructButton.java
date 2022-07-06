@@ -1,19 +1,17 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.IVanishable;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,25 +19,25 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static net.minecraft.item.Rarity.UNCOMMON;
 
-public class SelfDestructButton extends Item implements IVanishable {
+
+public class SelfDestructButton extends Item implements Vanishable {
 
     public SelfDestructButton() {
-        super(new Item.Properties().maxStackSize(1).group(HunterXHunter.TAB).rarity(UNCOMMON).maxDamage(100).group(ItemGroup.COMBAT));
+        super(new Item.Properties().stacksTo(1).tab(HunterXHunter.TAB).rarity(Rarity.UNCOMMON).defaultDurability(100));
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
-        if (!worldIn.isRemote) {
-            worldIn.createExplosion(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), 10f, false, Explosion.Mode.NONE);
-            playerIn.getHeldItemMainhand().attemptDamageItem(1, new Random(), (ServerPlayer) playerIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        if (!worldIn.isClientSide) {
+            worldIn.explode(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), 10f, false, Explosion.BlockInteraction.NONE);
+            playerIn.getMainHandItem().hurt(1, RandomSource.create(), (ServerPlayer) playerIn);
             playerIn.setHealth(0);
             //((ServerPlayer) playerIn).getAdvancements()
 
             //TODO: give achievement + send server wide message?
-            return ActionResult.resultPass(playerIn.getHeldItemMainhand());
+            return InteractionResultHolder.pass(playerIn.getMainHandItem());
         }
-        return ActionResult.resultFail(playerIn.getHeldItemMainhand());
+        return InteractionResultHolder.fail(playerIn.getMainHandItem());
     }
 
     @Override
@@ -49,7 +47,7 @@ public class SelfDestructButton extends Item implements IVanishable {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("Pretty self-explanatory"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.literal("Pretty self-explanatory"));
     }
 }

@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.GiantLizard;
 import com.chubbychump.hunterxhunter.server.entities.models.GiantLizardModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GiantLizardRenderer extends MobRenderer<GiantLizard, GiantLizardModel<GiantLizard>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/giantlizard.png");
 
-    public GiantLizardRenderer(EntityRendererManager renderManagerIn) {
+    public GiantLizardRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new GiantLizardModel<>(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
@@ -22,7 +22,7 @@ public class GiantLizardRenderer extends MobRenderer<GiantLizard, GiantLizardMod
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(GiantLizard entity) {
+    public ResourceLocation getTexture(GiantLizard entity) {
         return TEXTURE;
     }
 

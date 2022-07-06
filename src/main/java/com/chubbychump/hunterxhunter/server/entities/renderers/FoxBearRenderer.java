@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.FoxBear;
 import com.chubbychump.hunterxhunter.server.entities.models.FoxBearModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class FoxBearRenderer extends MobRenderer<FoxBear, FoxBearModel<FoxBear>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/foxbear.png");
 
-    public FoxBearRenderer(EntityRendererManager renderManagerIn) {
+    public FoxBearRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new FoxBearModel(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
@@ -22,7 +22,7 @@ public class FoxBearRenderer extends MobRenderer<FoxBear, FoxBearModel<FoxBear>>
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(FoxBear entity) {
+    public ResourceLocation getTexture(FoxBear entity) {
         return TEXTURE;
     }
 

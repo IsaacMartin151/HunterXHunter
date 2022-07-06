@@ -268,7 +268,7 @@ public class HunterXHunter {
 
     private static class MagicProjectileRendererFactory implements IRenderFactory<ManipulatorTpProjectile> {
         @Override
-        public EntityRenderer<? super ManipulatorTpProjectile> createRenderFor(EntityRendererManager manager) {
+        public EntityRenderer<? super ManipulatorTpProjectile> createRenderFor(EntityRendererProvider.Context manager) {
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
             return new SpriteRenderer<>(manager, itemRenderer);
         }

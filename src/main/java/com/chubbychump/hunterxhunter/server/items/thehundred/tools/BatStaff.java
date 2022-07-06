@@ -1,16 +1,18 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,24 +25,24 @@ public class BatStaff extends StaffBase {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        if (!worldIn.isRemote) {
-            itemstack.damageItem(1, playerIn, (player) -> {
-                player.sendBreakAnimation(handIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        ItemStack itemstack = playerIn.getMainHandItem();
+        if (!worldIn.isClientSide) {
+            itemstack.hurtAndBreak(1, playerIn, (player) -> {
+                player.broadcastBreakEvent(handIn);
             });
-            BatEntity bruh = new BatEntity(EntityType.BAT, worldIn);
-            bruh.setPosition(playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ());
-            playerIn.world.addEntity(bruh);
+            Bat bat = new Bat(EntityType.BAT, worldIn);
+            bat.setPos(playerIn.getX(), playerIn.getY(), playerIn.getZ());
+            playerIn.level.addFreshEntity(bat);
 
         }
-        return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+        return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("Spawns a bat"));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.add(Component.literal("Spawns a bat"));
     }
 }
 

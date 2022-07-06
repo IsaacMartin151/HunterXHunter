@@ -7,12 +7,11 @@ import com.chubbychump.hunterxhunter.server.blocks.*;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.*;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.EmitterBaseProjectile;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
-import com.chubbychump.hunterxhunter.server.generation.BaseWorldTreeConfiguration;
+
 import com.chubbychump.hunterxhunter.server.generation.SpiderEagleCarver;
 import com.chubbychump.hunterxhunter.server.generation.structures.floating.GravityMinerals;
 import com.chubbychump.hunterxhunter.server.generation.structures.floating.GravityMineralsConfig;
-import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.WorldTreeConfig2;
-import com.chubbychump.hunterxhunter.server.generation.structures.worldtree.WorldTreeFeature2;
+
 import com.chubbychump.hunterxhunter.server.items.ItemBase;
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 import com.chubbychump.hunterxhunter.server.items.devtools.Clearing;
@@ -40,6 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -139,7 +139,7 @@ public class RegistryHandler {
     public static final RegistryObject<MobEffect> BLOODLUST_EFFECT = POTIONS.register("bloodlust_effect", () -> new BloodLustEffect(EffectType.HARMFUL, 0xcc0a0a));
 
     //Potions
-    public static final RegistryObject<Potion> BLOODLUST_POTION = POTION_TYPES.register("bloodlust_potion", () -> new BloodLust(new EffectInstance(BLOODLUST_EFFECT.get())));
+    public static final RegistryObject<Potion> BLOODLUST_POTION = POTION_TYPES.register("bloodlust_potion", () -> new BloodLust(new MobEffectInstance(BLOODLUST_EFFECT.get())));
 
     //Sounds
     public static final RegistryObject<SoundEvent> AMONG_US = SOUNDS.register("amongus", () -> new SoundEvent(new ResourceLocation(MOD_ID, "amongus")));

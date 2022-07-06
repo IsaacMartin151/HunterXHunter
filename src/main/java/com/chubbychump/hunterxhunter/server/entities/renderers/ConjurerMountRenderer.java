@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.ConjurerMount;
 import com.chubbychump.hunterxhunter.server.entities.models.ConjurerMountModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,14 +13,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ConjurerMountRenderer extends MobRenderer<ConjurerMount, ConjurerMountModel<ConjurerMount>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/conjurer_mount.png");
 
-    public ConjurerMountRenderer(EntityRendererManager renderManagerIn) {
+    public ConjurerMountRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ConjurerMountModel<>(), 0.75F);
     }
 
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(ConjurerMount entity) {
+    public ResourceLocation getTexture(ConjurerMount entity) {
         return TEXTURE;
     }
 

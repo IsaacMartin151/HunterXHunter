@@ -539,8 +539,8 @@ public class EventsHandling {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent event) {
-        if (event.getPlayer().getHeldItemOffhand().getItem() instanceof AppearanceToggle) {
-            Item held = event.getPlayer().getHeldItemOffhand().getItem();
+        if (event.getPlayer().getMainHandItemOffhand().getItem() instanceof AppearanceToggle) {
+            Item held = event.getPlayer().getMainHandItemOffhand().getItem();
             if (held instanceof CAmongUs) {
                 event.setCanceled(true);
                 AmongUsRenderer mongus = new AmongUsRenderer(event.getRenderer().getRenderManager());
@@ -727,8 +727,8 @@ public class EventsHandling {
         //LOGGER.info("Checking side. In livingupdate");
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (player.getHeldItemMainhand().getItem() instanceof PhantomStaff) {
-                PhantomStaff staff = (PhantomStaff) player.getHeldItemMainhand().getItem();
+            if (player.getMainHandItemMainhand().getItem() instanceof PhantomStaff) {
+                PhantomStaff staff = (PhantomStaff) player.getMainHandItemMainhand().getItem();
 
                 if (staff.isOn()) {
                     player.noClip = true;
@@ -736,7 +736,7 @@ public class EventsHandling {
                     player.setMotion(new Vector3d(event.getEntity().getMotion().x, 0, event.getEntity().getMotion().z));
                     player.setPose(Pose.SWIMMING);
                     if (event.getEntity().ticksExisted % 40 == 0) {
-                        player.getHeldItemMainhand().damageItem(1, player, (player1) -> {
+                        player.getMainHandItemMainhand().damageItem(1, player, (player1) -> {
                             player1.sendBreakAnimation(Hand.MAIN_HAND);
                         });
                     }
@@ -760,7 +760,7 @@ public class EventsHandling {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void keyPress(TickEvent.PlayerTickEvent event) {
-        if (event.player.isAlive() && event.phase == TickEvent.Phase.START && event.player.getEntityWorld().isRemote()) {
+        if (event.player.isAlive() && event.phase == TickEvent.Phase.START && event.player.getEntityWorld().isClientSide) {
             INenUser yo = NenUser.getFromPlayer(event.player);
             boolean updatePlayer = false;
             if (increaseNen.isPressed()) {
@@ -778,7 +778,7 @@ public class EventsHandling {
                     PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
                 }
                 if (transformCard.isPressed()) {
-                    ItemStack oof = event.player.getHeldItemMainhand();
+                    ItemStack oof = event.player.getMainHandItemMainhand();
                     ITag<Item> bro = ItemTags.getCollection().get(THEONEHUNDRED);
                     ITag<Item> cards = ItemTags.getCollection().get(THEONEHUNDREDCARDS);
                     if (oof.getItem().isIn(ItemTags.getCollection().get(THEONEHUNDRED)) || oof.getItem().isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
@@ -858,11 +858,11 @@ public class EventsHandling {
     public static void breakingBlock(PlayerEvent.BreakSpeed event) {
         if (event.getState().getBlock() == SUPER_COBWEB.get()) {
             LOGGER.info("It's an instance of super cobweb");
-            if (event.getPlayer().getHeldItemMainhand().getItem() == Items.SHEARS) {
+            if (event.getPlayer().getMainHandItemMainhand().getItem() == Items.SHEARS) {
                 LOGGER.info("Player is holding shears");
                 event.setNewSpeed(64f);
             }
-            if (event.getPlayer().getHeldItemMainhand().getItem() instanceof SwordItem) {
+            if (event.getPlayer().getMainHandItemMainhand().getItem() instanceof SwordItem) {
                 LOGGER.info("Player is holding a sword");
                 event.setNewSpeed(12f);
             }
@@ -926,7 +926,7 @@ public class EventsHandling {
             processLightPlacementForEntities(event.player.getEntityWorld());
         }
 
-        if (event.player.isAlive() && event.player.getEntityWorld().isRemote() && event.phase == TickEvent.Phase.START) {
+        if (event.player.isAlive() && event.player.getEntityWorld().isClientSide && event.phase == TickEvent.Phase.START) {
             if (event.player.getEntityWorld().getBiome(event.player.getPosition()).getRegistryName().toString().equals(SPIDER_EAGLE_BIOME.getId().toString())) {
                 LOGGER.info("time is "+event.player.getEntityWorld().getGameTime());
                 if (event.player.getEntityWorld().getGameTime() % 900 == 800) {

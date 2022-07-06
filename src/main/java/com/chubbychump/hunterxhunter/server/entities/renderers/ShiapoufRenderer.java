@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.Shiapouf;
 import com.chubbychump.hunterxhunter.server.entities.models.ShiapoufModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ShiapoufRenderer extends MobRenderer<Shiapouf, ShiapoufModel<Shiapouf>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/bossbattle/shiapouf.png");
 
-    public ShiapoufRenderer(EntityRendererManager renderManagerIn) {
+    public ShiapoufRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new ShiapoufModel(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
@@ -22,7 +22,7 @@ public class ShiapoufRenderer extends MobRenderer<Shiapouf, ShiapoufModel<Shiapo
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(Shiapouf entity) {
+    public ResourceLocation getTexture(Shiapouf entity) {
         return TEXTURE;
     }
 

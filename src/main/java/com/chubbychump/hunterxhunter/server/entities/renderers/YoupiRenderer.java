@@ -3,7 +3,7 @@ package com.chubbychump.hunterxhunter.server.entities.renderers;
 import com.chubbychump.hunterxhunter.server.entities.entityclasses.Youpi;
 import com.chubbychump.hunterxhunter.server.entities.models.YoupiModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class YoupiRenderer extends MobRenderer<Youpi, YoupiModel<Youpi>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation("hunterxhunter", "textures/entity/bossbattle/youpi.png");
 
-    public YoupiRenderer(EntityRendererManager renderManagerIn) {
+    public YoupiRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new YoupiModel(), 0.75F);
         //this.addLayer(new PhantomEyesLayer<>(this));
     }
@@ -22,7 +22,7 @@ public class YoupiRenderer extends MobRenderer<Youpi, YoupiModel<Youpi>> {
     /**
      * Returns the location of an entity's texture.
      */
-    public ResourceLocation getEntityTexture(Youpi entity) {
+    public ResourceLocation getTexture(Youpi entity) {
         return TEXTURE;
     }
 
