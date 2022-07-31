@@ -65,7 +65,7 @@ public class AchievementScreen extends Screen {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         //HunterXHunter.LOGGER.info("width, height: "+this.width+", "+this.height);
-        matrixStack.push();
+        matrixStack.pushPose();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -74,17 +74,17 @@ public class AchievementScreen extends Screen {
 
         if (done) {
 //            RenderSystem.disableCull();
-//            matrixStack.push();
+//            matrixStack.pushPose();
 //
 //            matrixStack.translate(this.width/2, this.height/2, 0);
 //            matrixStack.rotate(Vector3f.ZP.rotationDegrees((Util.milliTime() / 60) % 360));
 //            matrixStack.translate(-this.width/2, -this.height/2, 0);
 //            buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR_TEX);
-//            yo.bindTexture(BUBBLES);
-//            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getGlTextureId());
-//            drawTriangles(buffer, matrixStack.getLast().getMatrix());
+//            yo.bindForSetup(BUBBLES);
+//            RenderSystem.bindForSetup(yo.getTexture(BUBBLES).getGlTextureId());
+//            drawTriangles(buffer, matrixStack.getLast().pose());
 //            tessellator.draw();
-//            matrixStack.pop();
+//            matrixStack.popPose();
             super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         }
@@ -95,8 +95,8 @@ public class AchievementScreen extends Screen {
             }
 
             buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            yo.bindTexture(skin);
-            RenderSystem.bindTexture(yo.getTexture(skin).getGlTextureId());
+            yo.bindForSetup(skin);
+            RenderSystem.bindForSetup(yo.getTexture(skin).getGlTextureId());
             int upperleftX = 0;
             int upperleftY = 0;
             int Pxl = width / 7;
@@ -129,7 +129,7 @@ public class AchievementScreen extends Screen {
 //                }
 //            }
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override

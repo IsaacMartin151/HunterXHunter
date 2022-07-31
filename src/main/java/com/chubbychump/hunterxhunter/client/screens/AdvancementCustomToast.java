@@ -1,19 +1,18 @@
 package com.chubbychump.hunterxhunter.client.screens;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.gui.toasts.IToast;
-import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.entity.player.Player;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+
+import net.minecraft.client.gui.components.toasts.Toast;
+
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class AdvancementCustomToast implements IToast {
+public class AdvancementCustomToast implements Toast {
     private final Advancement advancement;
     private Player achv;
     private boolean hasPlayedSound;
@@ -31,9 +30,10 @@ public class AdvancementCustomToast implements IToast {
         this.achv = achiever;
     }
 
-    public Visibility func_230444_a_(MatrixStack ms, ToastGui tg, long time) {
-        tg.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
-        RenderSystem.color3f(1.0F, 1.0F, 1.0F);
+    @Override
+    public Visibility render(PoseStack ms, ToastComponent tg, long time) {
+        tg.getMinecraft().getTextureManager().bindForSetup(TEXTURE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         DisplayInfo lvt_5_1_ = this.advancement.getDisplay();
         tg.blit(ms, 0, 0, 0, 0, this.func_230445_a_(), this.func_238540_d_());
         if (lvt_5_1_ != null) {

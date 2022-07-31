@@ -2,13 +2,15 @@ package com.chubbychump.hunterxhunter.server.abilities.nenstuff;
 
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncNenPacket;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.nbt.CompoundNBT;
 
-import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public interface INenUser {
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER_CAPABILITY;
+
+public interface INenUser extends INBTSerializable<CompoundTag> {
     boolean isNenActivated();
     int getNenPower();
     float getCurrentNen();
@@ -77,16 +79,4 @@ public interface INenUser {
     void transmuter1(Player player);
     void conjurer1(Player player);
     void emitter1(Player player);
-
-    static INenUser getFromPlayer(Player player) {
-        return player.getCapability(NENUSER, null).orElseThrow(() -> new IllegalArgumentException("NenUser must not be empty!"));
-    }
-
-    static void updateClient(ServerPlayer player, NenUser cap) {
-        PacketManager.sendTo(player, new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
-    }
-
-    static void updateServer(Player player, NenUser cap) {
-        PacketManager.sendToServer(new SyncNenPacket(player.getEntityId(), (CompoundNBT) NENUSER.writeNBT(cap, null)));
-    }
 }

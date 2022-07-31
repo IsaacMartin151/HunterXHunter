@@ -15,7 +15,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeItemHelper;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -82,13 +82,13 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
         recipeType = VatRecipes.VAT_RECIPE_TYPE;
     }
 
-    public void read(BlockState state, CompoundNBT nbt) { //TODO: MARK
+    public void read(BlockState state, CompoundTag nbt) { //TODO: MARK
         super.read(state, nbt);
         this.items = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(nbt, this.items);
         this.cookTime = nbt.getInt("CookTime");
         this.cookTimeTotal = nbt.getInt("CookTimeTotal");
-        CompoundNBT compoundnbt = nbt.getCompound("RecipesUsed");
+        CompoundTag compoundnbt = nbt.getCompound("RecipesUsed");
 
         for(String s : compoundnbt.keySet()) {
             this.recipes.put(new ResourceLocation(s), compoundnbt.getInt(s));
@@ -96,12 +96,12 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
 
     }
 
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         super.write(compound);
         compound.putInt("CookTime", this.cookTime);
         compound.putInt("CookTimeTotal", this.cookTimeTotal);
         ItemStackHelper.saveAllItems(compound, this.items);
-        CompoundNBT compoundnbt = new CompoundNBT();
+        CompoundTag compoundnbt = new CompoundTag();
         this.recipes.forEach((recipeId, craftedAmount) -> {
             compoundnbt.putInt(recipeId.toString(), craftedAmount);
         });
@@ -113,7 +113,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
         if (ret != null) return ret;
         for(ItemEntity itementity : getCaptureItems(hopper)) {
             if (captureItem(hopper, itementity)) {
-                hopper.getWorld().playSound(null, itementity.getPosition(), SoundEvents.BLOCK_BUBBLE_COLUMN_UPWARDS_INSIDE, SoundCategory.BLOCKS, 1, 1);
+                hopper.getWorld().playSound(null, itementity.getPosition(), SoundEvents.BLOCK_BUBBLE_COLUMN_UPWARDS_INSIDE, SoundSource.BLOCKS, 1, 1);
                 return true;
             }
         }
@@ -211,7 +211,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
     }
 
     public void tick() {
-        if (this.world != null && !this.world.isRemote) {
+        if (this.world != null && !this.world.isClientSide) {
             this.tickedGameTime = this.world.getGameTime();
             this.updateHopper(() -> {
                 return pullItems(this);
@@ -221,7 +221,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
         boolean flag = true;
         boolean flag1 = false;
     //Check hopper tile entity for how to suck in items
-        if (!this.world.isRemote) {
+        if (!this.world.isClientSide) {
             ItemStack itemstack = this.items.get(1);
             if (!itemstack.isEmpty() && !this.items.get(0).isEmpty()) {
                 IRecipe<?> irecipe = this.world.getRecipeManager().getRecipe((IRecipeType<IVatRecipe>)recipeType, this, this.world).orElse(null);
@@ -286,7 +286,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
             ItemStack itemstack1 = recipe.getRecipeOutput();
             ItemStack itemstack2 = this.items.get(1);
 
-            if (!this.world.isRemote) {
+            if (!this.world.isClientSide) {
                 this.setRecipeUsed(recipe);
             }
 
@@ -305,7 +305,7 @@ public class VatTileEntity extends TileEntity implements IRecipeHolder, IInvento
 
             ItemEntity add = new ItemEntity(this.world, this.getXPos(), this.getYPos(), this.getZPos(), itemstack1);
             add.addVelocity(.1 * directionX, .1, .1 * directionZ);
-            this.world.addEntity(add);
+            this.world.addFreshEntity(add);
         }
     }
 

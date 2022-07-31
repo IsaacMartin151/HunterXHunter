@@ -7,7 +7,7 @@ import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundSource;
 
 import javax.annotation.Nullable;
 
@@ -46,8 +46,8 @@ public class MenuMusic implements ISound {
     }
 
     @Override
-    public SoundCategory getCategory() {
-        return SoundCategory.PLAYERS;
+    public SoundSource getCategory() {
+        return SoundSource.PLAYERS;
     }
 
     @Override

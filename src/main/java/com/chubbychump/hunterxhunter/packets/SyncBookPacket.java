@@ -8,8 +8,8 @@ import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -21,23 +21,23 @@ import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.Gre
 
 public class SyncBookPacket {
 
-    private final CompoundNBT nbt;
+    private final CompoundTag nbt;
 
-    public SyncBookPacket(int entityId, CompoundNBT nbt) {
+    public SyncBookPacket(int entityId, CompoundTag nbt) {
         // Add entity id
         nbt.putInt("entityid3", entityId);
         this.nbt = nbt;
     }
 
-    private SyncBookPacket(CompoundNBT nbt) {
+    private SyncBookPacket(CompoundTag nbt) {
         this.nbt = nbt;
     }
 
-    public static void encode(SyncBookPacket msg, PacketBuffer buff) {
+    public static void encode(SyncBookPacket msg, FriendlyByteBuf buff) {
         buff.writeCompoundTag(msg.nbt);
     }
 
-    public static SyncBookPacket decode(PacketBuffer buff) {
+    public static SyncBookPacket decode(FriendlyByteBuf buff) {
         return new SyncBookPacket(buff.readCompoundTag());
     }
 

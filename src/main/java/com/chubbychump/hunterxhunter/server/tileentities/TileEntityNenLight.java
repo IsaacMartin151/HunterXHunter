@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.server.tileentities;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -41,7 +41,7 @@ public class TileEntityNenLight extends TileEntity implements ITickableTileEntit
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket() {
-        CompoundNBT nbtTagCompound = new CompoundNBT();
+        CompoundTag nbtTagCompound = new CompoundTag();
         write(nbtTagCompound);
         return new SUpdateTileEntityPacket(this.pos, 0, nbtTagCompound);
     }
@@ -53,19 +53,19 @@ public class TileEntityNenLight extends TileEntity implements ITickableTileEntit
     }
 
     @Override
-    public void handleUpdateTag(BlockState blockState, CompoundNBT parentNBTTagCompound) {
+    public void handleUpdateTag(BlockState blockState, CompoundTag parentNBTTagCompound) {
         this.read(blockState, parentNBTTagCompound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void read(BlockState state, CompoundTag nbt) {
         super.read(state, nbt);
         this.deathTimer = nbt.getInt("deathTimer");
         this.levelOfLight = nbt.getInt("leveloflight");
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         super.write(compound);
         compound.putInt("deathTimer", deathTimer);
         compound.putInt("leveloflight", levelOfLight);

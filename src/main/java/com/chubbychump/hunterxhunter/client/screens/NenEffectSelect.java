@@ -71,7 +71,7 @@ public class NenEffectSelect extends Screen {
 
     @Override
     public void render(final MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        matrixStack.push();
+        matrixStack.pushPose();
         final int start = (int) ( visibility * 98 ) << 24;
         final int end = (int) ( visibility * 128 ) << 24;
 
@@ -183,8 +183,8 @@ public class NenEffectSelect extends Screen {
             final double x = ( mnuRgn.x1 + mnuRgn.x2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
             final double y = ( mnuRgn.y1 + mnuRgn.y2 ) * 0.5 * ( ring_outer_edge * 0.6 + 0.4 * ring_inner_edge );
             ResourceLocation target = getIconForMode(mnuRgn.power);
-            yo.bindTexture(target);
-            RenderSystem.bindTexture(yo.getTexture(target).getGlTextureId());
+            yo.bindForSetup(target);
+            RenderSystem.bindForSetup(yo.getTexture(target).getGlTextureId());
 
             final double scalex = 15 * 1 * 0.5;
             final double scaley = 15 * 1 * 0.5;
@@ -224,7 +224,7 @@ public class NenEffectSelect extends Screen {
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
     private boolean inTriangle(
             final double x1,
@@ -259,7 +259,7 @@ public class NenEffectSelect extends Screen {
         this.visibility = 0f;
         this.minecraft.displayGuiScreen( null );
 
-        if ( this.minecraft.currentScreen == null )
+        if ( this.minecraft.screen == null )
         {
             this.minecraft.setGameFocused(true);
         }

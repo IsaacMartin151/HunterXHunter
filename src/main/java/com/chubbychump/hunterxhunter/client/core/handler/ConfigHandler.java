@@ -60,7 +60,7 @@ public final class ConfigHandler {
             enableFancySkyboxInNormalWorlds = builder
                     .comment("Set this to true to enable the fancy skybox in non Garden of Glass worlds. (Does not require Garden of Glass loaded to use, needs 'fancySkybox.enabled' to be true as well)")
                     .define("normalWorlds", false);
-            builder.pop();
+            builder.popPose();
 
             builder.push("lexicon");
             lexiconRotatingItems = builder
@@ -84,7 +84,7 @@ public final class ConfigHandler {
             elfPortalParticlesEnabled = builder
                     .comment("Set this to false to disable the particles in the elven portal.")
                     .define("elvenPortal", true);
-            builder.pop();
+            builder.popPose();
 
             enableSeasonalFeatures = builder
                     .comment("Set this to false to disable seasonal features, such as halloween and christmas.")
@@ -139,7 +139,7 @@ public final class ConfigHandler {
             blockBreakParticlesTool = builder
                     .comment("Set this to false to remove the block breaking particles from the Terra Shatterer, as there can be a good amount in higher levels.")
                     .define("toolEnabled", true);
-            builder.pop();
+            builder.popPose();
 
             builder.push("manaSpreaders");
             silentSpreaders = builder
@@ -148,7 +148,7 @@ public final class ConfigHandler {
             spreaderTraceTime = builder
                     .comment("How many ticks into the future will mana spreaders attempt to predict where mana bursts go? Setting this lower will improve spreader performance, but will cause them to not fire at targets that are too far away.")
                     .defineInRange("traceTime", 400, 1, Integer.MAX_VALUE);
-            builder.pop();
+            builder.popPose();
 
             builder.push("harvestLevels");
             harvestLevelWeight = builder
@@ -157,7 +157,7 @@ public final class ConfigHandler {
             harvestLevelBore = builder
                     .comment("The harvest level of the Mana Lens: Bore. 3 is diamond level. Defaults to 3")
                     .defineInRange("boreLens", 3, 0, Integer.MAX_VALUE);
-            builder.pop();
+            builder.popPose();
 
             chargingAnimationEnabled = builder
                     .comment("Set this to false to disable the animation when an item is charging on top of a mana pool")

@@ -64,7 +64,7 @@ public class Config {
                 .comment("When enabled, upon any damage to the player, the player will immediately die. \"One-Hit Knockout\"")
                 .define("Ohko", false);
 
-        builder.pop();
+        builder.popPose();
 
         ////////////
         // Health //
@@ -93,7 +93,7 @@ public class Config {
                 .defineInRange("Punish Health", -1, -1, 10);
 
 
-        builder.pop();
+        builder.popPose();
 
         //////////
         // Gui  //
@@ -112,7 +112,7 @@ public class Config {
                 .comment("When enabled, health will not be displayed at all. Works well in combination with one-hit knockout.")
                 .define("LevelHearts Hidden HUD", false);
 
-        builder.pop();
+        builder.popPose();
 
         ////////////////
         // Experience //
@@ -132,7 +132,7 @@ public class Config {
                         "If using a setting to lose health upon death, often health will be regained through experience after respawning, which can be confusing.")
                 .define("Always Lose Inventory on Death", false);
 
-        builder.pop();
+        builder.popPose();
         // @formatter:on
 
         // Build the spec

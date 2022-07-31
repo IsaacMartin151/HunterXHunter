@@ -1,23 +1,20 @@
 package com.chubbychump.hunterxhunter.server.abilities.heartstuff;
 
 import com.chubbychump.hunterxhunter.Config;
-
 import com.chubbychump.hunterxhunter.packets.PacketManager;
 import com.chubbychump.hunterxhunter.packets.SyncHealthPacket;
-import net.minecraft.entity.ai.attributes.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SEntityPropertiesPacket;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Collections;
 
-import static com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider.CAPABILITY;
-
 public class MoreHealth implements IMoreHealth {
+
     private byte version;
     private float modifier;
     private short rampPosition;
@@ -25,7 +22,6 @@ public class MoreHealth implements IMoreHealth {
 
     public MoreHealth() {
         this.version = (byte) 1;
-        this.modifier = getDefaultModifier();
         this.rampPosition = 0;
     }
 
@@ -45,9 +41,7 @@ public class MoreHealth implements IMoreHealth {
     }
 
     @Override
-    public float getEnhancerModifier() {
-        return modifier + (containers * 3);
-    }
+    public float getEnhancerModifier() { return 1.5f; }
 
     @Override
     public short getRampPosition() {
@@ -99,27 +93,42 @@ public class MoreHealth implements IMoreHealth {
 
     @Override
     public void synchronise(Player player) {
-        if (!player.getEntityWorld().isRemote) {
-            ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
-            SEntityPropertiesPacket packet = new SEntityPropertiesPacket(player.getEntityId(), Collections.singleton(attribute));
-            ((ServerWorld) player.getEntityWorld()).getChunkProvider().sendToTrackingAndSelf(player, packet);
+        if (!player.getCommandSenderWorld().isClientSide) {
+            AttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
+            ClientboundUpdateAttributesPacket packet = new ClientboundUpdateAttributesPacket(player.getId(), Collections.singleton(attribute));
+            ((ServerLevel) player.getCommandSenderWorld()).getChunkSource().broadcastAndSend(player, packet);
         }
     }
 
-    public static float getDefaultModifier() {
-        return Config.defHealth.get() - (float) Attributes.MAX_HEALTH.getDefaultValue();
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putByte("version", version);
+        tag.putFloat("modifier", modifier);
+        tag.putShort("position", rampPosition);
+        tag.putByte("containers", containers);
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        setVersion(tag.getByte("version"));
+        setModifier(tag.getFloat("modifier"));
+        setRampPosition(tag.getShort("position"));
+        setHeartContainers(tag.getByte("containers"));
     }
 
     public static IMoreHealth getFromPlayer(Player player) {
-        return player.getCapability(CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        return player.getCapability(MoreHealthProvider.CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
     }
 
     public static void updateClient(ServerPlayer player, IMoreHealth cap) {
-        PacketManager.sendTo(player, new SyncHealthPacket(player.getEntityId(), (CompoundNBT) CAPABILITY.writeNBT(cap, null)));
+        PacketManager.sendTo(player, new SyncHealthPacket(player.getId(), cap.serializeNBT()));
     }
 
     @Override
     public String toString() {
         return String.format("MoreHealth{version=%s,modifier=%s,rampPosition=%s, containers=%s}", version, modifier, rampPosition, containers);
     }
+
 }

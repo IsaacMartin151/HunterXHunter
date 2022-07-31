@@ -2,7 +2,7 @@ package com.chubbychump.hunterxhunter.server.potions;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.MobEffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -25,7 +25,7 @@ public class BloodLustRecipe implements IBrewingRecipe {
     @Override
     public ItemStack getOutput(ItemStack input2, ItemStack ingredient2) {
         if (PotionUtils.getPotionFromItem(input2) == Potions.MUNDANE) {
-            return PotionUtils.appendEffects(Items.POTION.getDefaultInstance(), Collections.singletonList(new EffectInstance(BLOODLUST_EFFECT.get(), 600)));
+            return PotionUtils.appendEffects(Items.POTION.getDefaultInstance(), Collections.singletonList(new MobEffectInstance(BLOODLUST_EFFECT.get(), 600)));
         }
         return input2;
     }

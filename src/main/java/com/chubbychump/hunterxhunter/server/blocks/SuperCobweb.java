@@ -34,10 +34,10 @@ public class SuperCobweb extends Block implements net.minecraftforge.common.IFor
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, Player player) {
         worldIn.playEvent(player, 2001, pos, getStateId(state));
         if (player.getMainHandItemMainhand().getItem() == Items.SHEARS) {
-            worldIn.addEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), SUPER_COBWEB_ITEM.get().getDefaultInstance()));
+            worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), SUPER_COBWEB_ITEM.get().getDefaultInstance()));
         }
         if (player.getMainHandItemMainhand().getItem() instanceof SwordItem) {
-            worldIn.addEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), SUPER_STRING.get().getDefaultInstance()));
+            worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), SUPER_STRING.get().getDefaultInstance()));
         }
 
     }

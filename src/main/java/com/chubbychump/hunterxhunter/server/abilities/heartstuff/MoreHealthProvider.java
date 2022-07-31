@@ -1,17 +1,17 @@
 package com.chubbychump.hunterxhunter.server.abilities.heartstuff;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class MoreHealthProvider implements ICapabilitySerializable<CompoundNBT> {
+public class MoreHealthProvider implements ICapabilitySerializable<CompoundTag> {
 
-    @CapabilityInject(IMoreHealth.class)
-    public static final Capability<IMoreHealth> CAPABILITY = null;
-    private LazyOptional<IMoreHealth> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
+    public static final Capability<IMoreHealth> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() { });
+    private LazyOptional<IMoreHealth> instance = LazyOptional.of(MoreHealth::new);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
@@ -19,13 +19,18 @@ public class MoreHealthProvider implements ICapabilitySerializable<CompoundNBT> 
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null);
+    public CompoundTag serializeNBT() {
+        IMoreHealth nninstance = instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        return nninstance.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null, nbt);
+    public void deserializeNBT(CompoundTag tag) {
+        IMoreHealth nninstance = instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        nninstance.setVersion(tag.getByte("version"));
+        nninstance.setModifier(tag.getFloat("modifier"));
+        nninstance.setRampPosition(tag.getShort("position"));
+        nninstance.setHeartContainers(tag.getByte("containers"));
     }
 
 }

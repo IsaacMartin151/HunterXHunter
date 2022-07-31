@@ -1,18 +1,18 @@
 package com.chubbychump.hunterxhunter.server.advancements;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+
 
 import javax.annotation.Nonnull;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
 
-public class AbilityMaxTrigger extends AbstractCriterionTrigger<AbilityMaxTrigger.Instance> {
+public class AbilityMaxTrigger extends SimpleCriterionTrigger<AbilityMaxTrigger.Instance> {
     public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "ability_max");
     public static final AbilityMaxTrigger INSTANCE = new AbilityMaxTrigger();
 
@@ -26,7 +26,7 @@ public class AbilityMaxTrigger extends AbstractCriterionTrigger<AbilityMaxTrigge
 
     @Nonnull
     @Override
-    public Instance deserializeTrigger(@Nonnull JsonObject json, EntityPredicate.AndPredicate playerPred, ConditionArrayParser conditions) {
+    public Instance deserializeTrigger(@Nonnull JsonObject json, EntityPredicate.Composite playerPred, DeserializationContext conditions) {
         return new Instance(playerPred);
     }
 
@@ -36,7 +36,7 @@ public class AbilityMaxTrigger extends AbstractCriterionTrigger<AbilityMaxTrigge
 
     static class Instance extends CriterionInstance {
 
-        Instance(EntityPredicate.AndPredicate playerPred) {
+        Instance(EntityPredicate.Composite playerPred) {
             super(ID, playerPred);
         }
 

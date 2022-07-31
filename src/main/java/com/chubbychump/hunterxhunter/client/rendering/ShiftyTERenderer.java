@@ -66,11 +66,11 @@ public class ShiftyTERenderer extends TileEntityRenderer<ShiftyTileEntity> {
         //   so we need to translate up by one block, i.e. by [0,1,0]
         final Vector3d TRANSLATION_OFFSET = new Vector3d(0, 1, 0);
 
-        matrixStack.push(); // push the current transformation matrix + normals matrix
+        matrixStack.pushPose(); // push the current transformation matrix + normals matrix
         matrixStack.translate(TRANSLATION_OFFSET.x,TRANSLATION_OFFSET.y,TRANSLATION_OFFSET.z); // translate
         Color artifactColour = Color.GREEN;
         drawTetrahedronWireframe(matrixStack, renderBuffers, artifactColour);
-        matrixStack.pop(); // restore the original transformation matrix + normals matrix
+        matrixStack.popPose(); // restore the original transformation matrix + normals matrix
     }
 
     private void drawTetrahedronWireframe(MatrixStack matrixStack, IRenderTypeBuffer renderBuffers, java.awt.Color color) {
@@ -91,7 +91,7 @@ public class ShiftyTERenderer extends TileEntityRenderer<ShiftyTileEntity> {
         //  the scene (such as DrawBlockHighlightEvent)
         // The solution I used here is a custom RenderType for lines which does write to the depth buffer.
 
-        Matrix4f matrixPos = matrixStack.getLast().getMatrix();  //retrieves the current transformation matrix
+        Matrix4f matrixPos = matrixStack.getLast().pose();  //retrieves the current transformation matrix
         // draw the base
         for (int i = 1; i < BASE_VERTICES.length; ++i) {
             drawLine(matrixPos, vertexBuilderLines, color, BASE_VERTICES[i-1], BASE_VERTICES[i]);

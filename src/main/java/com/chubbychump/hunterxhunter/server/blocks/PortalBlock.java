@@ -21,7 +21,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -115,18 +115,18 @@ public class PortalBlock extends Block {
             if (entity.func_242280_ah()) {
                 entity.func_242279_ag();
             } else {
-                if (!entity.world.isRemote && !pos.equals(entity.getPosition())) {
+                if (!entity.world.isClientSide && !pos.equals(entity.getPosition())) {
                     entity.setPosition(pos.getX(), pos.getY(), pos.getZ());
                 }
-                World serverworld = entity.getEntityWorld();
+                World serverworld = entity.getLevel();
                 MinecraftServer serverworld1 = entity.getServer();
 
-                //ServerWorld.func_241121_a_();
+                //ServerLevel.func_241121_a_();
                 if(serverworld1 != null) {
                     MinecraftServer minecraftserver = serverworld.getServer(); //Getting null here
                     RegistryKey<World> where2go = entity.world.getDimensionKey() == GREED_ISLAND_WORLD ? World.OVERWORLD : GREED_ISLAND_WORLD;
                     if(minecraftserver != null) {
-                        ServerWorld destination = serverworld1.getWorld(where2go);
+                        ServerLevel destination = serverworld1.getWorld(where2go);
                         HunterXHunter.LOGGER.error("server destination is "+where2go.getLocation().getPath());
                         if (destination != null && serverworld1.getAllowNether() && !entity.isPassenger()) {
                             entity.world.getProfiler().startSection("twilight_portal");
@@ -144,7 +144,7 @@ public class PortalBlock extends Block {
     @Override
     public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
         if (rand.nextInt(100) == 0) {
-            worldIn.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, OSU.get(), SoundCategory.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F, false);
+            worldIn.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, OSU.get(), SoundSource.BLOCKS, 0.5F, rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
         for(int i = 0; i < 4; ++i) {

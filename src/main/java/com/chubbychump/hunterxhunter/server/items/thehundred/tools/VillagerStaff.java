@@ -5,7 +5,7 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobMobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.ZombieVillager;
@@ -42,8 +42,8 @@ public class VillagerStaff extends StaffBase {
 
             List<ZombieVillager> yo = worldIn.getEntities(EntityTypeTest.forClass(ZombieVillager.class), bounds, (Predicate<? super Entity>) EntityPredicate.Builder.entity().build());
             for (ZombieVillager mob : yo) {
-                mob.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600));
-                //element.addPotionEffect(new EffectInstance(Effects.STRENGTH, 600));
+                mob.addEffect(new MobMobEffectInstance(MobEffects.WEAKNESS, 600));
+                //element.addPotionEffect(new MobEffectInstance(Effects.STRENGTH, 600));
                 playerIn.setItemInHand(InteractionHand.MAIN_HAND, Items.GOLDEN_APPLE.getDefaultInstance());
                 mob.mobInteract(playerIn, InteractionHand.MAIN_HAND);
             }

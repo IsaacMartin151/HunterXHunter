@@ -2,9 +2,11 @@ package com.chubbychump.hunterxhunter.server.advancements;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 
 import javax.annotation.Nonnull;
@@ -25,7 +27,7 @@ public class AbilityUseTrigger extends SimpleCriterionTrigger<AbilityUseTrigger.
 
     @Nonnull
     @Override
-    public Instance deserializeTrigger(@Nonnull JsonObject json, EntityPredicate.AndPredicate playerPred, ConditionArrayParser conditions) {
+    public Instance createInstance(@Nonnull JsonObject json, EntityPredicate.Composite playerPred, DeserializationContext conditions) {
         return new Instance(playerPred);
     }
 
@@ -35,7 +37,7 @@ public class AbilityUseTrigger extends SimpleCriterionTrigger<AbilityUseTrigger.
 
     static class Instance extends CriterionTriggerInstance {
 
-        Instance(EntityPredicate.AndPredicate playerPred) {
+        Instance(EntityPredicate.Composite playerPred) {
             super(ID, playerPred);
         }
 

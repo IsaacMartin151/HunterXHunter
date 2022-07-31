@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobMobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -232,7 +232,7 @@ public class Bomber extends Creeper implements PowerableMob {
     }
 
     private void spawnLingeringCloud() {
-        Collection<MobEffectInstance> collection = this.getActiveEffects();
+        Collection<MobMobEffectInstance> collection = this.getActiveEffects();
         if (!collection.isEmpty()) {
             AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
             areaeffectcloud.setRadius(2.5F);
@@ -241,8 +241,8 @@ public class Bomber extends Creeper implements PowerableMob {
             areaeffectcloud.setDuration(areaeffectcloud.getDuration() / 2);
             areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
 
-            for(MobEffectInstance mobeffectinstance : collection) {
-                areaeffectcloud.addEffect(new MobEffectInstance(mobeffectinstance));
+            for(MobMobEffectInstance mobeffectinstance : collection) {
+                areaeffectcloud.addEffect(new MobMobEffectInstance(mobeffectinstance));
             }
 
             this.level.addFreshEntity(areaeffectcloud);

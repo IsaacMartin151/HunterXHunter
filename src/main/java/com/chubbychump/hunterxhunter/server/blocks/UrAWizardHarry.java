@@ -27,7 +27,7 @@ public class UrAWizardHarry extends AbstractButtonBlock {
         } else {
             //this.powerBlock(state, worldIn, pos);
             //this.playSound(player, worldIn, pos, true);
-            return InteractionResultHolderType.func_233537_a_(worldIn.isRemote);
+            return InteractionResultHolderType.func_233537_a_(worldIn.isClientSide);
         }
 
     }

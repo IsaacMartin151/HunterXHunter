@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -47,7 +47,7 @@ public class VatRecipeSerializer extends net.minecraftforge.registries.ForgeRegi
     }
 
     @Override
-    public VatRecipes read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public VatRecipes read(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         String s = buffer.readString(32767);
         Ingredient ingredient_0 = Ingredient.read(buffer);
         Ingredient ingredient_1 = Ingredient.read(buffer);
@@ -59,7 +59,7 @@ public class VatRecipeSerializer extends net.minecraftforge.registries.ForgeRegi
     }
 
     @Override
-    public void write(PacketBuffer buffer, VatRecipes recipe) {
+    public void write(FriendlyByteBuf buffer, VatRecipes recipe) {
         buffer.writeString(recipe.group);
         recipe.ingredient1.write(buffer);
         recipe.ingredient2.write(buffer);

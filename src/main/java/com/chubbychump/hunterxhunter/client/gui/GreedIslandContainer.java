@@ -64,7 +64,7 @@ public class GreedIslandContainer extends Container {
      * @param extraData extra data sent from the server
      * @return
      */
-    public static GreedIslandContainer createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
+    public static GreedIslandContainer createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.FriendlyByteBuf extraData) {
 
         try {
             BookItemStackHandler itemStackHandlerFlowerBag = new BookItemStackHandler(100);

@@ -1,11 +1,11 @@
 package com.chubbychump.hunterxhunter.packets;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PacketManager {
 
@@ -34,7 +34,7 @@ public class PacketManager {
      * Must be called server side.
      */
     public static void sendTo(ServerPlayer player, Object msg) {
-        INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        INSTANCE.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
 }

@@ -8,6 +8,7 @@ import com.mojang.math.Vector3d;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,11 +20,11 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.List;
 
 import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
-import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
 
 @Getter
 @Setter
@@ -61,12 +62,54 @@ public class NenUser implements INenUser {
 
     }
 
+    public static INenUser getFromPlayer(Player player) {
+        return player.getCapability(NenProvider.NENUSER_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+    }
+
     public static void updateClient(ServerPlayer player, INenUser cap) {
-        PacketManager.sendTo(player, new SyncNenPacket(player.getId(), (CompoundTag) NENUSER.writeNBT(cap, null)));
+        PacketManager.sendTo(player, new SyncNenPacket(player.getId(), cap.serializeNBT()));
     }
 
     public static void updateServer(Player player, INenUser cap) {
-        PacketManager.sendToServer(new SyncNenPacket(player.getId(), (CompoundTag) NENUSER.writeNBT(cap, null)));
+        PacketManager.sendToServer(new SyncNenPacket(player.getId(), cap.serializeNBT()));
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("type", getNenType());
+        tag.putBoolean("conjurer", isConjurerActivated());
+        tag.putBoolean("book", isOpenedBook());
+        tag.putFloat("currentnen", getCurrentNen());
+        tag.putInt("nenpower", getNenPower());
+        tag.putInt("burnout", getBurnout());
+        tag.putBoolean("nenactivated", isNenActivated());
+        tag.putBoolean("gyo", isGyo());
+        tag.putBoolean("en", isEn());
+        tag.putBoolean("ren", isRen());
+        tag.putBoolean("zetsu", isZetsu());
+        tag.putInt("passivepower", getPassivePower());
+        tag.putBoolean("blocknext", isBlockDamage());
+        tag.putBoolean("riftwalk", isRiftwalk());
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        setNenType(tag.getInt("type"));
+        setConjurerActivated(tag.getBoolean("conjurer"));
+        setOpenedBook(tag.getBoolean("book"));
+        setCurrentNen(tag.getFloat("currentnen"));
+        setNenPower(tag.getInt("nenpower"));
+        setBurnout(tag.getInt("burnout"));
+        setNenActivated(tag.getBoolean("nenactivated"));
+        setGyo(tag.getBoolean("gyo"));
+        setEn(tag.getBoolean("en"));
+        setRen(tag.getBoolean("ren"));
+        setZetsu(tag.getBoolean("zetsu"));
+        setPassivePower(tag.getInt("passivepower"));
+        setBlockDamage(tag.getBoolean("blocknext"));
+        setRiftwalk(tag.getBoolean("riftwalk"));
     }
 
     public int[] getRiftwalkPos() {
@@ -132,10 +175,6 @@ public class NenUser implements INenUser {
         this.setNenType(other.getNenType());
         this.resetNen();
         //TODO: carry over boolean states?
-    }
-
-    public static INenUser getFromPlayer(Player player) {
-        return player.getCapability(NENUSER, null).orElseThrow(() -> new IllegalArgumentException("NenUser must not be empty!"));
     }
 
     public int getMaxCurrentNen() {

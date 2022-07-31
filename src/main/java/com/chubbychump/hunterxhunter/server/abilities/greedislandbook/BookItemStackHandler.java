@@ -1,11 +1,11 @@
 package com.chubbychump.hunterxhunter.server.abilities.greedislandbook;
 
 import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ public class BookItemStackHandler extends ItemStackHandler {
     public static final int MAX_FLOWER_SLOTS = 100;
 
     public BookItemStackHandler(int numberOfSlots) {
-        super(MathHelper.clamp(numberOfSlots, MIN_FLOWER_SLOTS, MAX_FLOWER_SLOTS));
+        super(Mth.clamp(numberOfSlots, MIN_FLOWER_SLOTS, MAX_FLOWER_SLOTS));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class BookItemStackHandler extends ItemStackHandler {
         ResourceLocation bruh[] = new ResourceLocation[this.getSlots()];
         for (int i = 0; i < this.getSlots(); i++) {
             Item item = stacks.get(i).getItem();
-            if (item.isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
+            if (item.isIn(ItemTags.().get(THEONEHUNDREDCARDS))) {
                 for (int j = 0; j < this.getSlots(); j++) {
                     if (j != i) {
                         if (item.getRegistryName() == stacks.get(j).getItem().getRegistryName()) {

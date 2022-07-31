@@ -8,23 +8,25 @@ import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemSt
 import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookStorage;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
-import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthStorage;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenStorage;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
 import com.chubbychump.hunterxhunter.server.entities.projectiles.ManipulatorTpProjectile;
 import com.chubbychump.hunterxhunter.server.entities.renderers.*;
 import com.chubbychump.hunterxhunter.server.items.ItemVariants;
 import com.chubbychump.hunterxhunter.util.RegistryHandler;
-import com.chubbychump.hunterxhunter.util.VillagerUtil;
 import com.mojang.blaze3d.platform.ScreenManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ClientRegistry;
@@ -168,87 +170,85 @@ public class HunterXHunter {
 
     private void setupServer(final FMLCommonSetupEvent event) {
         PacketManager.register(); //32.0.63
-        CapabilityManager.INSTANCE.register(INenUser.class, new NenStorage(), () -> new NenUser());
+        CapabilityManager.INSTANCE.register(INenUser.class, () -> new NenUser());
         CapabilityManager.INSTANCE.register(IMoreHealth.class, new MoreHealthStorage(), () -> new MoreHealth());
         CapabilityManager.INSTANCE.register(ItemStackHandler.class, new BookStorage(), () -> new BookItemStackHandler(100));
 
-        VillagerUtil.fixPOITypeBlockStates(MASADORIAN_POI.get());
+        DefaultAttributes.getSupplier(AMONG_US_ENTITY.get()).createInstance(Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .add(Attributes.ATTACK_DAMAGE, 6.0D)
+                .add(Attributes.FOLLOW_RANGE, 8.0D)
+                .build());
 
-        GlobalEntityTypeAttributes.put(AMONG_US_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
+        DefaultAttributes.getSupplier(OBAMA_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 15.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .add(Attributes.ATTACK_DAMAGE, 6.0D)
+                .add(Attributes.FOLLOW_RANGE, 8.0D)
+                .build());
+
+        DefaultAttributes.getSupplier(MIDDLE_FINGER_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.5F)
+                .add(Attributes.ATTACK_DAMAGE, 6.0D)
+                .add(Attributes.FOLLOW_RANGE, 8.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(OBAMA_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 15.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
+        DefaultAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 1.0D)
+                .add(Attributes.FLYING_SPEED, 1.0D)
+                .add(Attributes.ATTACK_DAMAGE, 5.0D)
                 .create());
 
-        GlobalEntityTypeAttributes.put(MIDDLE_FINGER_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.5F)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D)
-                .create());
+        DefaultAttributes.put(YOUPI_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 300.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.8F)
+                .add(Attributes.FOLLOW_RANGE, 100.0D)
+                .add(Attributes.ATTACK_DAMAGE, 8.0D)
+                .add(Attributes.ATTACK_KNOCKBACK, 50.0D)
+                .add(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(SHIAPOUF_CLONE_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 1.0D)
-                .createMutableAttribute(Attributes.FLYING_SPEED, 1.0D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
-                .create());
+        DefaultAttributes.put(NEFERPITOU_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 300.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.6F)
+                .add(Attributes.FOLLOW_RANGE, 50.0D)
+                .add(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(YOUPI_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.8F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 100.0D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 8.0D)
-                .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 50.0D)
-                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+        DefaultAttributes.put(SHIAPOUF_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 300.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)1.0F)
+                .add(Attributes.FOLLOW_RANGE, 50.0D)
+                .add(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(NEFERPITOU_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)0.6F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
-                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+        DefaultAttributes.put(CHIMERA_ANT_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 40.0D)
+                .add(Attributes.ATTACK_DAMAGE, 7.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double).3F)
+                .add(Attributes.FOLLOW_RANGE, 50.0D)
+                .add(Attributes.ARMOR, 4.0D).create());
 
-        GlobalEntityTypeAttributes.put(SHIAPOUF_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 300.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1.0F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
-                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+        DefaultAttributes.put(FOXBEAR_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 30.0D)
+                .add(Attributes.ATTACK_DAMAGE, 5.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)1F)
+                .add(Attributes.FOLLOW_RANGE, 30.0D)
+                .add(Attributes.ARMOR, 3.0D).create());
 
-        GlobalEntityTypeAttributes.put(CHIMERA_ANT_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).3F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 50.0D)
-                .createMutableAttribute(Attributes.ARMOR, 4.0D).create());
+        DefaultAttributes.put(GIANT_LIZARD_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 16.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)1F)
+                .add(Attributes.FOLLOW_RANGE, 30.0D).create());
 
-        GlobalEntityTypeAttributes.put(FOXBEAR_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D)
-                .createMutableAttribute(Attributes.ARMOR, 3.0D).create());
+        DefaultAttributes.put(CONJURER_MOUNT.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double).9F)
+                .add(Attributes.FOLLOW_RANGE, 8.0D).create());
 
-        GlobalEntityTypeAttributes.put(GIANT_LIZARD_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 16.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double)1F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 30.0D).create());
-
-        GlobalEntityTypeAttributes.put(CONJURER_MOUNT.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).9F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
-
-        GlobalEntityTypeAttributes.put(CAMERA_ENTITY.get(), Mob.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, (double).5F)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 8.0D).create());
+        DefaultAttributes.put(CAMERA_ENTITY.get(), Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double).5F)
+                .add(Attributes.FOLLOW_RANGE, 8.0D).create());
 
         //BrewingRecipeRegistry.addRecipe(new BloodLustRecipe());
 

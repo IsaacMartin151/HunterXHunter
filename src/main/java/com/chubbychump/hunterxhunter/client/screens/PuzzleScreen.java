@@ -160,7 +160,7 @@ public class PuzzleScreen extends Screen {
             matrixStack.translate(-this.width/2, -this.height/2, 0);
             buffer.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_TEX);
             yo.bindForSetup(BUBBLES);
-            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getId());
+            RenderSystem.bindForSetup(yo.getTexture(BUBBLES).getId());
             drawTriangles(buffer, matrixStack.last().pose());
             tessellator.end();
             matrixStack.popPose();
@@ -184,7 +184,7 @@ public class PuzzleScreen extends Screen {
 
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             yo.bindForSetup(icons[bruh]);
-            RenderSystem.bindTexture(yo.getTexture(icons[bruh]).getId());
+            RenderSystem.bindForSetup(yo.getTexture(icons[bruh]).getId());
             int upperleftX = 0;
             int upperleftY = 0;
             int Pxl = width / 7;

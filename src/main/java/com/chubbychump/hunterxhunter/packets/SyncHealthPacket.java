@@ -4,43 +4,44 @@ import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.Player;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class SyncHealthPacket {
 
-    private final CompoundNBT nbt;
+    private final CompoundTag nbt;
 
-    public SyncHealthPacket(int entityId, CompoundNBT nbt) {
+    public SyncHealthPacket(int entityId, CompoundTag nbt) {
         // Add entity id
         nbt.putInt("entityid", entityId);
         this.nbt = nbt;
     }
 
-    private SyncHealthPacket(CompoundNBT nbt) {
+    private SyncHealthPacket(CompoundTag nbt) {
         this.nbt = nbt;
     }
 
-    public static void encode(SyncHealthPacket msg, PacketBuffer buff) {
-        buff.writeCompoundTag(msg.nbt);
+    public static void encode(SyncHealthPacket msg, FriendlyByteBuf buff) {
+        buff.writeNbt(msg.nbt);
     }
 
-    public static SyncHealthPacket decode(PacketBuffer buff) {
-        return new SyncHealthPacket(buff.readCompoundTag());
+    public static SyncHealthPacket decode(FriendlyByteBuf buff) {
+        return new SyncHealthPacket(buff.readNbt());
     }
 
     public static void handle(SyncHealthPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             // Fetch Capability
-            Player player = (Player) Minecraft.getInstance().world.getEntityByID(msg.nbt.getInt("entityid"));
-            IMoreHealth cap = MoreHealth.getFromPlayer(player);
+            Player player = (Player) Minecraft.getInstance().level.getEntity(msg.nbt.getInt("entityid"));
+            MoreHealth cap = MoreHealth.getFromPlayer(player);
 
             // Read NBT Data into Capability
-            MoreHealthProvider.CAPABILITY.readNBT(cap, null, msg.nbt);
+            cap.
         });
         ctx.get().setPacketHandled(true);
     }

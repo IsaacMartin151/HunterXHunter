@@ -1,6 +1,6 @@
 package com.chubbychump.hunterxhunter.server.items;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import static com.chubbychump.hunterxhunter.util.RegistryHandler.*;
 

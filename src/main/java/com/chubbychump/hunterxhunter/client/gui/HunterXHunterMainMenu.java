@@ -3,42 +3,24 @@ package com.chubbychump.hunterxhunter.client.gui;
 import com.chubbychump.hunterxhunter.HunterXHunter;
 import com.chubbychump.hunterxhunter.client.rendering.TextureHandler;
 import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DialogTexts;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.toasts.SystemToast;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.ImageButton;
+
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.gen.settings.DimensionGeneratorSettings;
-import net.minecraft.world.storage.SaveFormat;
-import net.minecraft.world.storage.WorldSummary;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameUtils;
 
 import java.io.File;
-import java.io.IOException;
 
-import static net.minecraft.client.gui.widget.Widget.WIDGETS_LOCATION;
 
 @OnlyIn(Dist.CLIENT)
-public class HunterXHunterMainMenu extends MainMenuScreen {
+public class HunterXHunterMainMenu extends TitleScreen {
     private static File file = new File(Minecraft.getInstance().getFileResourcePacks().getAbsolutePath()+"/departure.avi");
     public static FFmpegFrameGrabber eff = new FFmpegFrameGrabber(file);
     private boolean needstorestart = false;
@@ -164,12 +146,12 @@ public class HunterXHunterMainMenu extends MainMenuScreen {
                 }
             }
         }
-        Minecraft.getInstance().getTextureManager().bindTexture(handler.getTextureLocation());
+        Minecraft.getInstance().getTextureManager().bindForSetup(handler.getTextureLocation());
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
-        this.minecraft.getTextureManager().bindTexture(MINECRAFT_TITLE_TEXTURES);
+        this.minecraft.getTextureManager().bindForSetup(MINECRAFT_TITLE_TEXTURES);
         //net.minecraftforge.client.ForgeHooksClient.renderMainMenu(this, matrixStack, this.font, this.width, this.height);
 
         for (Widget widget : this.buttons) {

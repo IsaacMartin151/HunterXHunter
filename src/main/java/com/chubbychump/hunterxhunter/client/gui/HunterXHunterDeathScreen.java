@@ -2,27 +2,20 @@ package com.chubbychump.hunterxhunter.client.gui;
 
 import com.chubbychump.hunterxhunter.client.rendering.TextureHandler;
 import com.chubbychump.hunterxhunter.client.sounds.DeathMusic;
-import com.chubbychump.hunterxhunter.client.sounds.MenuMusic;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.*;
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
+
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.*;
-import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameUtils;
+
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -39,12 +32,12 @@ public class HunterXHunterDeathScreen extends Screen {
     private boolean needstorestart = false;
     private int enableButtonsTimer;
     private TextureHandler handler;
-    private final ITextComponent causeOfDeath;
+    private final Component causeOfDeath;
     private final boolean isHardcoreMode;
-    private ITextComponent field_243285_p;
+    private Component field_243285_p;
 
-    public HunterXHunterDeathScreen(@Nullable ITextComponent textComponent, boolean isHardcoreMode) {
-        super(ITextComponent.getTextComponentOrEmpty("Boi u ded"));
+    public HunterXHunterDeathScreen(@Nullable Component textComponent, boolean isHardcoreMode) {
+        super(Component.literal("Boi u ded"));
         this.causeOfDeath = textComponent;
         this.isHardcoreMode = isHardcoreMode;
         this.handler = new TextureHandler(Minecraft.getInstance().getTextureManager(), new DynamicTexture(638, 360, true));
@@ -152,7 +145,7 @@ public class HunterXHunterDeathScreen extends Screen {
             }
         }
         float f = (float)(Util.milliTime() - this.firstRenderTime) / 1000.0F;
-        Minecraft.getInstance().getTextureManager().bindTexture(handler.getTextureLocation());
+        Minecraft.getInstance().getTextureManager().bindForSetup(handler.getTextureLocation());
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, (float) MathHelper.ceil(MathHelper.clamp(f, 0.0F, 1.0F)));

@@ -1,7 +1,7 @@
 package com.chubbychump.hunterxhunter.server.potions;
 
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.Potion;
 
 import javax.annotation.Nullable;
 
@@ -13,16 +13,16 @@ public class BloodLust extends Potion {
         return BLOODLUST_POTION.get();
     }
 
-    public BloodLust(EffectInstance... effectsIn) {
+    public BloodLust(MobEffectInstance... effectsIn) {
         super(null, effectsIn);
     }
 
-    public BloodLust(@Nullable String baseNameIn, EffectInstance... effectsIn) {
+    public BloodLust(@Nullable String baseNameIn, MobEffectInstance... effectsIn) {
         super(baseNameIn, effectsIn);
     }
 
     @Override
-    public boolean hasInstantEffect() {
+    public boolean hasInstantEffects() {
         return false;
     }
 }

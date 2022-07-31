@@ -19,7 +19,7 @@ public final class HUDHandler {
     public static void renderManaBar(MatrixStack ms, int x, int y, int color, float alpha, int mana, int maxMana) {
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.color4f(1F, 1F, 1F, alpha);
-        mc.textureManager.bindTexture(manaBar);
+        mc.textureManager.bindForSetup(manaBar);
         drawTexturedModalRect(ms, x, y, 0, 0, 102, 5);
 
         int manaPercentage = Math.max(0, (int) ((double) mana / (double) maxMana * 100));

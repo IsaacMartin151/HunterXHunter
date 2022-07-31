@@ -7,16 +7,13 @@ import com.chubbychump.hunterxhunter.server.abilities.heartstuff.IMoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealth;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
 import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,14 +22,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.common.property.Properties;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
-import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER;
+import static com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenProvider.NENUSER_CAPABILITY;
 
 public class Crystal_Nen extends Item {
     public Crystal_Nen() {
@@ -41,7 +35,7 @@ public class Crystal_Nen extends Item {
 
     @OnlyIn(Dist.CLIENT)
     private void openGui(Player player) {
-        INenUser yo = player.getCapability(NENUSER).orElseThrow(null);
+        INenUser yo = player.getCapability(NENUSER_CAPABILITY).orElseThrow(null);
         if (yo.getNenPower() == 0) {
             yo.increaseNenPower();
             NenUser.updateServer(player, yo);

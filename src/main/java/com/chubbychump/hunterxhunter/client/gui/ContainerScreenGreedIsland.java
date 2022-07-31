@@ -61,7 +61,7 @@ public class ContainerScreenGreedIsland extends ContainerScreen<GreedIslandConta
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(TEXTURE);                //this.minecraft
+        this.minecraft.getTextureManager().bindForSetup(TEXTURE);                //this.minecraft
         // width and height are the size provided to the window when initialised after creation.
         // xSize, ySize are the expected size of the texture-? usually seems to be left as a default.
         // The code below is typical for vanilla containers, so I've just copied that- it appears to centre the texture within

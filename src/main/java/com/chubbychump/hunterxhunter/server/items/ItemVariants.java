@@ -4,7 +4,7 @@ import com.chubbychump.hunterxhunter.HunterXHunter;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.World;
 
@@ -20,7 +20,7 @@ public class ItemVariants extends Item {
     public static final String NBT_TAG_NAME_ACTIVATED = "activated";
 
     public static ToggledOn getActivated(ItemStack stack) {
-        CompoundNBT compoundNBT = stack.getOrCreateTag();
+        CompoundTag compoundNBT = stack.getOrCreateTag();
         return ToggledOn.fromNBT(compoundNBT, NBT_TAG_NAME_ACTIVATED);
     }
 
@@ -68,7 +68,7 @@ public class ItemVariants extends Item {
          * @param compoundNBT
          * @return
          */
-        public static ToggledOn fromNBT(CompoundNBT compoundNBT, String tagname) {
+        public static ToggledOn fromNBT(CompoundTag compoundNBT, String tagname) {
             byte activatedID = 0;  // default in case of error
             if (compoundNBT != null && compoundNBT.contains(tagname)) {
                 activatedID = compoundNBT.getByte(tagname);
@@ -77,7 +77,7 @@ public class ItemVariants extends Item {
             return activated.orElse(ON);
         }
 
-        public void putIntoNBT(CompoundNBT compoundNBT, String tagname) {
+        public void putIntoNBT(CompoundTag compoundNBT, String tagname) {
             compoundNBT.putByte(tagname, nbtID);
         }
 

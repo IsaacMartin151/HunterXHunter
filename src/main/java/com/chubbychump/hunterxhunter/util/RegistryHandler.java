@@ -33,13 +33,15 @@ import com.chubbychump.hunterxhunter.server.tileentities.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.advancements.CriteriaTriggers;
 
-import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.client.renderer.MobEffectInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobMobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -131,12 +133,8 @@ public class RegistryHandler {
     //Particles
     //public static final RegistryObject<ParticleType<SparkleParticleData>> SPARKLES = PARTICLE_TYPES.register("sparkles", () -> new ParticleT);
 
-    //Dimensions
-    public static final RegistryKey<DimensionType> GREED_ISLAND_DIMENSION = RegistryKey.getOrCreateKey(Registry.DIMENSION_TYPE_KEY, new ResourceLocation(MOD_ID, "greedisland"));
-    public static final RegistryKey<World> GREED_ISLAND_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(MOD_ID, "greedisland"));
-
     //Effects
-    public static final RegistryObject<MobEffect> BLOODLUST_EFFECT = POTIONS.register("bloodlust_effect", () -> new BloodLustEffect(EffectType.HARMFUL, 0xcc0a0a));
+    public static final RegistryObject<MobEffect> BLOODLUST_EFFECT = POTIONS.register("bloodlust_effect", () -> new BloodLustEffect(MobEffectCategory.HARMFUL, 0xcc0a0a));
 
     //Potions
     public static final RegistryObject<Potion> BLOODLUST_POTION = POTION_TYPES.register("bloodlust_potion", () -> new BloodLust(new MobEffectInstance(BLOODLUST_EFFECT.get())));
@@ -391,13 +389,6 @@ public class RegistryHandler {
             .setShouldReceiveVelocityUpdates(true)
             .build(""));
 
-    public static final RegistryObject<EntityType<MiddleFinger>> MIDDLE_FINGER_ENTITY = ENTITY_TYPES.register("middle_finger", () -> EntityType.Builder.<MiddleFinger>of(MiddleFinger::new, MobCategory.MONSTER)
-            .size(5.5f, 5.5f)
-            .setTrackingRange(20)
-            .setUpdateInterval(1)
-            .setShouldReceiveVelocityUpdates(true)
-            .build(""));
-
     public static final RegistryObject<EntityType<ShiapoufClone>> SHIAPOUF_CLONE_ENTITY = ENTITY_TYPES.register("shiapouf_clone", () -> EntityType.Builder.<ShiapoufClone>of(ShiapoufClone::new, MobCategory.MONSTER)
             .size(.5f, .5f)
             .setTrackingRange(20)
@@ -490,20 +481,12 @@ public class RegistryHandler {
     //FoliagePlacer
 
     //Features
-    public static final Feature<WorldTreeConfig2> WORLD_TREE_FEATURE = new WorldTreeFeature2();
     public static final Feature<GravityMineralsConfig> GRAVITY_MINERALS_FEATURE = new GravityMinerals();
 
     //Configured Features
-    public static final ConfiguredFeature<?, ?> WORLD_TREE_FEATURE_CONFIG = WORLD_TREE_FEATURE
-            .withConfiguration(new WorldTreeConfig2(23, 4, 65, 0.05))
-            .withPlacement(Placement.CHANCE.configure(new ChanceConfig(20)));
     public static final ConfiguredFeature<?, ?> GRAVITY_MINERALS_FEATURE_CONFIG = GRAVITY_MINERALS_FEATURE
             .withConfiguration(new GravityMineralsConfig(4, 18, 18))
             .withPlacement(Placement.CHANCE.configure(new ChanceConfig(10)));
-
-    //Older feature stuff here
-    public static final RegistryObject<Feature<BaseWorldTreeConfiguration>> WORLD_TREE = FEATURES.register("world_tree", () -> new WorldTreeFeature(BaseWorldTreeConfiguration.CODEC));
-    public static final RegistryObject<Feature<OreFeatureConfig>> ORE_AURA = FEATURES.register("aura_stone", () -> new OreFeature(OreFeatureConfig.CODEC));
 
     //Carver
     public static final RegistryObject<WorldCarver<ProbabilityFeatureConfiguration>> SPIDER_EAGLE_CARVER = CARVER.register("spider_eagle_carver", () -> new SpiderEagleCarver(ProbabilityFeatureConfiguration.CODEC, 256));

@@ -147,7 +147,7 @@ public class TileFlipScreen extends Screen {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         //HunterXHunter.LOGGER.info("width, height: "+this.width+", "+this.height);
-        matrixStack.push();
+        matrixStack.pushPose();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -156,17 +156,17 @@ public class TileFlipScreen extends Screen {
 
         if (success == true || failed == true) {
             RenderSystem.disableCull();
-            matrixStack.push();
+            matrixStack.pushPose();
 
             matrixStack.translate(this.width/2, this.height/2, 0);
             matrixStack.rotate(Vector3f.ZP.rotationDegrees((Util.milliTime() / 60) % 360));
             matrixStack.translate(-this.width/2, -this.height/2, 0);
             buffer.begin(GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR_TEX);
-            yo.bindTexture(BUBBLES);
-            RenderSystem.bindTexture(yo.getTexture(BUBBLES).getGlTextureId());
-            drawTriangles(buffer, matrixStack.getLast().getMatrix());
+            yo.bindForSetup(BUBBLES);
+            RenderSystem.bindForSetup(yo.getTexture(BUBBLES).getGlTextureId());
+            drawTriangles(buffer, matrixStack.getLast().pose());
             tessellator.draw();
-            matrixStack.pop();
+            matrixStack.popPose();
 
             if (success) {
                 font.drawStringWithShadow(matrixStack, "Success! Nen power increased", width/2 - 75, height/2 - 20, 0xffff80ff);
@@ -187,8 +187,8 @@ public class TileFlipScreen extends Screen {
 
             //Nvm don't do a screen, do blocks in the floor of the dungeon
             buffer.begin(GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            yo.bindTexture(icons[bruh]);
-            RenderSystem.bindTexture(yo.getTexture(icons[bruh]).getGlTextureId());
+            yo.bindForSetup(icons[bruh]);
+            RenderSystem.bindForSetup(yo.getTexture(icons[bruh]).getGlTextureId());
             int upperleftX = 0;
             int upperleftY = 0;
             int Pxl = width / 7;
@@ -229,7 +229,7 @@ public class TileFlipScreen extends Screen {
                 font.drawStringWithShadow(matrixStack, timerstring, 0, 0, 0x000000ff);
             }
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void printArray() {

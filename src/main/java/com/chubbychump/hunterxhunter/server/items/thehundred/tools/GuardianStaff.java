@@ -2,12 +2,12 @@ package com.chubbychump.hunterxhunter.server.items.thehundred.tools;
 
 import com.chubbychump.hunterxhunter.server.items.StaffBase;
 
-import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.client.renderer.MobEffectInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobMobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public class GuardianStaff extends StaffBase {
             itemstack.hurtAndBreak(1, playerIn, (player) -> {
                 player.broadcastBreakEvent(handIn);
             });
-            playerIn.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 600));
+            playerIn.addEffect(new MobMobEffectInstance(MobEffects.DIG_SPEED, 600));
 
         }
         return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide);

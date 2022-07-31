@@ -34,11 +34,11 @@ public class HXHEntitySpawn {
         this.nbt = nbt;
     }
 
-    public static void encode(HXHEntitySpawn msg, PacketBuffer buff) {
+    public static void encode(HXHEntitySpawn msg, FriendlyByteBuf buff) {
         buff.writeCompoundTag(msg.nbt);
     }
 
-    public static HXHEntitySpawn decode(PacketBuffer buff) {
+    public static HXHEntitySpawn decode(FriendlyByteBuf buff) {
         return new HXHEntitySpawn(buff.readCompoundTag());
     }
 
@@ -147,8 +147,8 @@ public class HXHEntitySpawn {
                         bruh.setPosition(oof.x, oof.y, oof.z);
                         break;
                 }
-                serverPlayer.getEntityWorld().addEntity(bruh);
-                PacketManager.sendTo(serverPlayer, new HXHEntitySpawn(eNumber, bruh.getEntityId(), new CompoundNBT()));
+                serverPlayer.getLevel().addFreshEntity(bruh);
+                PacketManager.sendTo(serverPlayer, new HXHEntitySpawn(eNumber, bruh.getEntityId(), new CompoundTag()));
             }
             else {
                 int yee = msg.nbt.getInt("eID");
@@ -157,7 +157,7 @@ public class HXHEntitySpawn {
                 Entity bruh = mc.world.getEntityByID(yee);
                 if (bruh != null) {
                     HunterXHunter.LOGGER.info("Adding the entity to world HXHEntitySpawn");
-                    Minecraft.getInstance().world.addEntity(bruh);
+                    Minecraft.getInstance().world.addFreshEntity(bruh);
                     yo.setEntityID(yee);
                 }
             }

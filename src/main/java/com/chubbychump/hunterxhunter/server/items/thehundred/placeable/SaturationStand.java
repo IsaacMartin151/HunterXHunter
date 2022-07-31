@@ -1,19 +1,18 @@
 package com.chubbychump.hunterxhunter.server.items.thehundred.placeable;
 
 import com.chubbychump.hunterxhunter.server.tileentities.SaturationStandTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+
 
 public class SaturationStand extends Block {
     public SaturationStand() {
-        super(Block.Properties.create(Material.IRON)
-                .hardnessAndResistance(1.0f, 1.0f)
-                .sound(SoundType.METAL)
-                .harvestLevel(0));
+        super(Block.Properties.of(Material.METAL)
+                .strength(1.0f, 1.0f)
+                .sound(SoundType.METAL));
     }
 
     @Override
@@ -22,7 +21,7 @@ public class SaturationStand extends Block {
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState blockstate, IBlockReader worldIn) {
+    public BlockEntity createTileEntity(BlockState blockstate, IBlockReader worldIn) {
         return new SaturationStandTileEntity();
     }
 

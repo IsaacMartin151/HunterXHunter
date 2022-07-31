@@ -4,10 +4,10 @@ import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.Bat;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.Player;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -44,8 +44,8 @@ public class SpiderEagleEggBlock extends Block {
 
     private void tryTrample(World worldIn, BlockPos pos, Entity trampler, int chances) {
         if (this.canTrample(worldIn, trampler)) {
-            if (!worldIn.isRemote && worldIn.rand.nextInt(chances) == 0) {
-                worldIn.playSound((Player)null, pos, SoundEvents.ENTITY_TURTLE_EGG_BREAK, SoundCategory.BLOCKS, 0.7F, 0.9F + worldIn.rand.nextFloat() * 0.2F);
+            if (!worldIn.isClientSide && worldIn.rand.nextInt(chances) == 0) {
+                worldIn.playSound((Player)null, pos, SoundEvents.ENTITY_TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.rand.nextFloat() * 0.2F);
                 worldIn.destroyBlock(pos, false);
             }
 
@@ -53,7 +53,7 @@ public class SpiderEagleEggBlock extends Block {
     }
 
     private boolean canTrample(World worldIn, Entity trampler) {
-        if (!(trampler instanceof TurtleEntity) && !(trampler instanceof BatEntity)) {
+        if (!(trampler instanceof TurtleEntity) && !(trampler instanceof Bat)) {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
