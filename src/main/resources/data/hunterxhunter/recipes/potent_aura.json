@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "item": "hunterxhunter:aura_stone"
-  },
-  "result": "hunterxhunter:potent_aura",
-  "experience": 0.9,
-  "cookingtime": 200
-}

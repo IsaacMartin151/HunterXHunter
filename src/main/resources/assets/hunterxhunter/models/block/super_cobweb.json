@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "hunterxhunter:blocks/super_cobweb"
-  }
-}
