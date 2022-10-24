@@ -27,9 +27,9 @@ displayName="Hunter X Hunter" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile="title.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="All me baby. One man team" #optional
 # A text field displayed in the mod UI
 authors="Shmaul Cat" #optional
 # Display Test controls the display for your mod in the server connection screen
