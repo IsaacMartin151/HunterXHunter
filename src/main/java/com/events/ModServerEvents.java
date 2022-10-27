@@ -16,5 +16,4 @@ public class ModServerEvents {
         HunterXHunter.LOGGER.info("--- Server starting ---");
     }
 
-
 }

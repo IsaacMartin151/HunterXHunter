@@ -1,11 +1,13 @@
 package com.events;
 
 import com.screens.Debug;
+import com.screens.MainMenu;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -23,12 +25,14 @@ public class ForgeClientEvents {
             Minecraft.getInstance().setScreen(debug);
         }
         else if (event.getKey() == book.getKey().getValue()) {
-            yo.setOpenedBook(true);
-            yo.setLastOpenedBook(Util.milliTime());
-            LOGGER.info("pressed book button");
-            Minecraft.getInstance().player.playSound(OPEN_BOOK.get(), 1, 1);
-            BookItemStackHandler oof = (BookItemStackHandler) event.player.getCapability(BOOK_CAPABILITY).orElseThrow(null);
-            PacketManager.sendToServer(new SyncBookPacket(event.player.getEntityId(), (CompoundNBT) BOOK_CAPABILITY.writeNBT(oof, null)));
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMainMenu(ScreenEvent event) {
+        if (event.getScreen() instanceof TitleScreen) {
+            Minecraft.getInstance().setScreen(new MainMenu());
         }
     }
 }

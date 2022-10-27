@@ -2,14 +2,12 @@ package com.screens;
 
 import com.example.hunterxhunter.HunterXHunter;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.registry.MenuMusic;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,16 +23,12 @@ import net.minecraftforge.client.gui.ModListScreen;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameUtils;
 
 import java.io.File;
 
-import static net.minecraft.client.gui.components.AbstractWidget.WIDGETS_LOCATION;
-
 @OnlyIn(Dist.CLIENT)
 public class MainMenu extends Screen {
-    private static File file = new File(Minecraft.getInstance().getResourcePackDirectory().getAbsolutePath()+"/departure.avi");
-    public static FFmpegFrameGrabber frameGrabber= new FFmpegFrameGrabber(file);
+    public FrameGrabber frameGrabber;
     public DynamicTexture dynamicTexture = new DynamicTexture(640, 360, true);
     private boolean needstorestart = false;
     private boolean start = false;
@@ -53,6 +47,9 @@ public class MainMenu extends Screen {
         super(Component.literal("Main Menu"));
         this.firstRenderTime = 0L;
         this.textureManager = new TextureManager(Minecraft.getInstance().getResourceManager());
+        HunterXHunter.LOGGER.info("Trying to get departure at: " + Minecraft.getInstance().getResourcePackDirectory().getAbsolutePath());
+        File departure = new File(Minecraft.getInstance().getResourcePackDirectory().getAbsolutePath()+"/departure.mp4");
+        frameGrabber = new FFmpegFrameGrabber(departure);
     }
 
     @Override
@@ -91,13 +88,13 @@ public class MainMenu extends Screen {
             this.firstRenderTime = Util.getEpochMillis();
             try {
                 frameGrabber.start();
-            } catch (FrameGrabber.Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             frameGrabber.setAudioChannels(0);
             try {
-                yeet = frameGrabber.grabImage();
-            } catch (FrameGrabber.Exception e) {
+                yeet = frameGrabber.grabFrame();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -109,7 +106,7 @@ public class MainMenu extends Screen {
             Minecraft.getInstance().getSoundManager().play(departure);
             try {
                 frameGrabber.restart();
-            } catch (FrameGrabber.Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             lastpartialticks = 0;
@@ -121,11 +118,11 @@ public class MainMenu extends Screen {
                 Minecraft.getInstance().getSoundManager().play(departure);
             }
             try {
-                yeet = frameGrabber.grabImage();
+                yeet = frameGrabber.grabFrame();
                 if (frameGrabber.getFrameNumber() > frameGrabber.getLengthInFrames() - 3) {
                     needstorestart = true;
                 }
-            } catch (FrameGrabber.Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             lastpartialticks -= (20f/framerate);
@@ -138,8 +135,8 @@ public class MainMenu extends Screen {
                 }
             }
         }
-        new ResourceLocation(dynamicTexture.toString());
-        textureManager.bindForSetup(dynamicTexture);
+        ResourceLocation image = new ResourceLocation(dynamicTexture.toString());
+        textureManager.bindForSetup(image);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -165,7 +162,7 @@ public class MainMenu extends Screen {
     public void onClose() {
         try {
             frameGrabber.stop();
-        } catch (FrameGrabber.Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         needstorestart = true;

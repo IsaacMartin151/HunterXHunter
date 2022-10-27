@@ -19,7 +19,6 @@ public class ModClientEvents
     {
         HunterXHunter.LOGGER.info("--- Client Setup ---");
         HunterXHunter.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-
     }
 
     @SubscribeEvent
