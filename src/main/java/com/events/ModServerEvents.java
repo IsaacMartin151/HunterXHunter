@@ -1,6 +1,6 @@
 package com.events;
 
-import com.example.hunterxhunter.HunterXHunter;
+import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,7 +13,7 @@ public class ModServerEvents {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-        HunterXHunter.LOGGER.info("--- Server starting ---");
+        LogUtils.getLogger().info("--- Server starting ---");
     }
 
 }

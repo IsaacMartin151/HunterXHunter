@@ -30,9 +30,9 @@ public class ForgeClientEvents {
     }
 
     @SubscribeEvent
-    public static void onMainMenu(ScreenEvent event) {
+    public static void onMainMenu(ScreenEvent.Init event) {
         if (event.getScreen() instanceof TitleScreen) {
-            Minecraft.getInstance().setScreen(new MainMenu());
+            event.getScreen().getMinecraft().setScreen(new MainMenu());
         }
     }
 }
