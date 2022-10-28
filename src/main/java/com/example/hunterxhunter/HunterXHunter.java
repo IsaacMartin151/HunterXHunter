@@ -1,13 +1,12 @@
 package com.example.hunterxhunter;
 
+import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import static com.registry.Biomes.BIOMES;
 import static com.registry.Blocks.BLOCKS;
@@ -20,7 +19,7 @@ public class HunterXHunter
 {
     //Enhancer - give speed, jump boost, strength, (chance of?) bloodlust
     public static final String MODID = "hunterxhunter";
-    public static final Logger LOGGER = LogManager.getLogger();
+    public final Logger LOGGER = LogUtils.getLogger();
 
     public HunterXHunter()
     {

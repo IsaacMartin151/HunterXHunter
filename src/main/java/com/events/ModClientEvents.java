@@ -1,7 +1,5 @@
 package com.events;
 
-import com.example.hunterxhunter.HunterXHunter;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,8 +15,8 @@ public class ModClientEvents
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event)
     {
-        HunterXHunter.LOGGER.info("--- Client Setup ---");
-        HunterXHunter.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+//        HunterXHunter.LOGGER.info("--- Client Setup ---");
+//        HunterXHunter.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
 
     @SubscribeEvent
