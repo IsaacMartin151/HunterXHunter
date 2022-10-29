@@ -1,6 +1,7 @@
 package com.screens;
 
 import com.example.hunterxhunter.HunterXHunter;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.registry.MenuMusic;
@@ -12,9 +13,13 @@ import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
+import net.minecraft.client.renderer.CubeMap;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.PanoramaRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.ModListScreen;
@@ -31,9 +36,12 @@ public class MainMenu extends Screen {
     private TextureManager textureManager;
     private final ResourceLocation TITLE = new ResourceLocation(HunterXHunter.MODID, "textures/gui/title/title.png");
     private long firstRenderTime;
+    public static final CubeMap CUBE_MAP = new CubeMap(new ResourceLocation("textures/gui/title/background/panorama"));
+    private static final ResourceLocation PANORAMA_OVERLAY = new ResourceLocation("textures/gui/title/background/panorama_overlay.png");
+    private final PanoramaRenderer panorama = new PanoramaRenderer(CUBE_MAP);
 
     public MainMenu() {
-        super(Component.literal("Main Menu"));
+        super(Component.literal("Hunter X Hunter Main Menu"));
         this.firstRenderTime = 0L;
         this.textureManager = Minecraft.getInstance().textureManager;
 //        HunterXHunter.LOGGER.info("Trying to get departure at: " + Minecraft.getInstance().getResourcePackDirectory().getAbsolutePath());
@@ -53,18 +61,18 @@ public class MainMenu extends Screen {
 
     @Override
     protected void init() {
-        int j = 20;
-        this.addRenderableWidget(new Button(0, j * 4, 100, 20, Component.literal("Mods"), button -> {
-            this.minecraft.setScreen(new ModListScreen(this));
-        }));
-        this.addRenderableWidget(new Button(0, j * 2, 100, 20, Component.literal("Options"), (p_213096_1_) -> {
-            this.minecraft.setScreen(new OptionsScreen(this, this.minecraft.options));
-        }));
-        this.addRenderableWidget(new Button(0, j*0, 100, 20, Component.literal("Singleplayer"), (p_213089_1_) -> {
+        int verticalSpacing = 20;
+        this.addRenderableWidget(new Button(0, verticalSpacing * 0, 100, verticalSpacing, Component.literal("Singleplayer"), (p_213089_1_) -> {
             this.minecraft.setScreen(new SelectWorldScreen(this));
         }));
-        this.addRenderableWidget(new Button(0, j * 1, 100, 20, Component.literal("Multiplayer"), (p_213095_1_) -> {
+        this.addRenderableWidget(new Button(0, verticalSpacing * 1, 100, verticalSpacing, Component.literal("Multiplayer"), (p_213095_1_) -> {
             this.minecraft.setScreen(new JoinMultiplayerScreen(this));
+        }));
+        this.addRenderableWidget(new Button(0, verticalSpacing * 2, 100, verticalSpacing, Component.literal("Options"), (p_213096_1_) -> {
+            this.minecraft.setScreen(new OptionsScreen(this, this.minecraft.options));
+        }));
+        this.addRenderableWidget(new Button(0, verticalSpacing * 3, 100, verticalSpacing, Component.literal("Mods"), button -> {
+            this.minecraft.setScreen(new ModListScreen(this));
         }));
     }
 
@@ -72,6 +80,7 @@ public class MainMenu extends Screen {
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        Frame yeet = null;
         if (this.firstRenderTime == 0L) {
+            Minecraft.getInstance().getSoundManager().stop();
             this.firstRenderTime = Util.getEpochMillis();
 //            try {
 //                frameGrabber.start();
@@ -128,12 +137,22 @@ public class MainMenu extends Screen {
 //        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 //        RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
 //        blit(matrixStack, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
-        RenderSystem.setShaderTexture(0, TITLE);
+        this.panorama.render(partialTicks, Mth.clamp(1.0F, 0.0F, 1.0F));
+
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, PANORAMA_OVERLAY);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         blit(matrixStack, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
-        if (start) {
-            for (Widget renderable : this.renderables) {
-                renderable.render(matrixStack, mouseX, mouseY, partialTicks);
-            }
+
+        RenderSystem.setShaderTexture(0, TITLE);
+        // X pos on screen, y pos on screen, wi, x repetitions, y repititions
+        int width = this.width*2/4;
+        int height = width * 216/384;
+        blit(matrixStack, this.width/3, this.height/7, Util.getMillis() / 20, 0, width, height, width, height);
+        for (Widget renderable : this.renderables) {
+            renderable.render(matrixStack, mouseX, mouseY, partialTicks);
         }
         lastpartialticks += partialTicks;
     }

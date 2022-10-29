@@ -1,6 +1,7 @@
 package com.events;
 
 import com.mojang.logging.LogUtils;
+import com.packets.PacketManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,6 +15,7 @@ public class ModServerEvents {
     public void onServerStarting(ServerStartingEvent event)
     {
         LogUtils.getLogger().info("--- Server starting ---");
+        PacketManager.register();
     }
 
 }

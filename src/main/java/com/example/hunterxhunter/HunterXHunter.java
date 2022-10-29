@@ -19,7 +19,7 @@ public class HunterXHunter
 {
     //Enhancer - give speed, jump boost, strength, (chance of?) bloodlust
     public static final String MODID = "hunterxhunter";
-    public final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public HunterXHunter()
     {
