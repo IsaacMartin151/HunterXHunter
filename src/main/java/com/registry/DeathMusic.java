@@ -7,10 +7,12 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class DeathMusic implements SoundInstance {
     ResourceLocation location = new ResourceLocation(HunterXHunter.MODID, "hisoka");
+    Sound sound;
 
     @Override
     public ResourceLocation getLocation() {
@@ -19,18 +21,19 @@ public class DeathMusic implements SoundInstance {
 
     @Nullable
     @Override
-    public WeighedSoundEvents resolve(SoundManager p_119841_) {
-        return null;
+    public WeighedSoundEvents resolve(SoundManager soundManager) {
+        sound = soundManager.getSoundEvent(location).getSound(RandomSource.create());
+        return soundManager.getSoundEvent(location);
     }
 
     @Override
     public Sound getSound() {
-        return null;
+        return sound;
     }
 
     @Override
     public SoundSource getSource() {
-        return null;
+        return SoundSource.MUSIC;
     }
 
     @Override
@@ -45,17 +48,17 @@ public class DeathMusic implements SoundInstance {
 
     @Override
     public int getDelay() {
-        return 0;
+        return 200;
     }
 
     @Override
     public float getVolume() {
-        return 0;
+        return 1;
     }
 
     @Override
     public float getPitch() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class DeathMusic implements SoundInstance {
 
     @Override
     public Attenuation getAttenuation() {
-        return null;
+        return Attenuation.LINEAR;
     }
 }
 

@@ -1,0 +1,123 @@
+package com.abilities.heartstuff;
+
+import com.chubbychump.hunterxhunter.Config;
+import com.chubbychump.hunterxhunter.packets.PacketManager;
+import com.chubbychump.hunterxhunter.packets.SyncHealthPacket;
+import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.play.server.SEntityPropertiesPacket;
+import net.minecraft.world.server.ServerWorld;
+
+import java.util.Collections;
+
+import static com.chubbychump.hunterxhunter.server.abilities.heartstuff.MoreHealthProvider.CAPABILITY;
+
+public class MoreHealth implements IMoreHealth {
+    private byte version;
+    private float modifier;
+    private short rampPosition;
+    private byte containers;
+
+    public MoreHealth() {
+        this.version = (byte) 1;
+        this.modifier = getDefaultModifier();
+        this.rampPosition = 0;
+    }
+
+    @Override
+    public byte getVersion() {
+        return version;
+    }
+
+    @Override
+    public float getModifier() {
+        return modifier;
+    }
+
+    @Override
+    public float getTrueModifier() {
+        return modifier + (containers * 2);
+    }
+
+    @Override
+    public float getEnhancerModifier() {
+        return modifier + (containers * 3);
+    }
+
+    @Override
+    public short getRampPosition() {
+        return rampPosition;
+    }
+
+    @Override
+    public byte getHeartContainers() {
+        return containers;
+    }
+
+    @Override
+    public void setVersion(byte version) {
+        this.version = version;
+    }
+
+    @Override
+    public void setModifier(float modifier) {
+        this.modifier = modifier;
+    }
+
+    @Override
+    public void setRampPosition(short position) {
+        this.rampPosition = position;
+    }
+
+    @Override
+    public void addRampPosition() {
+        this.rampPosition += (short) 1;
+    }
+
+    @Override
+    public void setHeartContainers(byte amount) {
+        this.containers = amount;
+    }
+
+    @Override
+    public void addHeartContainer() {
+        this.containers += (byte) 1;
+    }
+
+    @Override
+    public void copy(IMoreHealth other) {
+        this.setVersion(other.getVersion());
+        this.setModifier(other.getModifier());
+        this.setRampPosition(other.getRampPosition());
+        this.setHeartContainers(other.getHeartContainers());
+    }
+
+    @Override
+    public void synchronise(Player player) {
+        if (!player.getLevel().isRemote) {
+            ModifiableAttributeInstance attribute = player.getAttribute(Attributes.MAX_HEALTH);
+            SEntityPropertiesPacket packet = new SEntityPropertiesPacket(player.getId(), Collections.singleton(attribute));
+            ((ServerWorld) player.getLevel()).getChunkProvider().sendToTrackingAndSelf(player, packet);
+        }
+    }
+
+    public static float getDefaultModifier() {
+        return Config.defHealth.get() - (float) Attributes.MAX_HEALTH.getDefaultValue();
+    }
+
+    public static IMoreHealth getFromPlayer(Player player) {
+        return player.getCapability(CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+    }
+
+    public static void updateClient(ServerPlayer player, IMoreHealth cap) {
+        PacketManager.sendTo(player, new SyncHealthPacket(player.getId(), (CompoundTag) CAPABILITY.writeNBT(cap, null)));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("MoreHealth{version=%s,modifier=%s,rampPosition=%s, containers=%s}", version, modifier, rampPosition, containers);
+    }
+}
