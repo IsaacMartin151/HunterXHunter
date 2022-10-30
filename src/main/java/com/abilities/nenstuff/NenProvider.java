@@ -20,13 +20,13 @@ public class NenProvider implements ICapabilitySerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT() {
-        INenUser nenUser = instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        INenUser nenUser = instance.orElseThrow(() -> new IllegalArgumentException("Serialize NenUser is empty!"));
         return nenUser.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        INenUser nenUser = instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+        INenUser nenUser = instance.orElseThrow(() -> new IllegalArgumentException("Deserialize Nenuser is empty!"));
         nenUser.deserializeNBT(nbt);
     }
 }
