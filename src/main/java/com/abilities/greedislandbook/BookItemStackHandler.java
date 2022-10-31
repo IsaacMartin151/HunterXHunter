@@ -1,21 +1,21 @@
 package com.abilities.greedislandbook;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+
+import com.example.hunterxhunter.HunterXHunter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-import static com.chubbychump.hunterxhunter.HunterXHunter.LOGGER;
-import static com.chubbychump.hunterxhunter.HunterXHunter.MOD_ID;
+import static com.example.hunterxhunter.HunterXHunter.MODID;
+
 
 public class BookItemStackHandler extends ItemStackHandler {
-    public static ResourceLocation THEONEHUNDRED = new ResourceLocation(MOD_ID, "theonehundred");
-    public static ResourceLocation THEONEHUNDREDCARDS = new ResourceLocation(MOD_ID, "theonehundredcards");
+    public static ResourceLocation THEONEHUNDRED = new ResourceLocation(MODID, "theonehundred");
+    public static ResourceLocation THEONEHUNDREDCARDS = new ResourceLocation(MODID, "theonehundredcards");
 
     public static final int MIN_FLOWER_SLOTS = 1;
     public static final int MAX_FLOWER_SLOTS = 100;
@@ -32,7 +32,7 @@ public class BookItemStackHandler extends ItemStackHandler {
         if (stack.isEmpty()) return false;
         Item item = stack.getItem();
         if (item.isIn(ItemTags.getCollection().get(THEONEHUNDREDCARDS))) {
-            LOGGER.info("Target item is a collection card, verifying it's not already in there");
+            HunterXHunter.LOGGER.info("Target item is a collection card, verifying it's not already in there");
             for (int i = 0; i < this.getSlots(); i++) {
                 for (int j = 0; j < this.getSlots(); j++) {
                     if (j != i) {

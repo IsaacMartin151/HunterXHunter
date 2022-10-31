@@ -1,19 +1,17 @@
 package com.packets;
 
-import com.chubbychump.hunterxhunter.client.screens.CameraScreen;
-import com.chubbychump.hunterxhunter.server.entities.entityclasses.CameraEntity;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.LocalPlayer;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-import static com.chubbychump.hunterxhunter.server.items.CardFunctions.getCorrespondingStack;
-import static com.chubbychump.hunterxhunter.util.RegistryHandler.CAMERA_ENTITY;
+
 
 public class SyncTransformCardPacket {
 
@@ -30,7 +28,7 @@ public class SyncTransformCardPacket {
     }
 
     public static void encode(SyncTransformCardPacket msg, FriendlyByteBuf buff) {
-        buff.writeCompoundTag(msg.nbt);
+        buff.writeNbt(msg.nbt);
     }
 
     public static SyncTransformCardPacket decode(FriendlyByteBuf buff) {
@@ -44,17 +42,17 @@ public class SyncTransformCardPacket {
                 ItemStack held = serverPlayer.getHeldItemMainhand();
                 ItemStack corresponding = getCorrespondingStack(held);
                 corresponding.setCount(held.getCount());
-                CameraEntity bruh = new CameraEntity(CAMERA_ENTITY.get(), serverPlayer.level, (LocalPlayer) serverPlayer.level.getEntity(msg.nbt.getInt("entityid4")), corresponding);
+                Camera bruh = new Camera(CAMERA_ENTITY.get(), serverPlayer.level, (LocalPlayer) serverPlayer.level.getEntity(msg.nbt.getInt("entityid4")), corresponding);
                 held.shrink(held.getCount());
                 bruh.setPos(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
-                serverPlayer.getLevel().addEntity(bruh);
+                serverPlayer.getLevel().addFreshEntity(bruh);
                 //HunterXHunter.LOGGER.info("Adding camera entity");
                 PacketManager.sendTo(serverPlayer, new SyncTransformCardPacket(bruh.getId(), new CompoundTag()));
             }
             else {
                 Minecraft mc = Minecraft.getInstance();
                 int oof = msg.nbt.getInt("entityid4");
-                CameraEntity camera = (CameraEntity) mc.world.getEntity(oof);
+                Camera camera = (Camera) mc.world.getEntity(oof);
                 mc.world.addEntity(camera);
                 Minecraft.getInstance().displayGuiScreen(CameraScreen.cameraScreenInstance);
                 Minecraft.getInstance().setRenderViewEntity(camera);
