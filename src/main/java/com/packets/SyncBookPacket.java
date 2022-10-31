@@ -1,23 +1,23 @@
 package com.packets;
 
-import com.chubbychump.hunterxhunter.HunterXHunter;
-import com.chubbychump.hunterxhunter.client.gui.GreedIslandContainer;
-import com.chubbychump.hunterxhunter.server.abilities.greedislandbook.BookItemStackHandler;
-import com.chubbychump.hunterxhunter.server.abilities.nenstuff.INenUser;
-import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+
+import com.abilities.greedislandbook.BookItemStackHandler;
+import com.abilities.nenstuff.INenUser;
+import com.abilities.nenstuff.NenUser;
+import com.container.GreedIslandContainer;
+import com.example.hunterxhunter.HunterXHunter;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
-import static com.chubbychump.hunterxhunter.server.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
+
 
 public class SyncBookPacket {
 
@@ -34,7 +34,7 @@ public class SyncBookPacket {
     }
 
     public static void encode(SyncBookPacket msg, FriendlyByteBuf buff) {
-        buff.writeCompoundTag(msg.nbt);
+        buff.writeNbt(msg.nbt);
     }
 
     public static SyncBookPacket decode(FriendlyByteBuf buff) {
@@ -51,11 +51,11 @@ public class SyncBookPacket {
             else {
                 HunterXHunter.LOGGER.info("Opening GUI");
                 BookItemStackHandler cap = (BookItemStackHandler) serverPlayer.getCapability(BOOK_CAPABILITY).orElseThrow(null);
-                INamedContainerProvider container = new SimpleNamedContainerProvider((w, p, pl) -> new GreedIslandContainer(w, p, cap), new TranslationTextComponent("Book!"));
+                MenuProvider container = new SimpleMenuProvider((w, p, pl) -> new GreedIslandContainer(w, p, cap), new TranslationTextComponent("Book!"));
                 INenUser nenUser = NenUser.getFromPlayer(serverPlayer);
                 nenUser.setOpenedBook(true);
-                nenUser.setLastOpenedBook(Util.milliTime());
-                NetworkHooks.openGui(serverPlayer, container);
+                nenUser.setLastOpenedBook(Util.getMillis());
+                NetworkHooks.openScreen(serverPlayer, container);
             }
         });
         ctx.get().setPacketHandled(true);

@@ -2,7 +2,6 @@ package com.packets;
 
 import com.abilities.heartstuff.IMoreHealth;
 import com.abilities.heartstuff.MoreHealth;
-import com.abilities.heartstuff.MoreHealthProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +39,7 @@ public class SyncHealthPacket {
             IMoreHealth cap = MoreHealth.getFromPlayer(player);
 
             // Read NBT Data into Capability
-            MoreHealthProvider.CAPABILITY.readNBT(cap, null, msg.nbt);
+            cap.deserializeNBT(msg.nbt);
         });
         ctx.get().setPacketHandled(true);
     }

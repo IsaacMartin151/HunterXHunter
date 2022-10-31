@@ -17,7 +17,6 @@ public class SyncNenPacket {
     private final CompoundTag nbt;
 
     public SyncNenPacket(int entityId, CompoundTag nbt) {
-        // Add entity id
         nbt.putInt("entityid2", entityId);
         this.nbt = nbt;
     }
@@ -43,15 +42,8 @@ public class SyncNenPacket {
                 cap.deserializeNBT(msg.nbt);
             }
             else {
-                //LocalPlayer player = serverPlayer.server.getPlayerList().getPlayerByUUID(serverPlayer.getUniqueID());
                 INenUser cap = NenUser.getFromPlayer(serverPlayer);
                 cap.deserializeNBT(msg.nbt);
-//                if (cap.getNenPower() > 0) {
-//                    AbilityUseTrigger.INSTANCE.trigger(serverPlayer);
-//                    if (cap.getNenPower() == 16) {
-//                        AbilityMaxTrigger.INSTANCE.trigger(serverPlayer);
-//                    }
-//                }
             }
         });
         ctx.get().setPacketHandled(true);

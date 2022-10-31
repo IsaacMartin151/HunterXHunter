@@ -2,7 +2,7 @@ package com.abilities.nenstuff;
 
 
 import com.example.hunterxhunter.HunterXHunter;
-import com.mojang.math.Vector3d;
+import com.mojang.math.Vec3;
 import com.packets.HXHEntitySpawn;
 import com.packets.PacketManager;
 import com.packets.SyncNenPacket;
@@ -198,7 +198,7 @@ public class NenUser implements INenUser {
                         player.lerpMotion(0, 0, 0);
                         Vec3 stare = player.getLookAngle();
                         stare.normalize();
-                        Vector3d move = new Vector3d(stare.x * 3, .2, stare.z * 3);
+                        Vec3 move = new Vec3(stare.x * 3, .2, stare.z * 3);
                         player.push(move.x, move.y, move.z);
                         player.hurtMarked = true;
                     }
