@@ -1,6 +1,7 @@
 package com.example.hunterxhunter;
 
 import com.mojang.logging.LogUtils;
+import com.packets.PacketManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -39,5 +40,6 @@ public class HunterXHunter
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         LOGGER.info("Common setup");
+        PacketManager.register();
     }
 }

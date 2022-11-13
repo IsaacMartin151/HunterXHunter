@@ -4,11 +4,12 @@ package com.packets;
 import com.abilities.greedislandbook.BookItemStackHandler;
 import com.abilities.nenstuff.INenUser;
 import com.abilities.nenstuff.NenUser;
-import com.container.GreedIslandContainer;
+import com.container.BookMenu;
 import com.example.hunterxhunter.HunterXHunter;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -17,6 +18,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
+import static com.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 
 
 public class SyncBookPacket {
@@ -45,17 +47,17 @@ public class SyncBookPacket {
         ctx.get().enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer == null) {
-                //LocalPlayer player = (LocalPlayer) Minecraft.getInstance().world.getEntity(msg.nbt.getInt("entityid3"));
-                //ItemStackHandler cap = NenUser.getFromPlayer(player);
+
             }
             else {
                 HunterXHunter.LOGGER.info("Opening GUI");
-                BookItemStackHandler cap = (BookItemStackHandler) serverPlayer.getCapability(BOOK_CAPABILITY).orElseThrow(null);
-                MenuProvider container = new SimpleMenuProvider((w, p, pl) -> new GreedIslandContainer(w, p, cap), new TranslationTextComponent("Book!"));
+                BookItemStackHandler cap = serverPlayer.getCapability(BOOK_CAPABILITY, serverPlayer.getDirection()).orElseThrow(null);
+                MenuProvider container = new SimpleMenuProvider((w, p, pl) -> new BookMenu(w, p, cap), Component.literal("Book"));
                 INenUser nenUser = NenUser.getFromPlayer(serverPlayer);
                 nenUser.setOpenedBook(true);
                 nenUser.setLastOpenedBook(Util.getMillis());
                 NetworkHooks.openScreen(serverPlayer, container);
+                HunterXHunter.LOGGER.info("Opened GUI");
             }
         });
         ctx.get().setPacketHandled(true);

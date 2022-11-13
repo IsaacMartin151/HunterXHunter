@@ -1,19 +1,17 @@
 package com.abilities.greedislandbook;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class GreedIslandProvider implements ICapabilitySerializable<CompoundTag> {
 
-    @CapabilityInject(ItemStackHandler.class)
-    public static final Capability<ItemStackHandler> BOOK_CAPABILITY = null;
-
-    private LazyOptional<ItemStackHandler> instance = LazyOptional.of(BOOK_CAPABILITY::getDefaultInstance);
+    public static final Capability<BookItemStackHandler> BOOK_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() { });
+    private LazyOptional<BookItemStackHandler> instance = LazyOptional.of(BookItemStackHandler::new);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
@@ -22,11 +20,13 @@ public class GreedIslandProvider implements ICapabilitySerializable<CompoundTag>
 
     @Override
     public CompoundTag serializeNBT() {
-        return (CompoundTag) BOOK_CAPABILITY.getStorage().writeNBT(BOOK_CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null);
+        BookItemStackHandler itemStackHandler = instance.orElseThrow(() -> new IllegalArgumentException("Serialize BookItemStackHandler is empty!"));
+        return itemStackHandler.serializeNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        BOOK_CAPABILITY.getStorage().readNBT(BOOK_CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!")), null, nbt);
+        BookItemStackHandler nenUser = instance.orElseThrow(() -> new IllegalArgumentException("Deserialize BookItemStackHandler is empty!"));
+        nenUser.deserializeNBT(nbt);
     }
 }

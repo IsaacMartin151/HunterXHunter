@@ -4,6 +4,7 @@ import com.packets.PacketManager;
 import com.packets.SyncHealthPacket;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +28,7 @@ public class MoreHealth implements IMoreHealth {
         this.version = (byte) 1;
         this.modifier = getDefaultModifier();
         this.rampPosition = 0;
+        this.heartContainers = 3;
     }
 
     @Override
@@ -51,10 +53,10 @@ public class MoreHealth implements IMoreHealth {
 
     @Override
     public void copy(IMoreHealth other) {
-        this.setVersion(other.getVersion());
-        this.setModifier(other.getModifier());
-        this.setRampPosition(other.getRampPosition());
-        this.setHeartContainers(other.getHeartContainers());
+        this.version = other.getVersion();
+        this.modifier = other.getModifier();
+        this.rampPosition = other.getRampPosition();
+        this.heartContainers = other.getHeartContainers();
     }
 
     @Override
@@ -81,5 +83,24 @@ public class MoreHealth implements IMoreHealth {
     @Override
     public String toString() {
         return String.format("MoreHealth {version=%s,modifier=%s,rampPosition=%s, containers=%s}", version, modifier, rampPosition, heartContainers);
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.putByte("version", version);
+        tag.putFloat("modifier", modifier);
+        tag.putShort("ramp", rampPosition);
+        tag.putByte("heartContainers", heartContainers);
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        this.version = nbt.getByte("version");
+        this.modifier = nbt.getFloat("modifier");
+        this.rampPosition = nbt.getShort("ramp");
+        this.heartContainers = nbt.getByte("heartContainers");
+
     }
 }

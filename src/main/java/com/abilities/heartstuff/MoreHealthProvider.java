@@ -1,15 +1,16 @@
 package com.abilities.heartstuff;
 
-import com.abilities.nenstuff.INenUser;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class MoreHealthProvider implements ICapabilitySerializable<CompoundTag> {
 
-    public static final Capability<IMoreHealth> MORE_HEALTH_CAPABILITY = null;
+    public static final Capability<IMoreHealth> MORE_HEALTH_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() { });
     private LazyOptional<IMoreHealth> instance = LazyOptional.of(MoreHealth::new);
 
     @Override

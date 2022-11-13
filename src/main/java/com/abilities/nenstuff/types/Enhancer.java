@@ -1,7 +1,7 @@
 package com.abilities.nenstuff.types;
 
-import com.chubbychump.hunterxhunter.client.screens.NenEffectSelect;
-import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.abilities.nenstuff.NenUser;
+import com.screens.AbilitySelect;
 import net.minecraft.client.Minecraft;
 
 public class Enhancer extends NenUser {
@@ -32,6 +32,6 @@ public class Enhancer extends NenUser {
 
     @Override
     public void keybind1() {
-        Minecraft.getInstance().displayGuiScreen(NenEffectSelect.instance);
+        Minecraft.getInstance().setScreen(new AbilitySelect());
     }
 }
