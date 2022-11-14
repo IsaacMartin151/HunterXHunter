@@ -7,12 +7,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+
+import static com.registry.MenuTypes.BOOK_MENU;
 
 public class BookMenu extends AbstractContainerMenu {
     private final BookItemStackHandler bookItemStackHandler;
@@ -34,11 +35,11 @@ public class BookMenu extends AbstractContainerMenu {
     }
 
     public BookMenu(int containerId, Inventory playerInv, BookItemStackHandler bookItemStackHandler) {
-        super(MenuType.STONECUTTER, containerId);
+        super(BOOK_MENU.get(), containerId);
         this.bookItemStackHandler = bookItemStackHandler;
 
-        int SLOT_X_SPACING = 18;
-        int SLOT_Y_SPACING = 18;
+        int SLOT_X_SPACING = 20;
+        int SLOT_Y_SPACING = 20;
         final int HOTBAR_XPOS = 27;
         final int HOTBAR_YPOS = 220;
         // Add the players hotbar to the gui - the [xpos, ypos] location of each item

@@ -15,7 +15,6 @@ import static com.example.hunterxhunter.HunterXHunter.MODID;
 
 public class BookItemStackHandler extends ItemStackHandler {
     public static ResourceLocation THEONEHUNDRED = new ResourceLocation(MODID, "theonehundred");
-    public static ResourceLocation THEONEHUNDREDCARDS = new ResourceLocation(MODID, "theonehundredcards");
     public static TagKey<Item> TheOneHundred = ItemTags.create(THEONEHUNDRED);
 
     private static final int BOOK_SIZE = 100;
@@ -27,13 +26,13 @@ public class BookItemStackHandler extends ItemStackHandler {
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         if (slot < 0 || slot >= BOOK_SIZE) {
-            throw new IllegalArgumentException("Invalid slot number:"+slot);
+            throw new IllegalArgumentException("Invalid slot number: " + slot);
         }
         if (stack.isEmpty() || stacks.contains(stack)) {
             return false;
         }
         if (stack.is(TheOneHundred)) {
-            HunterXHunter.LOGGER.info("Target item is a collection card, verifying it's not already in there");
+            HunterXHunter.LOGGER.info("Target item is a collection card");
             return true;
         }
         HunterXHunter.LOGGER.info("Not a valid itemstack, not in the hundred or already there");
@@ -41,7 +40,7 @@ public class BookItemStackHandler extends ItemStackHandler {
     }
 
     public boolean isComplete() {
-        ItemStack bruh[] = new ItemStack[100];
+        ItemStack[] bruh = new ItemStack[100];
         for (int i = 0; i < this.getSlots(); i++) {
             ItemStack item = stacks.get(i).getItem().getDefaultInstance();
             if (item.is(TheOneHundred)) {

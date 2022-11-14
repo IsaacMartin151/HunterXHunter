@@ -12,11 +12,9 @@ import com.example.hunterxhunter.HunterXHunter;
 import com.mojang.logging.LogUtils;
 import com.packets.PacketManager;
 import com.packets.SyncBookPacket;
-import com.screens.BookInventoryScreen;
 import com.screens.Debug;
 import com.screens.MainMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -31,13 +29,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.items.ItemStackHandler;
 
 import static com.abilities.greedislandbook.GreedIslandProvider.BOOK_CAPABILITY;
 import static com.example.hunterxhunter.HunterXHunter.MODID;
 import static com.registry.KeyMappings.*;
-import static com.registry.MenuTypes.BOOK_MENU;
 
 @Mod.EventBusSubscriber
 public class ModEvents
@@ -54,17 +50,6 @@ public class ModEvents
         event.register(INenUser.class);
         event.register(IMoreHealth.class);
         event.register(BookItemStackHandler.class);
-    }
-
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event)
-    {
-        // Not thread safe
-        event.enqueueWork(
-                () -> MenuScreens.register(BOOK_MENU.get(), BookInventoryScreen::new)
-        );
-
-        //MinecraftForge.EVENT_BUS.register(new IngameGui());
     }
 
     @SubscribeEvent

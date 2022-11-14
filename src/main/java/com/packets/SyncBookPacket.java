@@ -46,10 +46,7 @@ public class SyncBookPacket {
     public static void handle(SyncBookPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.get().getSender();
-            if (serverPlayer == null) {
-
-            }
-            else {
+            if (serverPlayer != null) {
                 HunterXHunter.LOGGER.info("Opening GUI");
                 BookItemStackHandler cap = serverPlayer.getCapability(BOOK_CAPABILITY, serverPlayer.getDirection()).orElseThrow(null);
                 MenuProvider container = new SimpleMenuProvider((w, p, pl) -> new BookMenu(w, p, cap), Component.literal("Book"));
@@ -57,7 +54,6 @@ public class SyncBookPacket {
                 nenUser.setOpenedBook(true);
                 nenUser.setLastOpenedBook(Util.getMillis());
                 NetworkHooks.openScreen(serverPlayer, container);
-                HunterXHunter.LOGGER.info("Opened GUI");
             }
         });
         ctx.get().setPacketHandled(true);
