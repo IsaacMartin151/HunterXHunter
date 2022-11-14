@@ -133,7 +133,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.47'
 
-    implementation 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    minecraftLibrary 'org.projectlombok:lombok:1.18.24'
 
 //    minecraftLibrary 'org.bytedeco:javacv:1.5.7'
 

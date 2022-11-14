@@ -1,6 +1,6 @@
 package com.abilities.nenstuff.types;
 
-import com.chubbychump.hunterxhunter.server.abilities.nenstuff.NenUser;
+import com.abilities.nenstuff.NenUser;
 
 public class Conjurer extends NenUser {
     public Conjurer() {

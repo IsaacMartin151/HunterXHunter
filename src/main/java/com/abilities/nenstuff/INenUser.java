@@ -63,14 +63,4 @@ public interface INenUser extends INBTSerializable<CompoundTag> {
 
     void setRiftwalkPos(int[] i);
     int[] getRiftwalkPos();
-
-
-    void setEntityID(int e);
-    int getEntityID();
-
-    void enhancer1(Player player);
-    void manipulator1(Player player);
-    void transmuter1(Player player);
-    void conjurer1(Player player);
-    void emitter1(Player player);
 }
